@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness Course Player | Learn and Track Progress</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <nav class="nav-links">
+          <a href="/">Home</a>
+          <a href="/programs">Programs</a>
+          <a href="/dashboard">Dashboard</a>
+        </nav>
+        <div class="nav-cta">
+          <a class="btn-subtle" href="/dashboard">Back to Dashboard</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="player-shell">
+      <section class="player-header">
+        <div class="container">
+          <div class="section-header">
+            <span class="eyebrow">Course Player</span>
+            <h1 id="playerTitle">Loading Track...</h1>
+            <p id="playerSubtitle">Your weekly modules will appear below.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container player-layout">
+          <div class="player-card">
+            <iframe class="video-frame" id="videoFrame" src="" title="Workout class video" allowfullscreen></iframe>
+            <h3 id="classTitle">Choose a class</h3>
+            <p class="muted" id="classNotes">Lesson notes will appear here.</p>
+            <div class="stack-actions">
+              <button class="btn" id="completeBtn" type="button">Mark Complete</button>
+            </div>
+            <p id="playerStatus" class="status-text"></p>
+          </div>
+          <div class="player-card">
+            <h3>Modules</h3>
+            <div class="module-list" id="moduleList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/player.js"></script>
+  </body>
+</html>

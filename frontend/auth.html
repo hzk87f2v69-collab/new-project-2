@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness Login | Secure Access</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <nav class="nav-links">
+          <a href="/">Home</a>
+          <a href="/programs">Programs</a>
+          <a href="/contact">Contact</a>
+        </nav>
+        <div class="nav-cta">
+          <a class="btn-subtle" href="/programs">Programs</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-shell">
+      <section class="section">
+        <div class="container auth-grid">
+          <div class="section-header">
+            <span class="eyebrow">Member Access</span>
+            <h1>Secure your account and unlock structured progress.</h1>
+            <p>
+              Register once, pay securely with Razorpay, and access your purchased programs from a premium dashboard built
+              for consistency.
+            </p>
+          </div>
+          <div class="auth-card">
+            <div class="auth-tabs">
+              <button class="auth-tab active" id="loginTab" type="button">Login</button>
+              <button class="auth-tab" id="registerTab" type="button">Register</button>
+            </div>
+            <form class="auth-form active" id="loginForm">
+              <div class="field">
+                <label for="loginEmail">Email</label>
+                <input id="loginEmail" name="email" type="email" required />
+              </div>
+              <div class="field">
+                <label for="loginPassword">Password</label>
+                <input id="loginPassword" name="password" type="password" required />
+              </div>
+              <button class="btn" type="submit">Login</button>
+            </form>
+            <form class="auth-form" id="registerForm">
+              <div class="field">
+                <label for="registerName">Name</label>
+                <input id="registerName" name="name" type="text" required />
+              </div>
+              <div class="field">
+                <label for="registerEmail">Email</label>
+                <input id="registerEmail" name="email" type="email" required />
+              </div>
+              <div class="field">
+                <label for="registerPassword">Password</label>
+                <input id="registerPassword" name="password" type="password" minlength="6" required />
+              </div>
+              <button class="btn" type="submit">Create Account</button>
+            </form>
+            <p id="authStatus" class="status-text"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/auth.js"></script>
+  </body>
+</html>

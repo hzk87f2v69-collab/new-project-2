@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Ace Fitness | Ask About Programs</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <nav class="nav-links">
+          <a href="/">Home</a>
+          <a href="/programs">Programs</a>
+          <a class="active" href="/contact">Contact</a>
+        </nav>
+        <div class="nav-cta">
+          <a class="btn-subtle" data-auth-link href="/auth">Login</a>
+          <a class="btn" href="/programs">Explore Programs</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section">
+        <div class="container contact-grid">
+          <div class="section-header">
+            <span class="eyebrow">Contact</span>
+            <h1>Tell us your goal. We’ll help you choose the right track.</h1>
+            <p>
+              Whether you are stuck with fat loss, want to build muscle, or need a home-friendly plan, send your query
+              and the Ace Fitness team will guide you.
+            </p>
+            <div data-social-contact></div>
+          </div>
+          <div class="contact-card">
+            <form id="pageContactForm" class="form-grid">
+              <div class="field">
+                <label for="contactName">Name</label>
+                <input id="contactName" name="name" type="text" required />
+              </div>
+              <div class="field">
+                <label for="contactEmail">Email</label>
+                <input id="contactEmail" name="email" type="email" required />
+              </div>
+              <div class="field">
+                <label for="contactMessage">Message</label>
+                <textarea id="contactMessage" name="message" required></textarea>
+              </div>
+              <button class="btn" type="submit">Send Message</button>
+              <p id="pageContactStatus" class="status-text"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="brand" href="/">
+            <span class="brand-mark">AF</span>
+            <span>Ace Fitness</span>
+          </a>
+          <p class="muted">Luxury transformation guidance with premium support across WhatsApp, Gmail, and Instagram.</p>
+        </div>
+        <div>
+          <h3>Explore</h3>
+          <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/programs">Programs</a>
+            <a href="/auth">Login</a>
+          </div>
+        </div>
+        <div>
+          <h3>Connect</h3>
+          <div data-footer-social></div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/social-contact.js"></script>
+    <script src="/public/assets/js/floating-whatsapp.js"></script>
+    <script src="/public/assets/js/contact.js"></script>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness Dashboard | Progress and Courses</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <nav class="nav-links">
+          <a href="/">Home</a>
+          <a href="/programs">Programs</a>
+          <a class="active" href="/dashboard">Dashboard</a>
+        </nav>
+        <div class="nav-cta">
+          <button class="btn-subtle" id="logoutBtn" type="button">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-shell">
+      <section class="dashboard-hero">
+        <div class="container">
+          <div class="section-header">
+            <span class="eyebrow">Your Dashboard</span>
+            <h1>Keep your training organized and your progress visible.</h1>
+            <p>Purchased tracks, completion data, and payment history all stay in one place.</p>
+          </div>
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span class="muted">Purchased Tracks</span>
+              <strong id="metricTracks">0</strong>
+            </article>
+            <article class="metric-card">
+              <span class="muted">Average Progress</span>
+              <strong id="metricProgress">0%</strong>
+            </article>
+            <article class="metric-card">
+              <span class="muted">Completed Classes</span>
+              <strong id="metricClasses">0</strong>
+            </article>
+            <article class="metric-card">
+              <span class="muted">Successful Payments</span>
+              <strong id="metricPayments">0</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container dashboard-grid">
+          <article class="dashboard-card">
+            <h3>Profile</h3>
+            <p><strong id="profileName">Loading...</strong></p>
+            <p class="muted" id="profileEmail"></p>
+            <p class="muted">Member since <span id="joinedDate">-</span></p>
+          </article>
+          <article class="dashboard-card dashboard-card-wide">
+            <h3>Purchased Courses</h3>
+            <div class="course-grid" id="coursesContainer"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <article class="dashboard-card">
+            <h3>Payment History</h3>
+            <ul class="payment-list" id="paymentsContainer"></ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/dashboard.js"></script>
+  </body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness Payment Success | Payment Request Received</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <nav class="nav-links">
+          <a href="/">Home</a>
+          <a href="/programs">Programs</a>
+          <a href="/contact">Contact</a>
+        </nav>
+        <div class="nav-cta">
+          <a class="btn-subtle" href="/contact">Need Help?</a>
+          <a class="btn" href="/programs">View Programs</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="payment-success-shell">
+      <section class="section">
+        <div class="container">
+          <article class="payment-success-card">
+            <div class="success-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M9.55 18.2 4.6 13.25l1.4-1.4 3.55 3.55 8.45-8.45 1.4 1.4-9.85 9.85Z"></path>
+              </svg>
+            </div>
+            <div class="section-header">
+              <span class="eyebrow">Payment Request Received</span>
+              <h1>We’ve received your payment intent.</h1>
+              <p>
+                Send your payment screenshot or UTR number on WhatsApp or Gmail so the Ace Fitness team can verify and
+                guide you faster.
+              </p>
+            </div>
+
+            <div class="success-grid">
+              <div class="success-info-card">
+                <span class="helper">Selected Plan</span>
+                <strong id="successPlan">Ace Fitness Program</strong>
+              </div>
+              <div class="success-info-card">
+                <span class="helper">Amount</span>
+                <strong id="successAmount">₹0</strong>
+              </div>
+              <div class="success-info-card">
+                <span class="helper">Selected Tracks</span>
+                <strong id="successTracks">Selected programs</strong>
+              </div>
+              <div class="success-info-card">
+                <span class="helper">Payment Method</span>
+                <strong id="successPaymentMethod">UPI / QR</strong>
+              </div>
+              <div class="success-info-card">
+                <span class="helper">WhatsApp Number</span>
+                <strong id="successWhatsapp">7223888352</strong>
+              </div>
+              <div class="success-info-card">
+                <span class="helper">Gmail</span>
+                <strong id="successEmail">primefficialyt@gmail.com</strong>
+              </div>
+            </div>
+
+            <div class="stack-actions">
+              <a class="btn" href="https://wa.me/917223888352" target="_blank" rel="noreferrer">Send Payment Screenshot</a>
+              <a class="btn-outline" href="mailto:primefficialyt@gmail.com">Mail UTR Number</a>
+              <button class="btn-subtle" type="button" id="copySupportEmail">Copy Gmail</button>
+              <a class="btn-subtle" href="/">Back to Home</a>
+            </div>
+            <p id="successCopyStatus" class="status-text"></p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/social-contact.js"></script>
+    <script src="/public/assets/js/floating-whatsapp.js"></script>
+    <script src="/public/assets/js/upi-payment.js"></script>
+    <script src="/public/assets/js/payment-success.js"></script>
+  </body>
+</html>

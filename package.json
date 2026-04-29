@@ -1,0 +1,37 @@
+{
+  "name": "ace-fitness",
+  "version": "1.0.0",
+  "description": "Premium fitness course selling platform with Express, MongoDB, JWT, and Razorpay integration.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "fitness",
+    "express",
+    "mongodb",
+    "razorpay",
+    "jwt"
+  ],
+  "author": "OpenAI Codex",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.4.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.1",
+    "morgan": "^1.10.0",
+    "razorpay": "^2.9.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
