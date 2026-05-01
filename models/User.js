@@ -15,6 +15,36 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true
     },
+    phoneNumber: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    fitnessGoal: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    age: {
+      type: Number,
+      min: 0,
+      default: null
+    },
+    heightCm: {
+      type: Number,
+      min: 0,
+      default: null
+    },
+    weightKg: {
+      type: Number,
+      min: 0,
+      default: null
+    },
+    healthNotes: {
+      type: String,
+      trim: true,
+      default: ""
+    },
     password: {
       type: String,
       required: true,

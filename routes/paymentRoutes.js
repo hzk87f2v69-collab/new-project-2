@@ -1,6 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { createOrder, verifyPayment } = require("../controllers/paymentController");
+const { createOrder, verifyPayment, dummyUnlockPayment } = require("../controllers/paymentController");
 const { protect } = require("../middleware/authMiddleware");
 const validate = require("../middleware/validateMiddleware");
 const asyncHandler = require("../utils/asyncHandler");
@@ -12,7 +12,7 @@ router.post(
   protect,
   [
     body("trackIds").isArray({ min: 1 }).withMessage("Select at least one track."),
-    body("bundleId").optional().isString().withMessage("Bundle ID must be a string.")
+    body("bundleId").optional({ values: "null" }).isString().withMessage("Bundle ID must be a string.")
   ],
   validate,
   asyncHandler(createOrder)
@@ -28,6 +28,17 @@ router.post(
   ],
   validate,
   asyncHandler(verifyPayment)
+);
+
+router.post(
+  "/dev-unlock",
+  protect,
+  [
+    body("trackIds").isArray({ min: 1 }).withMessage("Select at least one track."),
+    body("bundleId").optional({ values: "null" }).isString().withMessage("Bundle ID must be a string.")
+  ],
+  validate,
+  asyncHandler(dummyUnlockPayment)
 );
 
 module.exports = router;

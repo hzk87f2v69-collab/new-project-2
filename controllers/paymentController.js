@@ -4,7 +4,92 @@ const Payment = require("../models/Payment");
 const Track = require("../models/Track");
 const User = require("../models/User");
 const razorpay = require("../utils/razorpay");
-const { bundleSeed } = require("../data/tracks");
+const { bundleSeed, trackSeed } = require("../data/tracks");
+const { isDatabaseConnected } = require("../utils/runtimeState");
+const mockStore = require("../utils/mockStore");
+
+const buildCourseAccessRedirect = (trackIds = []) => {
+  const params = new URLSearchParams({
+    source: "unlock",
+    tracks: trackIds.join(",")
+  });
+
+  return `/my-courses?${params.toString()}`;
+};
+
+const grantTrackAccess = async (userId, trackIds = []) => {
+  if (!isDatabaseConnected()) {
+    return mockStore.grantTrackAccess({ userId, trackIds });
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error("User not found for this payment.");
+  }
+
+  const unlockedTrackIds = [...new Set(trackIds.filter(Boolean))];
+  user.purchasedTracks = [...new Set([...(user.purchasedTracks || []), ...unlockedTrackIds])];
+  await user.save();
+
+  const existingEnrollments = await Enrollment.find({
+    userId: user._id,
+    trackId: { $in: unlockedTrackIds }
+  }).select("trackId");
+
+  const existingTrackIds = new Set(existingEnrollments.map((enrollment) => enrollment.trackId));
+  const missingTrackIds = unlockedTrackIds.filter((trackId) => !existingTrackIds.has(trackId));
+
+  if (missingTrackIds.length > 0) {
+    await Enrollment.insertMany(
+      missingTrackIds.map((trackId) => ({
+        userId: user._id,
+        trackId,
+        progress: 0,
+        completedClasses: []
+      }))
+    );
+  }
+
+  return {
+    user,
+    unlockedTrackIds
+  };
+};
+
+const recordPaidPayment = async ({ userId, trackIds, amount, orderId, paymentId, signature }) => {
+  if (!isDatabaseConnected()) {
+    return mockStore.recordPaidPayment({ userId, trackIds, amount, orderId, paymentId, signature });
+  }
+
+  return Payment.create({
+    userId,
+    trackIds,
+    amount,
+    orderId,
+    paymentId,
+    signature,
+    status: "paid"
+  });
+};
+
+const getTracksByIds = async (trackIds = []) => {
+  const uniqueTrackIds = [...new Set(trackIds.filter(Boolean))];
+
+  if (!isDatabaseConnected()) {
+    return trackSeed.filter((track) => uniqueTrackIds.includes(track.trackId));
+  }
+
+  return Track.find({ trackId: { $in: uniqueTrackIds } });
+};
+
+const getAllTrackIds = async () => {
+  if (!isDatabaseConnected()) {
+    return trackSeed.map((track) => track.trackId);
+  }
+
+  const tracks = await Track.find().select("trackId");
+  return tracks.map((track) => track.trackId);
+};
 
 const calculateOrder = async (selection) => {
   const { trackIds, bundleId } = selection;
@@ -15,7 +100,7 @@ const calculateOrder = async (selection) => {
       throw new Error("Pick exactly 2 tracks for the duo bundle.");
     }
 
-    const tracks = await Track.find({ trackId: { $in: uniqueTrackIds } }).select("trackId");
+    const tracks = await getTracksByIds(uniqueTrackIds);
     if (tracks.length !== uniqueTrackIds.length) {
       throw new Error("One or more selected tracks are invalid.");
     }
@@ -28,10 +113,10 @@ const calculateOrder = async (selection) => {
   }
 
   if (bundleId === "all-access") {
-    const tracks = await Track.find().select("trackId");
+    const allTrackIds = await getAllTrackIds();
     const bundle = bundleSeed.find((item) => item.bundleId === bundleId);
     return {
-      trackIds: tracks.map((track) => track.trackId),
+      trackIds: allTrackIds,
       amount: bundle.price
     };
   }
@@ -40,7 +125,7 @@ const calculateOrder = async (selection) => {
     throw new Error("Select at least one track.");
   }
 
-  const tracks = await Track.find({ trackId: { $in: uniqueTrackIds } });
+  const tracks = await getTracksByIds(uniqueTrackIds);
 
   if (tracks.length !== uniqueTrackIds.length) {
     throw new Error("One or more selected tracks are invalid.");
@@ -51,6 +136,12 @@ const calculateOrder = async (selection) => {
 };
 
 const createOrder = async (req, res) => {
+  if (!isDatabaseConnected()) {
+    return res.status(503).json({
+      message: "Razorpay checkout is unavailable in local demo mode. Use Test Unlock to continue."
+    });
+  }
+
   if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
     return res.status(500).json({ message: "Razorpay keys are missing in environment config." });
   }
@@ -127,32 +218,52 @@ const verifyPayment = async (req, res) => {
   paymentRecord.signature = razorpay_signature;
   await paymentRecord.save();
 
-  const user = await User.findById(paymentRecord.userId);
-  const uniqueTracks = [...new Set([...user.purchasedTracks, ...paymentRecord.trackIds])];
-  user.purchasedTracks = uniqueTracks;
-  await user.save();
-
-  await Promise.all(
-    paymentRecord.trackIds.map(async (trackId) => {
-      const existing = await Enrollment.findOne({ userId: user._id, trackId });
-      if (!existing) {
-        await Enrollment.create({
-          userId: user._id,
-          trackId,
-          progress: 0,
-          completedClasses: []
-        });
-      }
-    })
-  );
+  const { user, unlockedTrackIds } = await grantTrackAccess(paymentRecord.userId, paymentRecord.trackIds);
 
   res.json({
     message: "Payment verified and course unlocked.",
-    purchasedTracks: user.purchasedTracks
+    purchasedTracks: user.purchasedTracks,
+    unlockedTrackIds,
+    redirectTo: buildCourseAccessRedirect(unlockedTrackIds)
+  });
+};
+
+const dummyUnlockPayment = async (req, res) => {
+  const selectedOrder = await calculateOrder(req.body);
+  const { trackIds, amount } = selectedOrder;
+  const alreadyOwned = trackIds.filter((trackId) => req.user.purchasedTracks.includes(trackId));
+
+  if (alreadyOwned.length === trackIds.length) {
+    return res.status(400).json({ message: "You already own the selected track(s)." });
+  }
+
+  if (alreadyOwned.length > 0) {
+    return res.status(400).json({
+      message: `You already own: ${alreadyOwned.join(", ")}. Remove them before checkout.`
+    });
+  }
+
+  await recordPaidPayment({
+    userId: req.user._id,
+    trackIds,
+    amount,
+    orderId: `demo_order_${Date.now()}`,
+    paymentId: `demo_payment_${Date.now()}`,
+    signature: "dummy-payment"
+  });
+
+  const { user, unlockedTrackIds } = await grantTrackAccess(req.user._id, trackIds);
+
+  res.json({
+    message: "Test unlock complete.",
+    purchasedTracks: user.purchasedTracks,
+    unlockedTrackIds,
+    redirectTo: buildCourseAccessRedirect(unlockedTrackIds)
   });
 };
 
 module.exports = {
   createOrder,
-  verifyPayment
+  verifyPayment,
+  dummyUnlockPayment
 };

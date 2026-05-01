@@ -13,15 +13,24 @@
           <span class="brand-mark">AF</span>
           <span>Ace Fitness</span>
         </a>
-        <nav class="nav-links">
-          <a href="/">Home</a>
-          <a class="active" href="/programs">Programs</a>
-          <a href="/contact">Contact</a>
+        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
+            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
+            <rect x="10" y="8" width="4" height="8" rx="1"/>
+          </svg>
+        </button>
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
+          <a href="/"><span class="menu-icon">🏠</span>Home</a>
+          <a href="/programs" class="active"><span class="menu-icon">🎯</span>Programs</a>
+          <a href="/my-courses"><span class="menu-icon">🎓</span>My Courses</a>
+          <a href="/dashboard"><span class="menu-icon">📊</span>Dashboard</a>
+          <a href="/workout-tracker"><span class="menu-icon">🏋️</span>Workout Tracker</a>
+          <a href="/ai"><span class="menu-icon">🤖</span>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="/contact"><span class="menu-icon">📩</span>Contact</a>
         </nav>
-        <div class="nav-cta">
-          <a class="btn-subtle" data-auth-link href="/auth">Login</a>
-          <a class="btn" href="/dashboard">Dashboard</a>
-        </div>
       </div>
     </header>
 
@@ -32,7 +41,7 @@
             <span class="eyebrow">Programs</span>
             <h1>Choose the exact transformation track your body needs next.</h1>
             <p>
-              Buy single tracks for a focused goal or combine programs to build a complete physique system with better value.
+              Unlock a single course for a focused goal or combine tracks to build a complete physique system with better value.
             </p>
           </div>
           <div class="program-grid" id="programGrid">
@@ -64,7 +73,7 @@
         <div class="footer-links">
           <a href="/">Home</a>
           <a href="/auth">Login</a>
-          <a href="/dashboard">Dashboard</a>
+          <a href="/profile.html">Profile</a>
         </div>
         <div class="footer-links">
           <a href="/contact">Contact Support</a>
@@ -74,7 +83,6 @@
       </div>
     </footer>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="/public/assets/js/app.js"></script>
     <script src="/public/assets/js/social-contact.js"></script>
     <script src="/public/assets/js/floating-whatsapp.js"></script>

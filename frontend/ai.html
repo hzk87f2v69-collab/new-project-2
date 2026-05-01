@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ace Fitness | AI Coach</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css"/>
+    <style>
+      /* ── PAGE SHELL ─────────────────────── */
+      body { background:#000; min-height:100vh; }
+
+      .ai-page { background:#000; color:#fff; font-family:-apple-system,'SF Pro Display',system-ui,sans-serif; padding-bottom:2rem; }
+
+      /* ── HEADER ─────────────────────────── */
+      .ai-header {
+        padding:1.2rem 1.25rem 0.5rem;
+        display:flex; align-items:center; gap:0.75rem;
+      }
+      .ai-header-icon {
+        width:2.6rem; height:2.6rem; border-radius:14px;
+        background:linear-gradient(135deg,#0a84ff,#5e5ce6);
+        display:grid; place-items:center; font-size:1.3rem; flex-shrink:0;
+      }
+      .ai-header-title { font-size:1.5rem; font-weight:700; letter-spacing:-0.4px; }
+      .ai-header-sub { font-size:0.8rem; color:rgba(255,255,255,0.45); margin-top:0.1rem; }
+
+      /* ── TABS ───────────────────────────── */
+      .ai-tabs {
+        display:flex; gap:0.5rem; padding:0.75rem 1.25rem;
+        border-bottom:1px solid rgba(255,255,255,0.07);
+      }
+      .ai-tab {
+        flex:1; padding:0.65rem 0;
+        background:transparent; border:none;
+        color:rgba(255,255,255,0.45); font-size:0.88rem; font-weight:600;
+        cursor:pointer; border-radius:999px; transition:all 0.18s;
+      }
+      .ai-tab.active { background:#1c1c1e; color:#fff; }
+
+      .ai-pane { display:none; }
+      .ai-pane.active { display:block; }
+
+      /* ── COACH CHAT ─────────────────────── */
+      .ai-chat-wrap {
+        display:flex; flex-direction:column;
+        height:calc(100dvh - 180px);
+      }
+      .ai-chat-messages {
+        flex:1; overflow-y:auto;
+        padding:1rem 1.25rem;
+        display:flex; flex-direction:column; gap:0.85rem;
+        -webkit-overflow-scrolling:touch;
+      }
+      .ai-msg { display:flex; gap:0.65rem; }
+      .ai-msg.user { flex-direction:row-reverse; }
+
+      .ai-msg-avatar {
+        width:2rem; height:2rem; border-radius:50%; flex-shrink:0;
+        display:grid; place-items:center; font-size:0.9rem;
+      }
+      .ai-msg.ai .ai-msg-avatar { background:linear-gradient(135deg,#0a84ff,#5e5ce6); }
+      .ai-msg.user .ai-msg-avatar { background:#2c2c2e; }
+
+      .ai-msg-bubble {
+        max-width:78%; padding:0.75rem 1rem;
+        border-radius:18px; font-size:0.88rem; line-height:1.55;
+        white-space:pre-wrap;
+      }
+      .ai-msg.ai .ai-msg-bubble { background:#1c1c1e; color:#fff; border-bottom-left-radius:4px; }
+      .ai-msg.user .ai-msg-bubble { background:#0a84ff; color:#fff; border-bottom-right-radius:4px; }
+
+      .ai-typing .ai-msg-bubble::after {
+        content:"●●●"; display:inline-block;
+        animation:blink 1s steps(3,end) infinite; font-size:0.75rem; color:rgba(255,255,255,0.5);
+      }
+      @keyframes blink { 0%{content:"●"}33%{content:"●●"}66%{content:"●●●"} }
+
+      .ai-chat-input-row {
+        display:flex; gap:0.6rem;
+        padding:0.75rem 1.25rem 1rem;
+        border-top:1px solid rgba(255,255,255,0.07);
+        background:#000;
+      }
+      .ai-chat-input {
+        flex:1; padding:0.75rem 1rem;
+        background:#1c1c1e; border:1px solid rgba(255,255,255,0.1);
+        border-radius:999px; color:#fff; font-size:0.9rem; outline:none;
+        transition:border-color 0.18s;
+      }
+      .ai-chat-input:focus { border-color:#0a84ff; }
+      .ai-chat-input::placeholder { color:rgba(255,255,255,0.3); }
+      .ai-send-btn {
+        width:2.5rem; height:2.5rem; border-radius:50%;
+        background:#0a84ff; border:none; color:#fff; font-size:1.1rem;
+        cursor:pointer; flex-shrink:0; transition:transform 0.15s;
+        display:grid; place-items:center;
+      }
+      .ai-send-btn:hover { transform:scale(1.08); }
+      .ai-send-btn:disabled { opacity:0.4; }
+
+      .ai-no-key-banner {
+        background:rgba(255,149,0,0.12); border:1px solid rgba(255,149,0,0.3);
+        border-radius:14px; padding:1rem 1.1rem; margin:0.75rem 1.25rem;
+        font-size:0.82rem; color:#ff9500; line-height:1.5;
+      }
+      .ai-no-key-banner a { color:#ff9500; font-weight:700; }
+
+      /* ── DIET GENERATOR ─────────────────── */
+      .ai-diet-wrap { padding:1rem 1.25rem; }
+
+      .ai-diet-form-card {
+        background:#1c1c1e; border-radius:18px;
+        padding:1.25rem; margin-bottom:1rem;
+      }
+      .ai-diet-form-title { font-size:1rem; font-weight:700; margin-bottom:1rem; }
+
+      .ai-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+      .ai-form-field { display:flex; flex-direction:column; gap:0.3rem; }
+      .ai-form-field.full { grid-column:1/-1; }
+      .ai-form-field label { font-size:0.72rem; color:rgba(255,255,255,0.5); font-weight:600; }
+      .ai-form-field input,
+      .ai-form-field select {
+        padding:0.7rem 0.9rem;
+        background:#2c2c2e; border:1px solid rgba(255,255,255,0.08);
+        border-radius:12px; color:#fff; font-size:0.9rem; outline:none;
+        transition:border-color 0.18s; appearance:none;
+      }
+      .ai-form-field input:focus,
+      .ai-form-field select:focus { border-color:#0a84ff; }
+      .ai-form-field input::placeholder { color:rgba(255,255,255,0.3); }
+
+      .ai-gen-btn {
+        width:100%; padding:0.9rem; margin-top:1rem;
+        background:linear-gradient(135deg,#0a84ff,#5e5ce6);
+        border:none; border-radius:14px; color:#fff;
+        font-size:1rem; font-weight:700; cursor:pointer;
+        transition:opacity 0.15s; display:flex; align-items:center; justify-content:center; gap:0.5rem;
+      }
+      .ai-gen-btn:hover { opacity:0.88; }
+      .ai-gen-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+      /* Macro pills */
+      .ai-macro-row {
+        display:grid; grid-template-columns:repeat(4,1fr);
+        gap:0.6rem; margin-bottom:1rem;
+      }
+      .ai-macro-pill { background:#1c1c1e; border-radius:14px; padding:0.8rem 0.5rem; text-align:center; }
+      .ai-macro-val { font-size:1.3rem; font-weight:700; }
+      .ai-macro-val.cal { color:#ff9f0a; }
+      .ai-macro-val.pro { color:#30d158; }
+      .ai-macro-val.carb { color:#0a84ff; }
+      .ai-macro-val.fat  { color:#ff453a; }
+      .ai-macro-lbl { font-size:0.65rem; color:rgba(255,255,255,0.4); margin-top:0.15rem; }
+
+      /* Day cards */
+      .ai-day-card {
+        background:#1c1c1e; border-radius:16px;
+        margin-bottom:0.75rem; overflow:hidden;
+      }
+      .ai-day-header {
+        display:flex; align-items:center; justify-content:space-between;
+        padding:0.9rem 1.1rem; cursor:pointer;
+      }
+      .ai-day-name { font-weight:700; font-size:0.95rem; }
+      .ai-day-cals { font-size:0.8rem; color:rgba(255,255,255,0.4); }
+      .ai-day-chevron { color:rgba(255,255,255,0.3); transition:transform 0.2s; }
+      .ai-day-card.open .ai-day-chevron { transform:rotate(180deg); }
+      .ai-day-meals { display:none; padding:0 1.1rem 1rem; }
+      .ai-day-card.open .ai-day-meals { display:block; }
+
+      .ai-meal { margin-bottom:0.75rem; }
+      .ai-meal-name { font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.3rem; }
+      .ai-meal-item { font-size:0.85rem; color:#fff; padding:0.2rem 0; display:flex; align-items:flex-start; gap:0.4rem; }
+      .ai-meal-item::before { content:"·"; color:#0a84ff; flex-shrink:0; }
+      .ai-meal-cals { font-size:0.72rem; color:rgba(255,255,255,0.35); margin-top:0.15rem; }
+
+      /* Loading spinner */
+      .ai-spinner {
+        display:none; flex-direction:column; align-items:center;
+        justify-content:center; padding:3rem; gap:1rem; color:rgba(255,255,255,0.4);
+        font-size:0.9rem;
+      }
+      .ai-spinner.show { display:flex; }
+      .ai-spin { width:2rem; height:2rem; border:3px solid rgba(255,255,255,0.1);
+        border-top-color:#0a84ff; border-radius:50%; animation:spin 0.7s linear infinite; }
+      @keyframes spin { to { transform:rotate(360deg); } }
+
+      .ai-diet-result { display:none; }
+      .ai-diet-result.show { display:block; }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
+            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
+            <rect x="10" y="8" width="4" height="8" rx="1"/>
+          </svg>
+        </button>
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
+          <a href="/"><span class="menu-icon">&#127968;</span>Home</a>
+          <a href="/programs"><span class="menu-icon">&#127919;</span>Programs</a>
+          <a href="/my-courses"><span class="menu-icon">&#127891;</span>My Courses</a>
+          <a href="/dashboard"><span class="menu-icon">&#128202;</span>Dashboard</a>
+          <a href="/workout-tracker"><span class="menu-icon">&#127947;</span>Workout Tracker</a>
+          <a href="/ai" class="active"><span class="menu-icon">&#129302;</span>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="/contact"><span class="menu-icon">&#128233;</span>Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="ai-page">
+      <div class="ai-header">
+        <div class="ai-header-icon">🤖</div>
+        <div>
+          <div class="ai-header-title">AI Fitness Assistant</div>
+          <div class="ai-header-sub">Powered by Google Gemini</div>
+        </div>
+      </div>
+
+      <div id="noKeyBanner" class="ai-no-key-banner" style="display:none">
+        ⚠️ <strong>Gemini API key not set.</strong> Open your <code>.env</code> file and set <code>GEMINI_API_KEY=your_key</code>, then restart the server.
+        Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>
+      </div>
+
+      <div class="ai-tabs">
+        <button class="ai-tab active" data-tab="coach">💬 AI Coach</button>
+        <button class="ai-tab" data-tab="diet">🥗 Diet Generator</button>
+      </div>
+
+      <!-- ── COACH TAB ── -->
+      <div id="paneCoach" class="ai-pane active">
+        <div class="ai-chat-wrap">
+          <div class="ai-chat-messages" id="chatMessages">
+            <div class="ai-msg ai">
+              <div class="ai-msg-avatar">🤖</div>
+              <div class="ai-msg-bubble">Hey! I'm your AI fitness coach. I can see your workout logs and help you with training advice, form tips, progressive overload, recovery, and more. What would you like to know? 💪</div>
+            </div>
+          </div>
+          <div class="ai-chat-input-row">
+            <input class="ai-chat-input" id="chatInput" type="text" placeholder="Ask your coach anything…" autocomplete="off"/>
+            <button class="ai-send-btn" id="sendBtn" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DIET TAB ── -->
+      <div id="paneDiet" class="ai-pane">
+        <div class="ai-diet-wrap">
+          <div class="ai-diet-form-card">
+            <div class="ai-diet-form-title">🎯 Your Goal & Profile</div>
+            <div class="ai-form-grid">
+              <div class="ai-form-field full">
+                <label>Primary Goal</label>
+                <select id="dietGoal">
+                  <option value="Fat Loss">Fat Loss</option>
+                  <option value="Muscle Gain">Muscle Gain</option>
+                  <option value="Lean Bulk">Lean Bulk</option>
+                  <option value="Maintain Weight">Maintain Weight</option>
+                  <option value="Athletic Performance">Athletic Performance</option>
+                </select>
+              </div>
+              <div class="ai-form-field">
+                <label>Weight (kg)</label>
+                <input id="dietWeight" type="number" placeholder="75" inputmode="numeric"/>
+              </div>
+              <div class="ai-form-field">
+                <label>Height (cm)</label>
+                <input id="dietHeight" type="number" placeholder="175" inputmode="numeric"/>
+              </div>
+              <div class="ai-form-field">
+                <label>Age</label>
+                <input id="dietAge" type="number" placeholder="25" inputmode="numeric"/>
+              </div>
+              <div class="ai-form-field">
+                <label>Activity Level</label>
+                <select id="dietActivity">
+                  <option value="Sedentary">Sedentary (desk job)</option>
+                  <option value="Lightly Active">Lightly Active</option>
+                  <option value="Moderate" selected>Moderate (3-5 days/week)</option>
+                  <option value="Very Active">Very Active (6-7 days/week)</option>
+                  <option value="Athlete">Athlete (2x/day training)</option>
+                </select>
+              </div>
+              <div class="ai-form-field">
+                <label>Diet Preference</label>
+                <select id="dietType">
+                  <option value="No restriction">No restriction</option>
+                  <option value="Vegetarian">Vegetarian</option>
+                  <option value="Vegan">Vegan</option>
+                  <option value="Eggetarian">Eggetarian</option>
+                  <option value="Non-Vegetarian">Non-Vegetarian</option>
+                  <option value="Jain">Jain</option>
+                </select>
+              </div>
+              <div class="ai-form-field full">
+                <label>Allergies / Foods to Avoid</label>
+                <input id="dietAllergies" type="text" placeholder="e.g. dairy, gluten, peanuts"/>
+              </div>
+            </div>
+            <button class="ai-gen-btn" id="genDietBtn">
+              <span>✨</span> Generate My 7-Day Diet Plan
+            </button>
+          </div>
+
+          <div class="ai-spinner" id="dietSpinner">
+            <div class="ai-spin"></div>
+            <span>Generating your personalized plan…</span>
+          </div>
+
+          <div class="ai-diet-result" id="dietResult"></div>
+        </div>
+      </div>
+    </div><!-- /ai-page -->
+
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/ai.js"></script>
+  </body>
+</html>

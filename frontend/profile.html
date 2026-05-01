@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness Profile | Personal Details</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
+            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
+            <rect x="10" y="8" width="4" height="8" rx="1"/>
+          </svg>
+        </button>
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
+          <a href="/"><span class="menu-icon">&#127968;</span>Home</a>
+          <a href="/programs"><span class="menu-icon">&#127919;</span>Programs</a>
+          <a href="/my-courses"><span class="menu-icon">&#127891;</span>My Courses</a>
+          <a href="/dashboard"><span class="menu-icon">&#128202;</span>Dashboard</a>
+          <a href="/workout-tracker"><span class="menu-icon">&#127947;</span>Workout Tracker</a>
+          <a href="/ai"><span class="menu-icon">🤖</span>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="/contact"><span class="menu-icon">&#128233;</span>Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="dashboard-shell">
+      <section class="page-hero">
+        <div class="container">
+          <article class="dashboard-card owned-hero-card">
+            <div class="section-header owned-hero-copy">
+              <span class="eyebrow">Profile</span>
+              <h1>Keep your personal details ready for coaching and support.</h1>
+              <p>
+                Add the information needed for identity, contact, invoices, onboarding, and safer training guidance.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container profile-grid">
+          <article class="dashboard-card">
+            <h3>Why we collect this</h3>
+            <ul class="notes-list">
+              <li>Full name supports account identity, invoices, and personalization.</li>
+              <li>Email helps with login, receipts, delivery, and password reset.</li>
+              <li>Phone or WhatsApp helps with quick support and onboarding.</li>
+              <li>Goal and body stats help us personalize the training direction.</li>
+              <li>Health and injury notes help keep training safer.</li>
+            </ul>
+          </article>
+
+          <article class="dashboard-card dashboard-card-wide">
+            <h3>Your Personal Profile</h3>
+            <form id="profileForm" class="form-grid">
+              <div class="field">
+                <label for="profileName">Full Name</label>
+                <input id="profileName" name="name" type="text" required />
+              </div>
+              <div class="field">
+                <label for="profileEmail">Email Address</label>
+                <input id="profileEmail" name="email" type="email" disabled />
+              </div>
+              <div class="field">
+                <label for="profilePhoneNumber">Phone / WhatsApp Number</label>
+                <input id="profilePhoneNumber" name="phoneNumber" type="text" placeholder="Your contact number" />
+              </div>
+              <div class="field">
+                <label for="profileFitnessGoal">Fitness Goal + Basic Focus</label>
+                <select id="profileFitnessGoal" name="fitnessGoal">
+                  <option value="">Select your main goal</option>
+                  <option value="Fat Loss">Fat Loss</option>
+                  <option value="Muscle Gain">Muscle Gain</option>
+                  <option value="Strength">Strength</option>
+                  <option value="Home Workout">Home Workout</option>
+                  <option value="General Fitness">General Fitness</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="profileAge">Age</label>
+                <input id="profileAge" name="age" type="number" min="1" max="120" placeholder="Age" />
+              </div>
+              <div class="field">
+                <label for="profileHeightCm">Height (cm)</label>
+                <input id="profileHeightCm" name="heightCm" type="number" min="30" max="300" placeholder="Height in cm" />
+              </div>
+              <div class="field">
+                <label for="profileWeightKg">Weight (kg)</label>
+                <input id="profileWeightKg" name="weightKg" type="number" min="20" max="500" placeholder="Weight in kg" />
+              </div>
+              <div class="field field-full">
+                <label for="profileHealthNotes">Health / Injury Information</label>
+                <textarea
+                  id="profileHealthNotes"
+                  name="healthNotes"
+                  placeholder="Mention any injuries, limitations, or important medical notes for safer training."
+                ></textarea>
+              </div>
+              <!-- ── Diet & AI fields ── -->
+              <div class="field">
+                <label for="profileActivity">Activity Level</label>
+                <select id="profileActivity" name="activityLevel">
+                  <option value="">Select activity level</option>
+                  <option value="Sedentary">Sedentary (desk job, little exercise)</option>
+                  <option value="Lightly Active">Lightly Active (1–2 days/week)</option>
+                  <option value="Moderate">Moderate (3–5 days/week)</option>
+                  <option value="Very Active">Very Active (6–7 days/week)</option>
+                  <option value="Athlete">Athlete (2x/day training)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="profileDietType">Diet Preference</label>
+                <select id="profileDietType" name="dietType">
+                  <option value="">Select diet type</option>
+                  <option value="No restriction">No restriction</option>
+                  <option value="Non-Vegetarian">Non-Vegetarian</option>
+                  <option value="Vegetarian">Vegetarian</option>
+                  <option value="Vegan">Vegan</option>
+                  <option value="Eggetarian">Eggetarian</option>
+                  <option value="Jain">Jain</option>
+                </select>
+              </div>
+              <div class="field field-full">
+                <label for="profileAllergies">Allergies / Foods to Avoid</label>
+                <input id="profileAllergies" name="allergies" type="text" placeholder="e.g. dairy, gluten, peanuts (leave blank if none)" />
+              </div>
+              <div class="field field-full">
+                <label for="profileJoinedAt">Member Since</label>
+                <input id="profileJoinedAt" name="joinedAt" type="text" disabled />
+              </div>
+              <div class="stack-actions">
+                <button class="btn" type="submit">Save Profile</button>
+                <a class="btn-outline" href="/dashboard">Back to Dashboard</a>
+              </div>
+              <p id="profileStatus" class="status-text"></p>
+            </form>
+
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/profile.js"></script>
+  </body>
+</html>

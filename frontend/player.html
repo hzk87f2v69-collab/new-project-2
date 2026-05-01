@@ -6,53 +6,90 @@
     <title>Ace Fitness Course Player | Learn and Track Progress</title>
     <link rel="stylesheet" href="/public/assets/css/styles.css" />
   </head>
-  <body>
-    <header class="site-header">
+  <body class="player-page">
+
+    <!-- NAVBAR -->
+    <header class="site-header" id="siteHeader">
       <div class="container nav">
         <a class="brand" href="/">
           <span class="brand-mark">AF</span>
           <span>Ace Fitness</span>
         </a>
-        <nav class="nav-links">
-          <a href="/">Home</a>
-          <a href="/programs">Programs</a>
-          <a href="/dashboard">Dashboard</a>
+        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
+            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
+            <rect x="10" y="8" width="4" height="8" rx="1"/>
+          </svg>
+        </button>
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
+          <a href="/"><span class="menu-icon">&#127968;</span>Home</a>
+          <a href="/programs"><span class="menu-icon">&#127919;</span>Programs</a>
+          <a href="/my-courses"><span class="menu-icon">&#127891;</span>My Courses</a>
+          <a href="/dashboard"><span class="menu-icon">&#128202;</span>Dashboard</a>
+          <a href="/workout-tracker"><span class="menu-icon">&#127947;</span>Workout Tracker</a>
+          <a href="/ai"><span class="menu-icon">🤖</span>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="/contact"><span class="menu-icon">&#128233;</span>Contact</a>
         </nav>
-        <div class="nav-cta">
-          <a class="btn-subtle" href="/dashboard">Back to Dashboard</a>
-        </div>
       </div>
     </header>
 
-    <main class="player-shell">
-      <section class="player-header">
-        <div class="container">
-          <div class="section-header">
-            <span class="eyebrow">Course Player</span>
-            <h1 id="playerTitle">Loading Track...</h1>
-            <p id="playerSubtitle">Your weekly modules will appear below.</p>
-          </div>
-        </div>
-      </section>
+    <!-- FULL VIEWPORT PLAYER SHELL -->
+    <div class="pv-shell">
 
-      <section class="section">
-        <div class="container player-layout">
-          <div class="player-card">
-            <iframe class="video-frame" id="videoFrame" src="" title="Workout class video" allowfullscreen></iframe>
-            <h3 id="classTitle">Choose a class</h3>
-            <p class="muted" id="classNotes">Lesson notes will appear here.</p>
-            <div class="stack-actions">
-              <button class="btn" id="completeBtn" type="button">Mark Complete</button>
-            </div>
-            <p id="playerStatus" class="status-text"></p>
+      <!-- LEFT: SCROLLABLE SIDEBAR -->
+      <aside class="pv-sidebar">
+        <div class="pv-sidebar-header">
+          <span class="eyebrow">Course Player</span>
+          <p id="playerTitle" class="pv-track-name">Loading track...</p>
+        </div>
+        <div class="pv-sidebar-body">
+          <div id="moduleList" class="pv-module-list"></div>
+        </div>
+      </aside>
+
+      <!-- RIGHT: FIXED MAIN PLAYER AREA -->
+      <main class="pv-main">
+
+        <!-- VIDEO WRAPPER strict 16:9 -->
+        <div class="pv-video-wrap" id="videoWrap">
+          <iframe
+            id="videoFrame"
+            class="pv-iframe"
+            src="https://www.youtube.com/embed/t6_m-utp9_k?autoplay=1&rel=0&modestbranding=1&playsinline=1&controls=0"
+            title="Ace Fitness Training Video"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+
+          <!-- FULLSCREEN BUTTON -->
+          <button class="pv-fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- LESSON METADATA -->
+        <div class="pv-meta">
+          <div class="pv-meta-info">
+            <h2 id="classTitle" class="pv-lesson-title">Choose a class</h2>
+            <p id="classNotes" class="pv-lesson-notes muted">Lesson notes will appear here once you select a module.</p>
           </div>
-          <div class="player-card">
-            <h3>Modules</h3>
-            <div class="module-list" id="moduleList"></div>
+          <div class="pv-meta-actions">
+            <button class="btn" id="completeBtn" type="button">Mark Complete</button>
           </div>
         </div>
-      </section>
-    </main>
+        <p id="playerStatus" class="status-text pv-status"></p>
+
+      </main>
+    </div>
 
     <script src="/public/assets/js/app.js"></script>
     <script src="/public/assets/js/player.js"></script>

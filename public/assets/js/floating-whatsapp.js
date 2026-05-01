@@ -13,14 +13,11 @@ const initFloatingWhatsApp = () => {
   link.rel = "noreferrer";
   link.className = "floating-whatsapp";
   link.setAttribute("aria-label", "Chat with Ace Fitness on WhatsApp");
+  link.setAttribute("title", "WhatsApp");
   link.setAttribute("data-floating-whatsapp", "true");
   link.innerHTML = `
     <span class="floating-whatsapp-ring"></span>
     <span class="floating-whatsapp-icon" aria-hidden="true">${ACE_SOCIAL_ICONS.whatsapp}</span>
-    <span class="floating-whatsapp-text">
-      <strong>WhatsApp</strong>
-      <span>Talk to Ace Fitness</span>
-    </span>
   `;
 
   document.body.appendChild(link);

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     trackIds: (params.get("tracks") || storedSelection?.trackIds?.join(",") || "")
       .split(",")
       .filter(Boolean),
-    paymentMethod: params.get("payment") || storedSelection?.paymentMethod || "upi"
+    paymentMethod: params.get("payment") || storedSelection?.paymentMethod || "demo"
   });
 
   const planNode = document.getElementById("successPlan");
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (planNode) planNode.textContent = selection?.planName || "Ace Fitness Program";
   if (amountNode) amountNode.textContent = selection?.amount ? currency(selection.amount) : "Custom amount";
   if (tracksNode) tracksNode.textContent = selection ? formatTrackNames(selection.trackIds, "Selected programs") : "Selected programs";
-  if (paymentNode) paymentNode.textContent = selection?.paymentMethod === "razorpay" ? "Razorpay" : "UPI / QR";
+  if (paymentNode) paymentNode.textContent = "Legacy confirmation";
   if (whatsappNode) whatsappNode.textContent = ACE_PAYMENT_CONFIG.whatsappNumber;
   if (emailNode) emailNode.textContent = ACE_PAYMENT_CONFIG.email;
 
@@ -35,13 +35,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const copied = await copyToClipboard(ACE_PAYMENT_CONFIG.email);
       setStatus(
         copyStatus,
-        copied ? "Email copied. Send your payment screenshot or UTR there too." : "Could not copy the email. Please copy it manually.",
+        copied ? "Email copied. If you still need help, contact support there." : "Could not copy the email. Please copy it manually.",
         copied ? "success" : "error"
       );
     });
   }
-
-  if (selection?.paymentMethod === "upi") {
-    clearPurchaseSelection();
-  }
+  clearPurchaseSelection();
 });

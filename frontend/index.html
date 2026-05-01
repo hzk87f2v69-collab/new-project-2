@@ -17,15 +17,24 @@
           <span class="brand-mark">AF</span>
           <span>Ace Fitness</span>
         </a>
-        <nav class="nav-links">
-          <a href="/">Home</a>
-          <a href="/programs">Programs</a>
-          <a href="/contact">Contact</a>
+        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
+            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
+            <rect x="10" y="8" width="4" height="8" rx="1"/>
+          </svg>
+        </button>
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
+          <a href="/"><span class="menu-icon">🏠</span>Home</a>
+          <a href="/programs"><span class="menu-icon">🎯</span>Programs</a>
+          <a href="/my-courses"><span class="menu-icon">🎓</span>My Courses</a>
+          <a href="/dashboard"><span class="menu-icon">📊</span>Dashboard</a>
+          <a href="/workout-tracker"><span class="menu-icon">🏋️</span>Workout Tracker</a>
+          <a href="/ai"><span class="menu-icon">🤖</span>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="/contact"><span class="menu-icon">📩</span>Contact</a>
         </nav>
-        <div class="nav-cta">
-          <a class="btn-subtle" data-auth-link href="/auth">Login</a>
-          <a class="btn" href="/programs">Start Transformation</a>
-        </div>
       </div>
     </header>
 
@@ -50,7 +59,7 @@
               </div>
               <div class="stat-card">
                 <strong>100%</strong>
-                <span class="muted">Self-paced access after payment</span>
+                <span class="muted">Self-paced access after unlock</span>
               </div>
               <div class="stat-card">
                 <strong>INR Focused</strong>
@@ -70,7 +79,7 @@
               <div class="floating-chip chip-bottom">
                 <div>
                   <strong>Premium Dashboard</strong>
-                  <span class="muted">Courses unlock instantly after payment</span>
+                  <span class="muted">Courses unlock instantly during testing</span>
                 </div>
               </div>
             </div>
@@ -95,7 +104,7 @@
             </article>
             <article class="card">
               <h3>High-Trust Experience</h3>
-              <p>Secure login, clean dashboard, transparent pricing, and professional delivery from first click to payment.</p>
+              <p>Secure login, clean dashboard, and a friction-free unlock flow from first click to course access.</p>
             </article>
             <article class="card">
               <h3>Built for Indian Routines</h3>
@@ -175,7 +184,7 @@
           <div class="section-header">
             <span class="eyebrow">Pricing</span>
             <h2>Premium programs designed to convert hard work into real results.</h2>
-            <p>Choose one focused track or stack bundles for deeper transformation.</p>
+            <p>Choose one focused track or stack bundles for deeper transformation and instant test access.</p>
           </div>
           <div class="pricing-grid" id="pricingGrid">
             <p class="muted">Loading programs...</p>
@@ -198,8 +207,8 @@
             </article>
             <article class="faq-item">
               <details>
-                <summary>Do I get access immediately after payment?</summary>
-                <p class="muted">Yes. Successful Razorpay verification unlocks your purchased track automatically inside the dashboard.</p>
+                <summary>Do I get access immediately after unlock?</summary>
+                <p class="muted">Yes. In this build, the dummy checkout unlocks your selected track immediately inside My Courses.</p>
               </details>
             </article>
             <article class="faq-item">
@@ -280,7 +289,6 @@
       </div>
     </footer>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="/public/assets/js/app.js"></script>
     <script src="/public/assets/js/social-contact.js"></script>
     <script src="/public/assets/js/floating-whatsapp.js"></script>

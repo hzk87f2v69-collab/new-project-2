@@ -15,7 +15,12 @@ const state = {
   user: JSON.parse(localStorage.getItem("acefitness_user") || "null"),
   tracks: [],
   bundles: [],
-  tracksLoaded: false
+  tracksLoaded: false,
+  appConfigLoaded: false,
+  appConfig: {
+    demoMode: false,
+    databaseConnected: true
+  }
 };
 
 const currency = (amount) =>
@@ -43,6 +48,31 @@ const api = async (path, options = {}) => {
   return data;
 };
 
+const loadAppConfig = async (force = false) => {
+  if (state.appConfigLoaded && !force) {
+    return state.appConfig;
+  }
+
+  try {
+    const response = await fetch("/health");
+    const data = await response.json().catch(() => ({}));
+    state.appConfig = {
+      demoMode: Boolean(data.demoMode),
+      databaseConnected: data.databaseConnected !== false
+    };
+    state.appConfigLoaded = true;
+  } catch (error) {
+    state.appConfig = {
+      demoMode: false,
+      databaseConnected: true
+    };
+  }
+
+  return state.appConfig;
+};
+
+const isDemoMode = () => Boolean(state.appConfig.demoMode);
+
 const saveAuth = (token, user) => {
   state.token = token;
   state.user = user;
@@ -63,8 +93,8 @@ const isLoggedIn = () => Boolean(state.token);
 
 const updateNav = () => {
   document.querySelectorAll("[data-auth-link]").forEach((link) => {
-    link.textContent = isLoggedIn() ? "Dashboard" : "Login";
-    link.setAttribute("href", isLoggedIn() ? "/dashboard" : "/auth");
+    link.textContent = isLoggedIn() ? "Profile" : "Login";
+    link.setAttribute("href", isLoggedIn() ? "/profile.html" : "/auth");
   });
 };
 
@@ -149,7 +179,7 @@ const normalizePurchaseSelection = (selection) => {
     bundleId: selection.bundleId || null,
     planName: selection.planName || selection.name || "Ace Fitness Program",
     amount: Number(selection.amount) || 0,
-    paymentMethod: ["upi", "razorpay"].includes(selection.paymentMethod) ? selection.paymentMethod : ""
+    paymentMethod: ["demo"].includes(selection.paymentMethod) ? selection.paymentMethod : ""
   };
 };
 
@@ -177,6 +207,8 @@ const clearPurchaseSelection = () => {
 };
 
 const fetchTracks = async (force = false) => {
+  await loadAppConfig(force).catch(() => null);
+
   if (state.tracksLoaded && !force) {
     return { tracks: state.tracks, bundles: state.bundles };
   }
@@ -255,64 +287,38 @@ const formatTrackNames = (trackIds, fallback = "Selected programs") => {
   return names.length ? names.join(", ") : fallback;
 };
 
-const launchPayment = async (selection) => {
+const buildCheckoutPayload = (selection) => {
+  const payload = {
+    trackIds: selection.trackIds
+  };
+
+  if (selection.bundleId) {
+    payload.bundleId = selection.bundleId;
+  }
+
+  return payload;
+};
+
+const launchDemoUnlock = async (selection) => {
   const normalized = purchaseSelection(selection);
 
   if (!normalized || !ensureAuth()) {
     return false;
   }
 
-  if (typeof window.Razorpay !== "function") {
-    throw new Error("Razorpay checkout is unavailable on this page right now.");
-  }
-
-  const createData = await api("/payment/create-order", {
+  const unlockData = await api("/payment/dev-unlock", {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({
-      trackIds: normalized.trackIds,
-      bundleId: normalized.bundleId
-    })
+    body: JSON.stringify(buildCheckoutPayload(normalized))
   });
 
-  const options = {
-    key: createData.key,
-    amount: createData.order.amount,
-    currency: createData.order.currency,
-    name: "Ace Fitness",
-    description: normalized.planName,
-    order_id: createData.order.id,
-    handler: async function handleSuccess(response) {
-      const verifyData = await api("/payment/verify", {
-        method: "POST",
-        headers: getHeaders(),
-        body: JSON.stringify(response)
-      });
+  if (state.user) {
+    state.user.purchasedTracks = unlockData.purchasedTracks;
+    localStorage.setItem("acefitness_user", JSON.stringify(state.user));
+  }
 
-      if (state.user) {
-        state.user.purchasedTracks = verifyData.purchasedTracks;
-        localStorage.setItem("acefitness_user", JSON.stringify(state.user));
-      }
-
-      clearPurchaseSelection();
-      window.location.href = "/dashboard";
-    },
-    prefill: {
-      name: state.user?.name || "",
-      email: state.user?.email || ""
-    },
-    theme: {
-      color: "#20c7ff"
-    },
-    modal: {
-      ondismiss: function onDismiss() {
-        showGlobalNotice("Razorpay checkout closed. You can continue this payment anytime.", "info");
-      }
-    }
-  };
-
-  const razorpayInstance = new window.Razorpay(options);
-  razorpayInstance.open();
+  clearPurchaseSelection();
+  window.location.href = unlockData.redirectTo || "/my-courses";
   return true;
 };
 
@@ -326,21 +332,16 @@ const startPurchaseFlow = async (selection, paymentMethod) => {
     return false;
   }
 
-  if (paymentMethod === "upi") {
-    beginUPIPayment(normalized);
-    return true;
-  }
-
-  if (paymentMethod === "razorpay") {
+  if (paymentMethod === "demo") {
     if (!ensureAuth()) {
       return false;
     }
 
-    await launchPayment(normalized);
+    await launchDemoUnlock(normalized);
     return true;
   }
 
-  throw new Error("Please choose a valid payment method.");
+  throw new Error("Please choose a valid unlock option.");
 };
 
 const resumePendingPurchase = async () => {
@@ -350,22 +351,17 @@ const resumePendingPurchase = async () => {
     return false;
   }
 
-  if (pendingSelection.paymentMethod === "upi") {
-    await fetchTracks().catch(() => null);
-    beginUPIPayment(pendingSelection);
-    return true;
-  }
-
-  if (pendingSelection.paymentMethod === "razorpay") {
-    await launchPayment(pendingSelection);
-    return true;
-  }
-
-  return false;
+  await launchDemoUnlock({
+    ...pendingSelection,
+    paymentMethod: "demo"
+  });
+  return true;
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+
+document.addEventListener("DOMContentLoaded", async () => {
   updateNav();
+  await loadAppConfig().catch(() => null);
 
   if (typeof initSocialContactButtons === "function") {
     initSocialContactButtons();
@@ -374,4 +370,18 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof initFloatingWhatsApp === "function") {
     initFloatingWhatsApp();
   }
+
+  // ── Dumbbell menu toggle ──────────────────────────────────────
+  const dumbbellBtn = document.getElementById("navDumbbell");
+  const megaMenu    = document.getElementById("navMegaMenu");
+  if (dumbbellBtn && megaMenu) {
+    dumbbellBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      megaMenu.classList.toggle("open");
+    });
+    // Close when clicking outside
+    document.addEventListener("click", () => megaMenu.classList.remove("open"));
+    megaMenu.addEventListener("click", (e) => e.stopPropagation());
+  }
 });
+

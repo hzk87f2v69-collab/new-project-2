@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ${bundle.bundleId === "duo" ? `<div class="pill-list">${trackOptions}</div>` : ""}
             <p class="status-text" data-bundle-status="${bundle.bundleId}"></p>
             <div class="stack-actions">
-              <button class="btn" data-bundle-id="${bundle.bundleId}">Choose Payment</button>
+              <button class="btn" data-bundle-id="${bundle.bundleId}">Unlock Instantly</button>
             </div>
           </article>
         `;
@@ -107,6 +107,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           <article class="course-card">
             <div class="eyebrow">${track.icon} Track</div>
             <h3>${track.name}</h3>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; margin-bottom: 1rem; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);">
+              <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="https://www.youtube.com/embed/t6_m-utp9_k" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
             <p>${track.description}</p>
             <div class="course-meta">
               <span>${track.durationWeeks} weeks</span>
@@ -117,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               ${track.benefits.map((benefit) => `<li>${benefit}</li>`).join("")}
             </ul>
             <div class="stack-actions">
-              <button class="btn" data-track-buy="${track.trackId}">Choose Payment</button>
+              <button class="btn" data-track-buy="${track.trackId}">Unlock Instantly</button>
               <button class="btn-outline" data-track-preview="${track.trackId}">Preview Modules</button>
             </div>
           </article>

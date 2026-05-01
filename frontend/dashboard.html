@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ace Fitness Dashboard | Progress and Courses</title>
     <link rel="stylesheet" href="/public/assets/css/styles.css" />
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -13,69 +15,183 @@
           <span class="brand-mark">AF</span>
           <span>Ace Fitness</span>
         </a>
-        <nav class="nav-links">
-          <a href="/">Home</a>
-          <a href="/programs">Programs</a>
-          <a class="active" href="/dashboard">Dashboard</a>
+        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
+            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
+            <rect x="10" y="8" width="4" height="8" rx="1"/>
+          </svg>
+        </button>
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
+          <a href="/"><span class="menu-icon">&#127968;</span>Home</a>
+          <a href="/programs"><span class="menu-icon">&#127919;</span>Programs</a>
+          <a href="/my-courses"><span class="menu-icon">&#127891;</span>My Courses</a>
+          <a href="/dashboard"><span class="menu-icon">&#128202;</span>Dashboard</a>
+          <a href="/workout-tracker"><span class="menu-icon">&#127947;</span>Workout Tracker</a>
+          <a href="/ai"><span class="menu-icon">🤖</span>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="/contact"><span class="menu-icon">&#128233;</span>Contact</a>
         </nav>
-        <div class="nav-cta">
-          <button class="btn-subtle" id="logoutBtn" type="button">Logout</button>
-        </div>
       </div>
     </header>
 
-    <main class="dashboard-shell">
-      <section class="dashboard-hero">
+    <main class="db-shell">
+
+      <!-- ── TOP HERO ROW ───────────────────────────────────── -->
+      <section class="db-hero">
         <div class="container">
-          <div class="section-header">
-            <span class="eyebrow">Your Dashboard</span>
-            <h1>Keep your training organized and your progress visible.</h1>
-            <p>Purchased tracks, completion data, and payment history all stay in one place.</p>
+          <div class="db-hero-top">
+            <div>
+              <span class="eyebrow">Your Dashboard</span>
+              <h1 class="db-welcome">Welcome back, <span id="profileName">—</span> 👊</h1>
+              <p class="muted" id="profileEmail"></p>
+            </div>
+            <div class="db-badges" id="badgeRow"></div>
           </div>
-          <div class="metric-grid">
-            <article class="metric-card">
-              <span class="muted">Purchased Tracks</span>
-              <strong id="metricTracks">0</strong>
+
+          <!-- Top stat pills -->
+          <div class="db-pill-row">
+            <div class="db-pill">
+              <span class="db-pill-icon">🎯</span>
+              <div>
+                <span class="db-pill-label">Purchased Tracks</span>
+                <strong id="metricTracks" class="db-pill-val">0</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">✅</span>
+              <div>
+                <span class="db-pill-label">Classes Done</span>
+                <strong id="metricClasses" class="db-pill-val">0</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">📈</span>
+              <div>
+                <span class="db-pill-label">Avg Progress</span>
+                <strong id="metricProgress" class="db-pill-val">0%</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">💳</span>
+              <div>
+                <span class="db-pill-label">Payments</span>
+                <strong id="metricPayments" class="db-pill-val">0</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">🔥</span>
+              <div>
+                <span class="db-pill-label">Streak Days</span>
+                <strong id="metricStreak" class="db-pill-val">1</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">⏱</span>
+              <div>
+                <span class="db-pill-label">Est. Hrs Trained</span>
+                <strong id="metricHours" class="db-pill-val">0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── MIDDLE: RADAR GRAPH + QUICK STATS ─────────────── -->
+      <section class="section">
+        <div class="container db-mid-grid">
+
+          <!-- Radar Graph Card -->
+          <article class="db-graph-card">
+            <div class="db-card-head">
+              <span class="eyebrow">Analytics</span>
+              <h2 class="db-section-title">Transformation Progress Metrics</h2>
+              <p class="muted">Based on your real course activity, lessons completed, and consistency.</p>
+            </div>
+            <div class="db-radar-wrap">
+              <canvas id="radarChart" aria-label="Transformation progress radar chart"></canvas>
+            </div>
+            <div class="db-radar-legend">
+              <span class="db-legend-dot" style="background:rgba(32,199,255,0.85)"></span>This Week
+              <span class="db-legend-dot" style="background:rgba(168,85,247,0.7);margin-left:1rem"></span>Last Week
+            </div>
+          </article>
+
+          <!-- Quick Stat Cards -->
+          <div class="db-stat-col">
+            <article class="db-stat-card">
+              <div class="db-stat-icon">🎯</div>
+              <div>
+                <p class="db-stat-label">Course Completion</p>
+                <div class="db-ring-wrap">
+                  <svg class="db-ring" viewBox="0 0 80 80">
+                    <circle class="db-ring-bg" cx="40" cy="40" r="32"/>
+                    <circle class="db-ring-fill" id="ringFill" cx="40" cy="40" r="32" stroke-dasharray="201 201" stroke-dashoffset="201"/>
+                  </svg>
+                  <span class="db-ring-label" id="ringLabel">0%</span>
+                </div>
+              </div>
             </article>
-            <article class="metric-card">
-              <span class="muted">Average Progress</span>
-              <strong id="metricProgress">0%</strong>
+
+            <article class="db-stat-card">
+              <div class="db-stat-icon">🔥</div>
+              <div>
+                <p class="db-stat-label">Consistency Score</p>
+                <p class="db-stat-big" id="consistencyScore">—</p>
+                <p class="muted" style="font-size:0.8rem">Based on active days this week</p>
+              </div>
             </article>
-            <article class="metric-card">
-              <span class="muted">Completed Classes</span>
-              <strong id="metricClasses">0</strong>
+
+            <article class="db-stat-card">
+              <div class="db-stat-icon">⚡</div>
+              <div>
+                <p class="db-stat-label">Discipline Score</p>
+                <p class="db-stat-big" id="disciplineScore">—</p>
+                <p class="muted" style="font-size:0.8rem">Lessons + logins + momentum</p>
+              </div>
             </article>
-            <article class="metric-card">
-              <span class="muted">Successful Payments</span>
-              <strong id="metricPayments">0</strong>
+
+            <article class="db-stat-card">
+              <div class="db-stat-icon">📅</div>
+              <div>
+                <p class="db-stat-label">Member Since</p>
+                <p class="db-stat-big" id="joinedDate">—</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── BOTTOM: COURSES + PAYMENTS ────────────────────── -->
+      <section class="section">
+        <div class="container">
+          <div class="db-bottom-head">
+            <span class="eyebrow">My Courses</span>
+            <h2 class="db-section-title">Purchased Programs</h2>
+          </div>
+          <div class="course-grid" id="coursesContainer">
+            <article class="dashboard-card page-message-card">
+              <p class="muted">Loading your courses…</p>
             </article>
           </div>
         </div>
       </section>
 
       <section class="section">
-        <div class="container dashboard-grid">
+        <div class="container">
+          <div class="db-bottom-head">
+            <span class="eyebrow">Payments</span>
+            <h2 class="db-section-title">Payment History</h2>
+          </div>
           <article class="dashboard-card">
-            <h3>Profile</h3>
-            <p><strong id="profileName">Loading...</strong></p>
-            <p class="muted" id="profileEmail"></p>
-            <p class="muted">Member since <span id="joinedDate">-</span></p>
-          </article>
-          <article class="dashboard-card dashboard-card-wide">
-            <h3>Purchased Courses</h3>
-            <div class="course-grid" id="coursesContainer"></div>
+            <ul class="payment-list" id="paymentsContainer">
+              <li class="muted">Loading…</li>
+            </ul>
           </article>
         </div>
       </section>
 
-      <section class="section">
-        <div class="container">
-          <article class="dashboard-card">
-            <h3>Payment History</h3>
-            <ul class="payment-list" id="paymentsContainer"></ul>
-          </article>
-        </div>
-      </section>
     </main>
 
     <script src="/public/assets/js/app.js"></script>

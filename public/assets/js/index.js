@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </ul>
             <div class="stack-actions">
               <a class="btn-outline" href="/player?track=${track.trackId}&preview=true">Preview Modules</a>
-              <button class="btn" data-track-buy="${track.trackId}">Choose Payment</button>
+              <button class="btn" data-track-buy="${track.trackId}">Unlock Instantly</button>
             </div>
           </article>
         `
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               ${
                 bundle.bundleId === "duo"
                   ? `<a class="btn" href="/programs#bundle-${bundle.bundleId}">Customize Bundle</a>`
-                  : `<button class="btn" data-bundle-buy="${bundle.bundleId}">Choose Payment</button>`
+                  : `<button class="btn" data-bundle-buy="${bundle.bundleId}">Unlock Instantly</button>`
               }
               <a class="btn-outline" href="/programs#bundle-${bundle.bundleId}">View Details</a>
             </div>

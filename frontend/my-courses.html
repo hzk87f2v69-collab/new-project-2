@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness My Courses | Access Your Programs</title>
+    <link rel="stylesheet" href="/public/assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/">
+          <span class="brand-mark">AF</span>
+          <span>Ace Fitness</span>
+        </a>
+        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
+            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
+            <rect x="10" y="8" width="4" height="8" rx="1"/>
+          </svg>
+        </button>
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
+          <a href="/"><span class="menu-icon">&#127968;</span>Home</a>
+          <a href="/programs"><span class="menu-icon">&#127919;</span>Programs</a>
+          <a href="/my-courses"><span class="menu-icon">&#127891;</span>My Courses</a>
+          <a href="/dashboard"><span class="menu-icon">&#128202;</span>Dashboard</a>
+          <a href="/workout-tracker"><span class="menu-icon">&#127947;</span>Workout Tracker</a>
+          <a href="/ai"><span class="menu-icon">🤖</span>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="/contact"><span class="menu-icon">&#128233;</span>Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="dashboard-shell">
+      <section class="page-hero">
+        <div class="container">
+          <article class="dashboard-card owned-hero-card">
+            <div class="section-header owned-hero-copy">
+              <span class="eyebrow" id="myCoursesEyebrow">My Courses</span>
+              <h1 id="myCoursesTitle">Loading your unlocked courses...</h1>
+              <p id="myCoursesSubtitle">We’re preparing your purchased programs and course progress.</p>
+            </div>
+            <div class="metric-grid">
+              <article class="metric-card">
+                <span class="muted">Owned Courses</span>
+                <strong id="ownedCoursesCount">0</strong>
+              </article>
+              <article class="metric-card">
+                <span class="muted">Average Progress</span>
+                <strong id="ownedCoursesProgress">0%</strong>
+              </article>
+              <article class="metric-card">
+                <span class="muted">Completed Classes</span>
+                <strong id="ownedCoursesClasses">0</strong>
+              </article>
+              <article class="metric-card">
+                <span class="muted">Newly Unlocked</span>
+                <strong id="ownedCoursesUnlocked">0</strong>
+              </article>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <article class="dashboard-card">
+            <div class="owned-courses-heading">
+              <div>
+                <span class="eyebrow">Course Access</span>
+                <h2>Your training library</h2>
+              </div>
+              <p class="muted" id="myCoursesStatus">Use each course card to start lessons or continue where you left off.</p>
+            </div>
+            <div class="course-grid" id="ownedCoursesContainer"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="/public/assets/js/app.js"></script>
+    <script src="/public/assets/js/my-courses.js"></script>
+  </body>
+</html>
