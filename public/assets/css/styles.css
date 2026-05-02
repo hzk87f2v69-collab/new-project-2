@@ -146,17 +146,13 @@ select {
 }
 
 .brand-mark {
-  width: 36px;
   height: 36px;
-  display: grid;
-  place-items: center;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #ffffff;
-  font-weight: 900;
-  font-size: 18px;
-  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.4);
+  width: auto;
+  display: block;
+  object-fit: contain;
   transition: opacity 0.3s;
+  border-radius: 4px;
+  filter: invert(1); /* Invert to make it white for dark header */
 }
 
 .brand-mark:hover {
