@@ -352,9 +352,10 @@ select {
   min-height: 80vh;
   display: flex;
   align-items: center;
-  background-image: url('../images/hero-bg.png');
-  background-size: cover;
-  background-position: center right;
+  background-color: #000;
+  background-image: url('../images/hero-bg.jpg');
+  background-size: 55% auto;
+  background-position: right center;
   background-repeat: no-repeat;
   margin-top: -64px; /* offset nav */
   padding-top: 64px;
@@ -375,7 +376,6 @@ select {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  width: 100%;
 }
 
 @media (max-width: 900px) {
@@ -388,7 +388,8 @@ select {
     background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.95) 60%, rgba(0,0,0,1) 100%);
   }
   .hero-banner {
-    background-position: 75% top;
+    background-size: cover;
+    background-position: 85% top;
   }
   .hero-banner-visual {
     align-items: center;
