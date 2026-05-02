@@ -58,36 +58,24 @@ const copyText = async (text, statusNode) => {
 
 const buildSocialCard = (key) => {
   const social = ACE_SOCIALS[key];
-
   const isMail = key === "gmail";
-  const copyButton = isMail
-    ? `
-      <button class="social-copy" type="button" data-copy-email="${social.text}">
-        Copy
-      </button>
-    `
-    : "";
+  const colors = { whatsapp: "#25D366", gmail: "#EA4335", instagram: "#E1306C" };
+  const color  = colors[key];
 
   return `
-    <article class="social-card social-card-${key}">
-      <a class="social-card-link" href="${social.href}" target="${isMail ? "_self" : "_blank"}" rel="noreferrer">
-        <span class="social-icon-wrap" aria-hidden="true">${ACE_SOCIAL_ICONS[key]}</span>
-        <span class="social-content">
-          <span class="social-label">${social.label}</span>
-          <strong>${social.text}</strong>
-          <span class="social-subtext">${social.subtext}</span>
-        </span>
-      </a>
-      <div class="social-card-actions">
-        <a class="btn-subtle social-action" href="${social.href}" target="${isMail ? "_self" : "_blank"}" rel="noreferrer">
-          ${social.action}
-        </a>
-        ${copyButton}
-      </div>
-      <span class="copy-status" aria-live="polite"></span>
-    </article>
+    <a class="social-slab social-slab-${key}" href="${social.href}" target="${isMail ? "_self" : "_blank"}" rel="noreferrer">
+      <span class="social-slab-icon" style="background:${color}1a;color:${color}">
+        ${ACE_SOCIAL_ICONS[key]}
+      </span>
+      <span class="social-slab-info">
+        <span class="social-slab-label">${social.label}</span>
+        <span class="social-slab-value">${social.text}</span>
+      </span>
+      <span class="social-slab-arrow">›</span>
+    </a>
   `;
 };
+
 
 const buildFooterIcon = (key) => {
   const social = ACE_SOCIALS[key];
@@ -104,7 +92,7 @@ const buildFooterIcon = (key) => {
 const initSocialContactButtons = () => {
   document.querySelectorAll("[data-social-contact]").forEach((container) => {
     container.innerHTML = `
-      <div class="social-contact-grid">
+      <div class="social-slab-list">
         ${buildSocialCard("whatsapp")}
         ${buildSocialCard("gmail")}
         ${buildSocialCard("instagram")}

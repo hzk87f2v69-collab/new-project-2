@@ -4,46 +4,46 @@
 
 /* ── KEYS ───────────────────────────────────────────────── */
 const K_PLAN = "ace_wt_plan";
-const K_LIB  = "ace_wt_library";
+const K_LIB = "ace_wt_library";
 const K_LOGS = "ace_wt_logs";
 
 /* ── DEFAULTS ───────────────────────────────────────────── */
 const DEFAULT_DAYS = {
-  monday:    { muscles: "Chest · Shoulder",  exercises: [], icon: "🏋️", color: "mon" },
-  tuesday:   { muscles: "Back · Biceps",     exercises: [], icon: "💪", color: "tue" },
-  wednesday: { muscles: "Legs",              exercises: [], icon: "🦵", color: "wed" },
-  thursday:  { muscles: "Push",              exercises: [], icon: "⬆️", color: "thu" },
-  friday:    { muscles: "Pull",              exercises: [], icon: "⬇️", color: "fri" },
-  saturday:  { muscles: "Arms · Abs",        exercises: [], icon: "🔥", color: "sat" },
+  monday: { muscles: "Chest · Shoulder", exercises: [], icon: "🏋️", color: "mon" },
+  tuesday: { muscles: "Back · Biceps", exercises: [], icon: "💪", color: "tue" },
+  wednesday: { muscles: "Legs", exercises: [], icon: "🦵", color: "wed" },
+  thursday: { muscles: "Push", exercises: [], icon: "⬆️", color: "thu" },
+  friday: { muscles: "Pull", exercises: [], icon: "⬇️", color: "fri" },
+  saturday: { muscles: "Arms · Abs", exercises: [], icon: "🔥", color: "sat" },
 };
 
 const SEED_EXERCISES = [
-  { name:"Bench Press",         muscle:"Chest" },
-  { name:"Incline Bench Press", muscle:"Chest" },
-  { name:"Dumbbell Flyes",      muscle:"Chest" },
-  { name:"Push-Ups",            muscle:"Chest" },
-  { name:"Squat",               muscle:"Legs"  },
-  { name:"Leg Press",           muscle:"Legs"  },
-  { name:"Deadlift",            muscle:"Back"  },
-  { name:"Pull-Ups",            muscle:"Back"  },
-  { name:"Lat Pulldown",        muscle:"Back"  },
-  { name:"Bent Over Row",       muscle:"Back"  },
-  { name:"Shoulder Press",      muscle:"Shoulder" },
-  { name:"Lateral Raise",       muscle:"Shoulder" },
-  { name:"Bicep Curl",          muscle:"Arms"  },
-  { name:"Tricep Extension",    muscle:"Arms"  },
-  { name:"Plank",               muscle:"Abs"   },
-  { name:"Crunches",            muscle:"Abs"   },
+  { name: "Bench Press", muscle: "Chest" },
+  { name: "Incline Bench Press", muscle: "Chest" },
+  { name: "Dumbbell Flyes", muscle: "Chest" },
+  { name: "Push-Ups", muscle: "Chest" },
+  { name: "Squat", muscle: "Legs" },
+  { name: "Leg Press", muscle: "Legs" },
+  { name: "Deadlift", muscle: "Back" },
+  { name: "Pull-Ups", muscle: "Back" },
+  { name: "Lat Pulldown", muscle: "Back" },
+  { name: "Bent Over Row", muscle: "Back" },
+  { name: "Shoulder Press", muscle: "Shoulder" },
+  { name: "Lateral Raise", muscle: "Shoulder" },
+  { name: "Bicep Curl", muscle: "Arms" },
+  { name: "Tricep Extension", muscle: "Arms" },
+  { name: "Plank", muscle: "Abs" },
+  { name: "Crunches", muscle: "Abs" },
 ];
 
 /* ── STATE ───────────────────────────────────────────────── */
 const S = {
-  activeView:    "dashboard",   // "dashboard" | "day" | "exercise"
-  selectedDay:   null,
-  selectedEx:    null,
-  activeTab:     "sets",
-  editingSetId:  null,          // for edit flow
-  editingLogId:  null,
+  activeView: "dashboard",   // "dashboard" | "day" | "exercise"
+  selectedDay: null,
+  selectedEx: null,
+  activeTab: "sets",
+  editingSetId: null,          // for edit flow
+  editingLogId: null,
 };
 
 /* ── DATA ────────────────────────────────────────────────── */
@@ -53,10 +53,10 @@ const genId = () => crypto.randomUUID ? crypto.randomUUID()
 const getPlan = () => JSON.parse(localStorage.getItem(K_PLAN) || "null") || structuredClone(DEFAULT_DAYS);
 const savePlan = v => localStorage.setItem(K_PLAN, JSON.stringify(v));
 
-const getLib  = () => JSON.parse(localStorage.getItem(K_LIB) || "null") || null;
+const getLib = () => JSON.parse(localStorage.getItem(K_LIB) || "null") || null;
 const saveLib = v => localStorage.setItem(K_LIB, JSON.stringify(v));
 
-const getLogs  = () => JSON.parse(localStorage.getItem(K_LOGS) || "[]");
+const getLogs = () => JSON.parse(localStorage.getItem(K_LOGS) || "[]");
 const saveLogs = v => localStorage.setItem(K_LOGS, JSON.stringify(v));
 
 const initLibrary = () => {
@@ -75,30 +75,30 @@ const relTime = dateStr => {
   const d = Math.floor(diff / 86400000);
   if (d === 0) return "Today";
   if (d === 1) return "Yesterday";
-  if (d < 7)  return `${d}d ago`;
-  if (d < 30) return `${Math.floor(d/7)}w ago`;
-  if (d < 365) return `${Math.floor(d/30)}mo ago`;
-  return `${Math.floor(d/365)}y ago`;
+  if (d < 7) return `${d}d ago`;
+  if (d < 30) return `${Math.floor(d / 7)}w ago`;
+  if (d < 365) return `${Math.floor(d / 30)}mo ago`;
+  return `${Math.floor(d / 365)}y ago`;
 };
 
 const fmtDate = dateStr => {
-  const d = new Date(dateStr.replace(/-/g,"/"));
-  return d.toLocaleDateString("en-IN", { weekday:"short", day:"numeric", month:"short", year:"numeric" });
+  const d = new Date(dateStr.replace(/-/g, "/"));
+  return d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 };
 
 const fmtTime = ts => {
   const d = new Date(ts);
-  return d.toLocaleTimeString("en-IN", { hour:"2-digit", minute:"2-digit", hour12:false });
+  return d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: false });
 };
 
 const restStr = (sets, idx) => {
   if (idx === 0) return "";
-  const diff = sets[idx].ts - sets[idx-1].ts;
+  const diff = sets[idx].ts - sets[idx - 1].ts;
   if (diff <= 0) return "";
   const s = Math.floor(diff / 1000);
   const m = Math.floor(s / 60);
   const rem = s % 60;
-  return m > 0 ? `${m}:${String(rem).padStart(2,"0")}` : `${s}s`;
+  return m > 0 ? `${m}:${String(rem).padStart(2, "0")}` : `${s}s`;
 };
 
 const epley1RM = (reps, weight) => {
@@ -108,11 +108,11 @@ const epley1RM = (reps, weight) => {
 
 const todayStr = () => {
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 };
 
-const qs  = id => document.getElementById(id);
-const cap = s  => s.charAt(0).toUpperCase() + s.slice(1);
+const qs = id => document.getElementById(id);
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 /* ── NAVIGATION ──────────────────────────────────────────── */
 const VIEW_STACK = []; // navigation history stack
@@ -140,7 +140,7 @@ const goBack = () => {
   if (!cur) return;
   cur.classList.remove("is-active");
   cur.style.transition = "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)";
-  cur.style.transform  = "translateX(100%)";
+  cur.style.transform = "translateX(100%)";
   setTimeout(() => { cur.style.transform = ""; cur.style.transition = ""; }, 310);
 
   const prev = document.querySelector(".wt-view.slide-behind");
@@ -154,7 +154,7 @@ const goBack = () => {
 /* ── RENDER: DASHBOARD ───────────────────────────────────── */
 const renderDashboard = () => {
   const plan = getPlan();
-  const lib  = getLib() || {};
+  const lib = getLib() || {};
   const logs = getLogs();
 
   qs("totalExCount").textContent = Object.keys(lib).length;
@@ -163,7 +163,7 @@ const renderDashboard = () => {
   container.innerHTML = Object.entries(plan).map(([key, day]) => {
     const exCount = (day.exercises || []).length;
     const dayLogs = logs.filter(l => l.day === key);
-    const lastDate = dayLogs.length ? dayLogs.sort((a,b) => b.date.localeCompare(a.date))[0].date : null;
+    const lastDate = dayLogs.length ? dayLogs.sort((a, b) => b.date.localeCompare(a.date))[0].date : null;
     return `
       <div class="wt-day-card" data-day="${key}">
         <div class="wt-day-icon wt-icon-${day.color}">${day.icon}</div>
@@ -188,11 +188,11 @@ const renderDashboard = () => {
 const openDayView = dayKey => {
   S.selectedDay = dayKey;
   const plan = getPlan();
-  const day  = plan[dayKey];
-  const lib  = getLib() || {};
+  const day = plan[dayKey];
+  const lib = getLib() || {};
   const logs = getLogs();
 
-  qs("dayViewTitle").textContent   = dayKey.toUpperCase();
+  qs("dayViewTitle").textContent = dayKey.toUpperCase();
   qs("dayViewMuscles").textContent = day.muscles;
 
   const list = qs("dayExerciseList");
@@ -208,7 +208,7 @@ const openDayView = dayKey => {
       const ex = lib[exId];
       if (!ex) return "";
       const exLogs = logs.filter(l => l.exerciseId === exId);
-      const lastDate = exLogs.length ? exLogs.sort((a,b) => b.date.localeCompare(a.date))[0].date : null;
+      const lastDate = exLogs.length ? exLogs.sort((a, b) => b.date.localeCompare(a.date))[0].date : null;
       return `
         <div class="wt-ex-row" data-ex="${exId}">
           <div class="wt-ex-row-icon">💪</div>
@@ -246,9 +246,9 @@ const openDayView = dayKey => {
 /* ── RENDER: EXERCISE VIEW ───────────────────────────────── */
 const openExerciseView = exId => {
   S.selectedEx = exId;
-  S.activeTab  = "sets";
+  S.activeTab = "sets";
   const lib = getLib() || {};
-  const ex  = lib[exId];
+  const ex = lib[exId];
   if (!ex) return;
 
   qs("exDetailTitle").textContent = ex.name;
@@ -268,7 +268,7 @@ const openExerciseView = exId => {
 /* ── SETS TAB ────────────────────────────────────────────── */
 const renderSetsTab = exId => {
   const logs = getLogs().filter(l => l.exerciseId === exId);
-  const con  = qs("setHistoryContainer");
+  const con = qs("setHistoryContainer");
 
   if (!logs.length) {
     con.innerHTML = `<div class="wt-no-history">
@@ -284,14 +284,14 @@ const renderSetsTab = exId => {
     byDate[session.date].push(session);
   });
 
-  const sorted = Object.keys(byDate).sort((a,b) => b.localeCompare(a));
+  const sorted = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
   con.innerHTML = sorted.map(date => {
     const sessions = byDate[date];
     // collect all sets across sessions for this date
     const allSets = sessions.flatMap(s => s.sets.map(set => ({ ...set, logId: s.id })));
     const rows = allSets.map((set, idx) => `
       <div class="wt-set-row">
-        <div class="wt-set-num">Set ${idx+1}</div>
+        <div class="wt-set-num">Set ${idx + 1}</div>
         <div class="wt-set-reps">${set.reps} reps</div>
         <div class="wt-set-weight">${set.weight > 0 ? set.weight + " kg" : "BW"}</div>
         <div class="wt-set-rest">${restStr(allSets, idx)}</div>
@@ -305,7 +305,7 @@ const renderSetsTab = exId => {
 /* ── ANALYZE TAB ─────────────────────────────────────────── */
 const renderAnalyzeTab = exId => {
   const logs = getLogs().filter(l => l.exerciseId === exId);
-  const con  = qs("analyzeContainer");
+  const con = qs("analyzeContainer");
 
   if (!logs.length) {
     con.innerHTML = `<div class="wt-no-history"><p>Log some sets to see analysis.</p></div>`;
@@ -314,10 +314,10 @@ const renderAnalyzeTab = exId => {
 
   const allSets = logs.flatMap(l => l.sets);
   const maxWeight = Math.max(...allSets.map(s => s.weight || 0));
-  const maxReps   = Math.max(...allSets.map(s => s.reps  || 0));
+  const maxReps = Math.max(...allSets.map(s => s.reps || 0));
   const totalSets = allSets.length;
-  const totalVol  = allSets.reduce((acc, s) => acc + (s.reps * (s.weight || 0)), 0);
-  const best1RM   = Math.max(...allSets.map(s => epley1RM(s.reps, s.weight)));
+  const totalVol = allSets.reduce((acc, s) => acc + (s.reps * (s.weight || 0)), 0);
+  const best1RM = Math.max(...allSets.map(s => epley1RM(s.reps, s.weight)));
 
   con.innerHTML = `
     <div class="wt-analyze-wrap">
@@ -380,7 +380,7 @@ const render1RMTab = exId => {
     if (!w || !r) { qs("rmResult").textContent = "—"; qs("rmPercents").innerHTML = ""; return; }
     const orm = epley1RM(r, w);
     qs("rmResult").textContent = orm;
-    qs("rmPercents").innerHTML = [90,80,70,60,50,40].map(pct => {
+    qs("rmPercents").innerHTML = [90, 80, 70, 60, 50, 40].map(pct => {
       const val = Math.round(orm * pct / 10) / 10;
       return `<div class="wt-1rm-pct-card">
         <div class="wt-1rm-pct-val">${val}</div>
@@ -398,27 +398,27 @@ const render1RMTab = exId => {
     const allSets = logs.flatMap(l => l.sets);
     const best = allSets.reduce((b, s) => epley1RM(s.reps, s.weight) > epley1RM(b.reps, b.weight) ? s : b, allSets[0]);
     qs("rmWeight").value = best.weight;
-    qs("rmReps").value   = best.reps;
+    qs("rmReps").value = best.reps;
     calc();
   }
 };
 
 /* ── MODALS ──────────────────────────────────────────────── */
-const openModal  = id => qs(id).classList.remove("hide");
+const openModal = id => qs(id).classList.remove("hide");
 const closeModal = id => qs(id).classList.add("hide");
 
 /* Add Set */
 const openAddSetModal = () => {
-  qs("setReps").value   = "";
+  qs("setReps").value = "";
   qs("setWeight").value = "";
-  qs("setNotes").value  = "";
+  qs("setNotes").value = "";
   S.editingSetId = null; S.editingLogId = null;
 
   // pre-fill with last used weight for this exercise
   const logs = getLogs().filter(l => l.exerciseId === S.selectedEx);
   if (logs.length) {
-    const lastSession = logs.sort((a,b) => b.date.localeCompare(a.date))[0];
-    const lastSet     = lastSession.sets[lastSession.sets.length - 1];
+    const lastSession = logs.sort((a, b) => b.date.localeCompare(a.date))[0];
+    const lastSet = lastSession.sets[lastSession.sets.length - 1];
     if (lastSet) { qs("setWeight").value = lastSet.weight; qs("setReps").value = lastSet.reps; }
   }
 
@@ -427,14 +427,14 @@ const openAddSetModal = () => {
 };
 
 const saveSet = () => {
-  const reps   = parseInt(qs("setReps").value);
+  const reps = parseInt(qs("setReps").value);
   const weight = parseFloat(qs("setWeight").value) || 0;
   if (!reps || reps < 1) { qs("setReps").focus(); return; }
 
-  const logs    = getLogs();
-  const today   = todayStr();
-  const now     = Date.now();
-  let session   = logs.find(l => l.exerciseId === S.selectedEx && l.day === S.selectedDay && l.date === today);
+  const logs = getLogs();
+  const today = todayStr();
+  const now = Date.now();
+  let session = logs.find(l => l.exerciseId === S.selectedEx && l.day === S.selectedDay && l.date === today);
 
   if (!session) {
     session = { id: genId(), exerciseId: S.selectedEx, day: S.selectedDay, date: today, sets: [] };
@@ -452,7 +452,7 @@ const saveSet = () => {
 
 /* Add Exercise Picker */
 const renderExPicker = (filter = "") => {
-  const lib  = getLib() || {};
+  const lib = getLib() || {};
   const plan = getPlan();
   const used = new Set(plan[S.selectedDay]?.exercises || []);
   const list = qs("exPickerList");
@@ -493,7 +493,7 @@ const addExerciseToDay = exId => {
 
 /* My Library */
 const renderMyExList = (filter = "") => {
-  const lib  = getLib() || {};
+  const lib = getLib() || {};
   const list = qs("myExList");
   const matches = Object.values(lib).filter(ex =>
     ex.name.toLowerCase().includes(filter.toLowerCase())
@@ -527,13 +527,13 @@ document.addEventListener("DOMContentLoaded", () => {
   renderDashboard();
 
   /* Back buttons */
-  qs("backFromDay").addEventListener("click",      () => { goBack(); renderDashboard(); });
+  qs("backFromDay").addEventListener("click", () => { goBack(); renderDashboard(); });
   qs("backFromExercise").addEventListener("click", () => { goBack(); });
 
   /* Dashboard actions */
   qs("newWorkoutBtn").addEventListener("click", () => {
     // Open today's day
-    const days = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+    const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     const todayKey = days[new Date().getDay()];
     S.selectedDay = todayKey;
     openDayView(todayKey);
@@ -547,8 +547,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* Day view buttons */
   qs("addExBtn").addEventListener("click", () => {
     qs("exPickerSearch").value = "";
-    qs("newExName").value      = "";
-    qs("newExMuscle").value    = "";
+    qs("newExName").value = "";
+    qs("newExMuscle").value = "";
     renderExPicker();
     openModal("addExModal");
   });
@@ -558,11 +558,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* Create new exercise */
   qs("createExBtn").addEventListener("click", () => {
-    const name   = qs("newExName").value.trim();
+    const name = qs("newExName").value.trim();
     const muscle = qs("newExMuscle").value.trim() || "General";
     if (!name) { qs("newExName").focus(); return; }
     const lib = getLib() || {};
-    const id  = genId();
+    const id = genId();
     lib[id] = { id, name, muscle };
     saveLib(lib);
     addExerciseToDay(id);
@@ -572,11 +572,11 @@ document.addEventListener("DOMContentLoaded", () => {
   qs("addSetFab").addEventListener("click", openAddSetModal);
   qs("saveSetBtn").addEventListener("click", saveSet);
   qs("closeSetModal").addEventListener("click", () => closeModal("addSetModal"));
-  qs("closeExModal").addEventListener("click",  () => closeModal("addExModal"));
-  qs("closeMyExModal").addEventListener("click",() => closeModal("myExModal"));
+  qs("closeExModal").addEventListener("click", () => closeModal("addExModal"));
+  qs("closeMyExModal").addEventListener("click", () => closeModal("myExModal"));
 
   /* Close modals on backdrop click */
-  ["addSetModal","addExModal","myExModal"].forEach(id => {
+  ["addSetModal", "addExModal", "myExModal"].forEach(id => {
     qs(id).addEventListener("click", e => { if (e.target === qs(id)) closeModal(id); });
   });
 
@@ -605,7 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Position near anchor
     const rect = anchorEl.getBoundingClientRect();
-    menu.style.top  = (rect.bottom + 6) + "px";
+    menu.style.top = (rect.bottom + 6) + "px";
     menu.style.right = (window.innerWidth - rect.right) + "px";
 
     overlay.addEventListener("click", () => { menu.remove(); overlay.remove(); });
@@ -687,7 +687,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".wt-tab").forEach(t => t.classList.remove("is-active"));
       document.querySelectorAll(".wt-tab-pane").forEach(p => p.classList.remove("is-active"));
       tab.classList.add("is-active");
-      const pane = { sets:"tabSets", analyze:"tabAnalyze", "1rm":"tab1rm" }[tab.dataset.tab];
+      const pane = { sets: "tabSets", analyze: "tabAnalyze", "1rm": "tab1rm" }[tab.dataset.tab];
       if (pane) qs(pane).classList.add("is-active");
       S.activeTab = tab.dataset.tab;
     })

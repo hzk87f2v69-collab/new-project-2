@@ -8,6 +8,7 @@
       name="description"
       content="Ace Fitness helps Indian men transform with premium fat loss, muscle gain, strength, and home workout programs."
     />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/public/assets/css/styles.css" />
   </head>
   <body>
@@ -192,10 +193,79 @@
         </div>
       </section>
 
+      <!-- ── SMART NEARBY MAP ── -->
+      <section class="section" id="nearbyMap">
+        <div class="container">
+          <div class="section-header">
+            <span class="eyebrow">Find Nearby</span>
+            <h2>Fitness Services Near You</h2>
+            <p class="muted">Discover gyms, physiotherapy clinics, and supplement shops.</p>
+          </div>
+
+          <div class="map-controls-row">
+            <button class="btn btn-primary map-loc-btn" id="mapLocateBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+              Use Current Location
+            </button>
+            <div class="map-radius-select">
+              <label for="radiusSelect">Radius:</label>
+              <select id="radiusSelect">
+                <option value="2000">2 KM</option>
+                <option value="5000" selected>5 KM</option>
+                <option value="10000">10 KM</option>
+                <option value="15000">15 KM</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="map-filter-row">
+            <button class="map-pill active" data-type="all">All</button>
+            <button class="map-pill" data-type="gym">&#127947; Gyms</button>
+            <button class="map-pill" data-type="physio">&#129514; Physiotherapy</button>
+            <button class="map-pill" data-type="supplement">&#128138; Supplements</button>
+          </div>
+
+          <div class="map-layout-grid">
+            <div class="map-shell">
+              <div id="aceFitnessMap" style="height:100%;width:100%;min-height:420px">
+                <div class="map-locating" id="mapLocating">
+                  <div class="map-spin"></div>
+                  <span>Click 'Use Current Location' to begin&#8230;</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="results-panel">
+              <div class="results-header">
+                <h3 id="resultsCount">Waiting for location</h3>
+              </div>
+              <div class="results-list" id="resultsList">
+                <div class="results-empty-state">
+                  <p>Click "Use Current Location" to find nearby fitness services.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div style="margin-bottom:1.25rem">
+            <span class="eyebrow">Talk To Us</span>
+            <h2 style="margin-top:0.4rem;font-size:clamp(1.4rem,4vw,2rem)">Still confused? Contact us.</h2>
+            <p class="muted" style="margin-top:0.4rem;font-size:0.95rem">We'll help you pick the right track before you invest.</p>
+          </div>
+          <div data-social-contact></div>
+        </div>
+      </section>
+
       <section class="section">
         <div class="container">
           <div class="section-header">
             <span class="eyebrow">FAQ</span>
+
             <h2>Everything serious buyers usually ask before committing.</h2>
           </div>
           <div class="faq-grid">
@@ -226,39 +296,8 @@
           </div>
         </div>
       </section>
-
-      <section class="section">
-        <div class="container contact-grid">
-          <div class="section-header">
-            <span class="eyebrow">Talk To Us</span>
-            <h2>Still deciding? Ask questions before you invest.</h2>
-            <p>
-              If you want help choosing the right track for fat loss, muscle gain, strength, or home training, send a
-              message and the team will guide you.
-            </p>
-            <div data-social-contact></div>
-          </div>
-          <div class="contact-card">
-            <form id="contactForm" class="form-grid">
-              <div class="field">
-                <label for="name">Name</label>
-                <input id="name" name="name" type="text" placeholder="Your name" required />
-              </div>
-              <div class="field">
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" placeholder="your@email.com" required />
-              </div>
-              <div class="field">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Tell us your goal and current struggle" required></textarea>
-              </div>
-              <button class="btn" type="submit">Send Inquiry</button>
-              <p id="contactStatus" class="status-text"></p>
-            </form>
-          </div>
-        </div>
-      </section>
     </main>
+
 
     <footer class="footer">
       <div class="container footer-grid">
@@ -294,5 +333,7 @@
     <script src="/public/assets/js/floating-whatsapp.js"></script>
     <script src="/public/assets/js/upi-payment.js"></script>
     <script src="/public/assets/js/index.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/public/assets/js/map.js"></script>
   </body>
 </html>
