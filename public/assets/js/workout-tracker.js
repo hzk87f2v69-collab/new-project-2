@@ -18,22 +18,147 @@ const DEFAULT_DAYS = {
 };
 
 const SEED_EXERCISES = [
-  { name: "Bench Press", muscle: "Chest" },
-  { name: "Incline Bench Press", muscle: "Chest" },
+  // Chest
+  { name: "Barbell Bench Press", muscle: "Chest" },
+  { name: "Dumbbell Bench Press", muscle: "Chest" },
+  { name: "Incline Barbell Bench Press", muscle: "Chest" },
+  { name: "Incline Dumbbell Bench Press", muscle: "Chest" },
+  { name: "Decline Barbell Bench Press", muscle: "Chest" },
+  { name: "Decline Dumbbell Bench Press", muscle: "Chest" },
   { name: "Dumbbell Flyes", muscle: "Chest" },
+  { name: "Incline Dumbbell Flyes", muscle: "Chest" },
+  { name: "Cable Crossover", muscle: "Chest" },
+  { name: "Low Cable Crossover", muscle: "Chest" },
+  { name: "High Cable Crossover", muscle: "Chest" },
+  { name: "Pec Deck Machine", muscle: "Chest" },
   { name: "Push-Ups", muscle: "Chest" },
-  { name: "Squat", muscle: "Legs" },
-  { name: "Leg Press", muscle: "Legs" },
+  { name: "Diamond Push-Ups", muscle: "Chest" },
+  { name: "Wide Grip Push-Ups", muscle: "Chest" },
+  { name: "Dips (Chest Focus)", muscle: "Chest" },
+  { name: "Machine Chest Press", muscle: "Chest" },
+  { name: "Svend Press", muscle: "Chest" },
+  { name: "Dumbbell Pullover", muscle: "Chest" },
+
+  // Back
   { name: "Deadlift", muscle: "Back" },
+  { name: "Sumo Deadlift", muscle: "Back" },
+  { name: "Romanian Deadlift", muscle: "Back" },
+  { name: "Barbell Bent-Over Row", muscle: "Back" },
+  { name: "Pendlay Row", muscle: "Back" },
+  { name: "T-Bar Row", muscle: "Back" },
+  { name: "Dumbbell Single-Arm Row", muscle: "Back" },
   { name: "Pull-Ups", muscle: "Back" },
-  { name: "Lat Pulldown", muscle: "Back" },
-  { name: "Bent Over Row", muscle: "Back" },
-  { name: "Shoulder Press", muscle: "Shoulder" },
+  { name: "Chin-Ups", muscle: "Back" },
+  { name: "Wide Grip Lat Pulldown", muscle: "Back" },
+  { name: "Close Grip Lat Pulldown", muscle: "Back" },
+  { name: "Reverse Grip Lat Pulldown", muscle: "Back" },
+  { name: "Seated Cable Row", muscle: "Back" },
+  { name: "Straight-Arm Pulldown", muscle: "Back" },
+  { name: "Machine Row", muscle: "Back" },
+  { name: "Rack Pulls", muscle: "Back" },
+  { name: "Good Mornings", muscle: "Back" },
+  { name: "Hyperextensions", muscle: "Back" },
+  { name: "Face Pulls", muscle: "Back" },
+  { name: "Renegade Row", muscle: "Back" },
+
+  // Shoulders
+  { name: "Overhead Press", muscle: "Shoulder" },
+  { name: "Seated Dumbbell Press", muscle: "Shoulder" },
+  { name: "Arnold Press", muscle: "Shoulder" },
+  { name: "Machine Shoulder Press", muscle: "Shoulder" },
   { name: "Lateral Raise", muscle: "Shoulder" },
-  { name: "Bicep Curl", muscle: "Arms" },
-  { name: "Tricep Extension", muscle: "Arms" },
-  { name: "Plank", muscle: "Abs" },
+  { name: "Cable Lateral Raise", muscle: "Shoulder" },
+  { name: "Machine Lateral Raise", muscle: "Shoulder" },
+  { name: "Front Raise (Dumbbell)", muscle: "Shoulder" },
+  { name: "Front Raise (Barbell)", muscle: "Shoulder" },
+  { name: "Front Raise (Cable)", muscle: "Shoulder" },
+  { name: "Upright Row", muscle: "Shoulder" },
+  { name: "Cable Upright Row", muscle: "Shoulder" },
+  { name: "Rear Delt Flyes", muscle: "Shoulder" },
+  { name: "Rear Delt Machine", muscle: "Shoulder" },
+  { name: "Cable Face Pulls", muscle: "Shoulder" },
+  { name: "Barbell Shrugs", muscle: "Shoulder" },
+  { name: "Dumbbell Shrugs", muscle: "Shoulder" },
+  { name: "Push Press", muscle: "Shoulder" },
+
+  // Legs
+  { name: "Barbell Back Squat", muscle: "Legs" },
+  { name: "Barbell Front Squat", muscle: "Legs" },
+  { name: "Goblet Squat", muscle: "Legs" },
+  { name: "Leg Press", muscle: "Legs" },
+  { name: "Hack Squat", muscle: "Legs" },
+  { name: "Dumbbell Lunges", muscle: "Legs" },
+  { name: "Walking Lunges", muscle: "Legs" },
+  { name: "Reverse Lunges", muscle: "Legs" },
+  { name: "Bulgarian Split Squat", muscle: "Legs" },
+  { name: "Leg Extensions", muscle: "Legs" },
+  { name: "Lying Leg Curls", muscle: "Legs" },
+  { name: "Seated Leg Curls", muscle: "Legs" },
+  { name: "Romanian Deadlift (Hamstrings)", muscle: "Legs" },
+  { name: "Stiff-Legged Deadlift", muscle: "Legs" },
+  { name: "Glute Bridge", muscle: "Legs" },
+  { name: "Barbell Hip Thrust", muscle: "Legs" },
+  { name: "Cable Pull-Through", muscle: "Legs" },
+  { name: "Standing Calf Raises", muscle: "Legs" },
+  { name: "Seated Calf Raises", muscle: "Legs" },
+  { name: "Leg Press Calf Raises", muscle: "Legs" },
+  { name: "Step-Ups", muscle: "Legs" },
+  { name: "Sissy Squat", muscle: "Legs" },
+  { name: "Box Squat", muscle: "Legs" },
+  { name: "Sumo Squat", muscle: "Legs" },
+
+  // Arms
+  { name: "Barbell Bicep Curl", muscle: "Arms" },
+  { name: "Dumbbell Bicep Curl", muscle: "Arms" },
+  { name: "Hammer Curl", muscle: "Arms" },
+  { name: "Preacher Curl", muscle: "Arms" },
+  { name: "EZ-Bar Curl", muscle: "Arms" },
+  { name: "Incline Dumbbell Curl", muscle: "Arms" },
+  { name: "Concentration Curl", muscle: "Arms" },
+  { name: "Cable Bicep Curl", muscle: "Arms" },
+  { name: "Reverse Bicep Curl", muscle: "Arms" },
+  { name: "Close-Grip Bench Press", muscle: "Arms" },
+  { name: "Tricep Dips", muscle: "Arms" },
+  { name: "Skull Crushers", muscle: "Arms" },
+  { name: "Overhead Tricep Extension", muscle: "Arms" },
+  { name: "Tricep Pushdown", muscle: "Arms" },
+  { name: "Tricep Rope Pushdown", muscle: "Arms" },
+  { name: "Tricep Kickback", muscle: "Arms" },
+  { name: "Machine Tricep Extension", muscle: "Arms" },
+  { name: "Wrist Curls", muscle: "Arms" },
+  { name: "Reverse Wrist Curls", muscle: "Arms" },
+  { name: "Farmer's Walk", muscle: "Arms" },
+
+  // Abs & Core
   { name: "Crunches", muscle: "Abs" },
+  { name: "Reverse Crunches", muscle: "Abs" },
+  { name: "Bicycle Crunches", muscle: "Abs" },
+  { name: "Sit-Ups", muscle: "Abs" },
+  { name: "Russian Twists", muscle: "Abs" },
+  { name: "Plank", muscle: "Abs" },
+  { name: "Side Plank", muscle: "Abs" },
+  { name: "Hanging Leg Raises", muscle: "Abs" },
+  { name: "Hanging Knee Raises", muscle: "Abs" },
+  { name: "Lying Leg Raises", muscle: "Abs" },
+  { name: "Ab Wheel Rollout", muscle: "Abs" },
+  { name: "Cable Crunches", muscle: "Abs" },
+  { name: "Woodchoppers", muscle: "Abs" },
+  { name: "V-Ups", muscle: "Abs" },
+  { name: "Flutter Kicks", muscle: "Abs" },
+  { name: "Mountain Climbers", muscle: "Abs" },
+  { name: "Dead Bug", muscle: "Abs" },
+  { name: "Bird Dog", muscle: "Abs" },
+  { name: "Heel Touches", muscle: "Abs" },
+
+  // Full Body / Cardio
+  { name: "Burpees", muscle: "Full Body" },
+  { name: "Kettlebell Swings", muscle: "Full Body" },
+  { name: "Power Clean", muscle: "Full Body" },
+  { name: "Clean and Jerk", muscle: "Full Body" },
+  { name: "Snatch", muscle: "Full Body" },
+  { name: "Box Jumps", muscle: "Legs" },
+  { name: "Thrusters", muscle: "Full Body" },
+  { name: "Rowing", muscle: "Back" },
 ];
 
 /* ── STATE ───────────────────────────────────────────────── */
@@ -61,13 +186,22 @@ const getLogs = () => JSON.parse(localStorage.getItem(K_LOGS) || "[]");
 const saveLogs = v => localStorage.setItem(K_LOGS, JSON.stringify(v));
 
 const initLibrary = () => {
-  if (getLib()) return;
-  const lib = {};
+  const existingLib = getLib() || {};
+  let added = false;
+
   SEED_EXERCISES.forEach(e => {
-    const id = genId();
-    lib[id] = { id, name: e.name, muscle: e.muscle };
+    // Check if exercise already exists by name
+    const exists = Object.values(existingLib).some(ex => ex.name.toLowerCase() === e.name.toLowerCase());
+    if (!exists) {
+      const id = genId();
+      existingLib[id] = { id, name: e.name, muscle: e.muscle };
+      added = true;
+    }
   });
-  saveLib(lib);
+
+  if (added || Object.keys(existingLib).length === 0) {
+    saveLib(existingLib);
+  }
 };
 
 /* ── UTILS ───────────────────────────────────────────────── */
@@ -161,6 +295,133 @@ const goBack = () => {
   qs("addSetFab").classList.toggle("visible", S.activeView === "exercise");
 };
 
+/* ── WEEKLY PROGRESS HELPERS ────────────────────────────── */
+const getWeeklyStats = (logs, offsetDays = 0) => {
+  const now   = new Date().setHours(23, 59, 59, 999);
+  const start = now - (offsetDays + 7) * 86400000;
+  const end   = now - offsetDays * 86400000;
+
+  let volume = 0, sets = 0;
+  const days = new Set();
+  let best1RM = 0;
+
+  logs.forEach(l => {
+    const ts = new Date(l.date.replace(/-/g, "/")).getTime();
+    if (ts < start || ts > end) return;
+    days.add(l.date);
+    l.sets.forEach(s => {
+      sets++;
+      volume += (s.reps || 0) * (s.weight || 0);
+      const orm = epley1RM(s.reps, s.weight);
+      if (orm > best1RM) best1RM = orm;
+    });
+  });
+
+  return { volume: Math.round(volume), sets, days: days.size, best1RM: Math.round(best1RM * 10) / 10 };
+};
+
+const growthBadge = (cur, prev) => {
+  if (prev === 0 && cur === 0) return `<span class="wt-badge-neutral">—</span>`;
+  if (prev === 0) return `<span class="wt-badge-up">▲ NEW</span>`;
+  const pct = ((cur - prev) / prev * 100).toFixed(1);
+  const up = cur >= prev;
+  return `<span class="wt-badge-${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${Math.abs(pct)}%</span>`;
+};
+
+let sparkInstance = null;
+
+const renderWeeklyProgress = () => {
+  const logs  = getLogs();
+  const body  = document.querySelector("#wtWeeklyProgress .wt-weekly-body");
+  const spark = qs("wtSparkline");
+  if (!body || !spark) return;
+
+  const tw = getWeeklyStats(logs, 0);
+  const lw = getWeeklyStats(logs, 7);
+
+  // Check all-time 1RM vs this week
+  const allTimeLogs = logs;
+  let allTime1RM = 0;
+  allTimeLogs.forEach(l => l.sets.forEach(s => {
+    const orm = epley1RM(s.reps, s.weight);
+    if (orm > allTime1RM) allTime1RM = orm;
+  }));
+  const newPR = tw.best1RM > 0 && tw.best1RM >= allTime1RM;
+
+  if (tw.sets === 0 && lw.sets === 0) {
+    body.innerHTML = `
+      <div class="wt-weekly-empty">
+        <span style="font-size:2rem">📅</span>
+        <p>Stay consistent and see real results.</p>
+        <span class="wt-weekly-cta">KEEP GOING!</span>
+      </div>`;
+    spark.style.display = 'none';
+    return;
+  }
+
+  spark.style.display = '';
+
+  body.innerHTML = `
+    <div class="wt-weekly-metrics">
+      <div class="wt-weekly-metric">
+        <div class="wt-weekly-metric-val">${tw.volume.toLocaleString()}<small>kg</small></div>
+        <div class="wt-weekly-metric-label">Volume ${growthBadge(tw.volume, lw.volume)}</div>
+      </div>
+      <div class="wt-weekly-metric">
+        <div class="wt-weekly-metric-val">${tw.sets}</div>
+        <div class="wt-weekly-metric-label">Sets ${growthBadge(tw.sets, lw.sets)}</div>
+      </div>
+      <div class="wt-weekly-metric">
+        <div class="wt-weekly-metric-val">${tw.days}<small>/6</small></div>
+        <div class="wt-weekly-metric-label">Days ${growthBadge(tw.days, lw.days)}</div>
+      </div>
+      <div class="wt-weekly-metric">
+        <div class="wt-weekly-metric-val">${tw.best1RM}<small>kg</small></div>
+        <div class="wt-weekly-metric-label">Best 1RM ${newPR ? '<span class="wt-badge-pr">🏆 PR</span>' : growthBadge(tw.best1RM, lw.best1RM)}</div>
+      </div>
+    </div>`;
+
+  // ── 7-day sparkline ─────────────────────────────────────────
+  const dayVolumes = [];
+  const dayLabels = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    dayLabels.push(key.slice(5)); // MM-DD
+    const dayLogs = logs.filter(l => l.date === key);
+    let vol = 0;
+    dayLogs.forEach(l => l.sets.forEach(s => { vol += (s.reps||0)*(s.weight||0); }));
+    dayVolumes.push(Math.round(vol));
+  }
+
+  const maxVol = Math.max(...dayVolumes, 1);
+  const W = spark.offsetWidth || 300;
+  const H = 48;
+  spark.width  = W;
+  spark.height = H;
+  const ctx = spark.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  const barW  = Math.floor(W / 7) - 3;
+  const gap   = 3;
+  const start = Math.floor((W - (barW + gap) * 7) / 2);
+
+  dayVolumes.forEach((v, i) => {
+    const barH = v > 0 ? Math.max(4, Math.round((v / maxVol) * (H - 12))) : 3;
+    const x = start + i * (barW + gap);
+    const y = H - barH - 2;
+    const isToday = i === 6;
+    const grad = ctx.createLinearGradient(0, y, 0, H);
+    grad.addColorStop(0, isToday ? 'rgba(0,122,255,0.9)' : (v > 0 ? 'rgba(48,209,88,0.75)' : 'rgba(255,255,255,0.12)'));
+    grad.addColorStop(1, isToday ? 'rgba(0,122,255,0.3)' : (v > 0 ? 'rgba(48,209,88,0.2)'  : 'rgba(255,255,255,0.04)'));
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(x, y, barW, barH, [2, 2, 0, 0]);
+    ctx.fill();
+  });
+};
+
 /* ── RENDER: DASHBOARD ───────────────────────────────────── */
 const renderDashboard = () => {
   const plan = getPlan();
@@ -179,7 +440,13 @@ const renderDashboard = () => {
         <div class="wt-day-icon wt-icon-${day.color}">${day.icon}</div>
         <div class="wt-day-info">
           <div class="wt-day-name">${key.toUpperCase()}</div>
-          <div class="wt-day-muscles">${day.muscles}${lastDate ? " · " + relTime(lastDate) : ""}</div>
+          <div class="wt-day-muscles-view" style="display:flex;align-items:center;gap:0.4rem;margin-top:2px;">
+            ${day.muscles ? `<div class="wt-day-muscles" style="font-size:0.8rem;color:rgba(255,255,255,0.5);">${day.muscles}</div>` : `<div class="wt-day-muscles" style="font-size:0.8rem;color:rgba(255,255,255,0.3);font-style:italic;">Add subheading...</div>`}
+            <button class="wt-day-edit-btn" data-edit-day="${key}" title="Edit subheading" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;padding:2px;display:flex;align-items:center;transition:color 0.2s;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+          </div>
+          <input type="text" class="wt-day-muscles-input hide" data-day="${key}" value="${day.muscles || ''}" placeholder="Add subheading..." style="font-size:0.8rem; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:4px; padding:2px 4px; width:100%; outline:none; margin-top:2px;" />
         </div>
         <div class="wt-day-right">
           <div class="wt-day-count">${exCount}</div>
@@ -189,9 +456,50 @@ const renderDashboard = () => {
       </div>`;
   }).join("");
 
-  container.querySelectorAll(".wt-day-card").forEach(card =>
-    card.addEventListener("click", () => openDayView(card.dataset.day))
-  );
+  // Render weekly progress card removed (now on dashboard only)
+
+  container.querySelectorAll(".wt-day-card").forEach(card => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest('.wt-day-muscles-input')) {
+        e.stopPropagation();
+        return;
+      }
+      if (e.target.closest('.wt-day-edit-btn')) {
+        e.stopPropagation();
+        const btn = e.target.closest('.wt-day-edit-btn');
+        const card = btn.closest('.wt-day-card');
+        const viewDiv = card.querySelector('.wt-day-muscles-view');
+        const inputEl = card.querySelector('.wt-day-muscles-input');
+        
+        viewDiv.style.display = 'none';
+        inputEl.classList.remove('hide');
+        inputEl.focus();
+        // Move cursor to end
+        inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length;
+        
+        const saveEdit = () => {
+          const plan = getPlan();
+          plan[card.dataset.day].muscles = inputEl.value.trim();
+          savePlan(plan);
+          renderDashboard();
+        };
+        
+        inputEl.addEventListener('blur', saveEdit, { once: true });
+        inputEl.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter') {
+            ev.preventDefault();
+            inputEl.blur();
+          }
+          if (ev.key === 'Escape') {
+            ev.preventDefault();
+            renderDashboard(); // Cancel
+          }
+        });
+        return;
+      }
+      openDayView(card.dataset.day);
+    });
+  });
 };
 
 /* ── RENDER: DAY VIEW ────────────────────────────────────── */
@@ -203,7 +511,6 @@ const openDayView = (dayKey, pushState = true) => {
   const logs = getLogs();
 
   qs("dayViewTitle").textContent = dayKey.toUpperCase();
-  qs("dayViewMuscles").textContent = day.muscles;
 
   const list = qs("dayExerciseList");
   const exIds = day.exercises || [];
@@ -577,12 +884,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* Dashboard actions */
   qs("newWorkoutBtn").addEventListener("click", () => {
-    // Open today's day
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     const todayKey = days[new Date().getDay()];
-    S.selectedDay = todayKey;
-    openDayView(todayKey);
+    const plan = getPlan();
+    const targetDay = plan[todayKey] ? todayKey : "monday";
+    openDayView(targetDay);
   });
+
+  const newPlanBtn = qs("newPlanBtn");
+  if (newPlanBtn) {
+    newPlanBtn.addEventListener("click", () => {
+      if (confirm("Are you sure you want to clear your current plan and start fresh? All days will be reset.")) {
+        savePlan(structuredClone(DEFAULT_DAYS));
+        renderDashboard();
+      }
+    });
+  }
 
   qs("myExercisesBtn").addEventListener("click", () => {
     renderMyExList();
@@ -658,6 +975,68 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(overlay);
     document.body.appendChild(menu);
   };
+  // Dashboard settings
+  const settingsBtn = qs("settingsBtn");
+  if (settingsBtn) {
+    settingsBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showCtxMenu(settingsBtn, [
+        {
+          icon: "⬇️", label: "Export Data",
+          action: () => {
+            const data = { plan: getPlan(), lib: getLib(), logs: getLogs() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `ace-fitness-backup-${todayStr()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        },
+        {
+          icon: "⬆️", label: "Import Data",
+          action: () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".json";
+            input.onchange = ev => {
+              const file = ev.target.files[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = r => {
+                try {
+                  const data = JSON.parse(r.target.result);
+                  if (data.plan && data.lib && data.logs) {
+                    savePlan(data.plan); saveLib(data.lib); saveLogs(data.logs);
+                    alert("Data imported successfully!");
+                    location.reload();
+                  } else {
+                    alert("Invalid backup format.");
+                  }
+                } catch(err) {
+                  alert("Failed to parse file.");
+                }
+              };
+              reader.readAsText(file);
+            };
+            input.click();
+          }
+        },
+        {
+          icon: "🗑", label: "Factory Reset", danger: true,
+          action: () => {
+            if (confirm("WARNING: This will permanently delete all your custom exercises, workout logs, and custom plans. Are you absolutely sure?")) {
+              localStorage.removeItem(K_PLAN);
+              localStorage.removeItem(K_LIB);
+              localStorage.removeItem(K_LOGS);
+              location.reload();
+            }
+          }
+        }
+      ]);
+    });
+  }
 
   // Day view 3-dot
   qs("editDayBtn").addEventListener("click", (e) => {
@@ -672,7 +1051,6 @@ document.addEventListener("DOMContentLoaded", () => {
           if (val === null) return;
           plan[S.selectedDay].muscles = val.trim() || current;
           savePlan(plan);
-          qs("dayViewMuscles").textContent = plan[S.selectedDay].muscles;
           renderDashboard();
         }
       },

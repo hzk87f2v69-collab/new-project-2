@@ -408,5 +408,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  // ── Global Scroll Reveal Animation ───────────────────────────
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.15
+  };
+
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+      } else {
+        // Remove class when out of view so it animates again next time
+        entry.target.classList.remove('is-revealed');
+      }
+    });
+  }, observerOptions);
+
+  // Target common elements across the app
+  const revealElements = document.querySelectorAll('.hero-text > *, .dashboard-card, .program-card, .testimonial-card, .pricing-card, .course-card, .wt-view, .ai-diet-form-card, .contact-card, .profile-card');
+  revealElements.forEach((el, index) => {
+    el.classList.add('reveal-on-scroll');
+    // Optional: Add a slight stagger delay based on DOM order for grouped cards
+    if (el.matches('.dashboard-card, .program-card, .testimonial-card, .pricing-card, .course-card')) {
+       el.style.transitionDelay = `${(index % 4) * 0.1}s`;
+    }
+    scrollObserver.observe(el);
+  });
+
 });
 

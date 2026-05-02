@@ -74,21 +74,21 @@ document.addEventListener("DOMContentLoaded", async () => {
           {
             label: "This Week",
             data:  thisWeek,
-            backgroundColor: "rgba(32,199,255,0.15)",
-            borderColor:     "rgba(32,199,255,0.9)",
-            pointBackgroundColor: "rgba(32,199,255,1)",
+            backgroundColor: "rgba(0,102,204,0.15)",
+            borderColor:     "rgba(0,102,204,0.9)",
+            pointBackgroundColor: "rgba(0,102,204,1)",
             pointBorderColor:    "#fff",
             pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor:     "rgba(32,199,255,1)",
+            pointHoverBorderColor:     "rgba(0,102,204,1)",
             borderWidth: 2.5,
             pointRadius: 5,
           },
           {
             label: "Last Week",
             data:  lastWeek,
-            backgroundColor: "rgba(168,85,247,0.1)",
-            borderColor:     "rgba(168,85,247,0.6)",
-            pointBackgroundColor: "rgba(168,85,247,0.8)",
+            backgroundColor: "rgba(48,209,88,0.1)",
+            borderColor:     "rgba(48,209,88,0.6)",
+            pointBackgroundColor: "rgba(48,209,88,0.8)",
             pointBorderColor:    "#fff",
             borderWidth: 1.8,
             pointRadius: 4,
@@ -105,15 +105,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             min: 0, max: 100,
             ticks: {
               stepSize: 25,
-              color: "rgba(159,178,203,0.55)",
+              color: "rgba(255,255,255,0.55)",
               font: { size: 10 },
               backdropColor: "transparent",
             },
             grid: {
-              color: "rgba(32,199,255,0.1)",
+              color: "rgba(0,102,204,0.1)",
               circular: false,
             },
-            angleLines: { color: "rgba(32,199,255,0.12)" },
+            angleLines: { color: "rgba(0,102,204,0.12)" },
             pointLabels: {
               color: "#9fb2cb",
               font: { size: 11, weight: "600" },
@@ -124,8 +124,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: "rgba(7,12,23,0.94)",
-            borderColor: "rgba(32,199,255,0.25)",
+            backgroundColor: "rgba(28,28,30,0.94)",
+            borderColor: "rgba(0,102,204,0.25)",
             borderWidth: 1,
             titleColor: "#20c7ff",
             bodyColor:  "#f4f8ff",
@@ -170,13 +170,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     profileEmail.textContent = data.profile.email;
     joinedDate.textContent   = new Date(data.profile.joinedAt).toLocaleDateString("en-IN", { year:"numeric", month:"short", day:"numeric" });
 
+    // ── Tracker Data Integration ──────────────────────────────────────────────
+    const wtLogs = JSON.parse(localStorage.getItem("ace_wt_logs") || "[]");
+    const todayMs = new Date().setHours(0,0,0,0);
+    const dayMs = 86400000;
+    
+    let activeDaysThisWeek = new Set();
+    let setsThisWeek = 0;
+    let totalTrackerSets = 0;
+    
+    wtLogs.forEach(log => {
+      totalTrackerSets += log.sets.length;
+      const logDateMs = new Date(log.date).setHours(0,0,0,0);
+      const daysAgo = Math.floor((todayMs - logDateMs) / dayMs);
+      if (daysAgo >= 0 && daysAgo < 7) {
+        activeDaysThisWeek.add(log.date);
+        setsThisWeek += log.sets.length;
+      }
+    });
+
+    const wtConsistency = Math.min(100, Math.round((activeDaysThisWeek.size / 5) * 100));
+    const wtIntensity = Math.min(100, Math.round((setsThisWeek / 30) * 100));
+    const trackerEstHours = Math.round((totalTrackerSets * 2) / 60);
+
     // Basic metrics
     const totalCompleted = data.enrollments.reduce((s, e) => s + e.completedClasses.length, 0);
     const totalClasses   = data.enrollments.reduce((s, e) => s + (e.totalClasses || 8), 0);
     const avgProgress    = data.enrollments.length > 0
       ? Math.round(data.enrollments.reduce((s, e) => s + e.progress, 0) / data.enrollments.length)
       : 0;
-    const estHours       = Math.round(totalCompleted * 0.4); // ~24min avg per class
+    const estHours       = Math.round(totalCompleted * 0.4) + trackerEstHours;
 
     countUp(metrics.tracks,   data.enrollments.length);
     countUp(metrics.classes,  totalCompleted);
@@ -187,9 +210,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ── Radar axis calculations ──────────────────────────────────────────────
     const courseCompletion = totalClasses > 0 ? Math.min(100, Math.round((totalCompleted / totalClasses) * 100)) : 0;
-    const consistency      = Math.min(100, Math.round((Math.min(streakDays, 7) / 7) * 100));
-    const workoutIntensity = Math.min(100, Math.round((totalCompleted / Math.max(totalClasses * 0.5, 1)) * 100));
-    const discipline       = Math.min(100, Math.round((courseCompletion * 0.5 + consistency * 0.3 + workoutIntensity * 0.2)));
+    
+    // Use actual workout data if available, else fall back to login streak and course proxies
+    const consistency      = wtLogs.length > 0 ? wtConsistency : Math.min(100, Math.round((Math.min(streakDays, 7) / 7) * 100));
+    const workoutIntensity = wtLogs.length > 0 ? wtIntensity : Math.min(100, Math.round((totalCompleted / Math.max(totalClasses * 0.5, 1)) * 100));
+    const discipline       = Math.min(100, Math.round((courseCompletion * 0.3 + consistency * 0.4 + workoutIntensity * 0.3)));
     const nutritionComp    = Math.min(100, Math.round(streakDays * 8)); // proxy
     const weeklyMomentum   = Math.min(100, Math.round(consistency * 0.6 + workoutIntensity * 0.4));
 
@@ -260,6 +285,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         `).join("")
       : "<li class='muted'>No payments yet.</li>";
 
+    // ── Render Workout Strength Panel (always, uses localStorage only) ────────
+    renderWorkoutStrengthPanel();
+
   } catch (err) {
     coursesContainer.innerHTML = `
       <article class="dashboard-card page-message-card">
@@ -271,5 +299,138 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Still render an empty radar so the page doesn't break
     buildRadar([0,0,0,0,0,0], [0,0,0,0,0,0]);
+
+    // Still render workout panel from localStorage
+    renderWorkoutStrengthPanel();
   }
+
+  // ── Workout Strength Panel ────────────────────────────────────────────────
+  function renderWorkoutStrengthPanel() {
+    const logs = JSON.parse(localStorage.getItem("ace_wt_logs") || "[]");
+
+    // Epley 1RM helper
+    const epley = (reps, weight) => {
+      if (!reps || !weight) return 0;
+      return Math.round(weight * (1 + reps / 30) * 10) / 10;
+    };
+
+    // Get stats for a date-range window
+    const getStats = (offsetDays = 0) => {
+      const now   = new Date().setHours(23, 59, 59, 999);
+      const start = now - (offsetDays + 7) * 86400000;
+      const end   = now - offsetDays * 86400000;
+      let volume = 0, sets = 0, best1RM = 0;
+      const days = new Set();
+      logs.forEach(l => {
+        const ts = new Date(l.date.replace(/-/g, "/")).getTime();
+        if (ts < start || ts > end) return;
+        days.add(l.date);
+        l.sets.forEach(s => {
+          sets++;
+          volume += (s.reps || 0) * (s.weight || 0);
+          const orm = epley(s.reps, s.weight);
+          if (orm > best1RM) best1RM = orm;
+        });
+      });
+      return { volume: Math.round(volume), sets, days: days.size, best1RM: Math.round(best1RM * 10) / 10 };
+    };
+
+    const tw = getStats(0);
+    const lw = getStats(7);
+
+    // Growth badge HTML
+    const badge = (cur, prev, suffix = "") => {
+      if (prev === 0 && cur === 0) return `<span class="db-wt-badge-neutral">—</span>`;
+      if (prev === 0) return `<span class="db-wt-badge-up">▲ NEW</span>`;
+      const pct = ((cur - prev) / prev * 100).toFixed(1);
+      const up = cur >= prev;
+      return `<span class="db-wt-badge-${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${Math.abs(pct)}%</span>`;
+    };
+
+    // Populate metric tiles
+    const setTile = (valId, badgeId, val, suffix, cur, prev) => {
+      const el = document.getElementById(valId);
+      const bd = document.getElementById(badgeId);
+      if (!el || !bd) return;
+      el.textContent = val;
+      bd.innerHTML   = badge(cur, prev);
+    };
+
+    setTile("wtmVolVal",  "wtmVolBadge",  tw.volume.toLocaleString() + " kg", "", tw.volume,  lw.volume);
+    setTile("wtmSetsVal", "wtmSetsBadge", tw.sets,                             "", tw.sets,    lw.sets);
+    setTile("wtmDaysVal", "wtmDaysBadge", tw.days + "/6",                      "", tw.days,    lw.days);
+    setTile("wtmOrmVal",  "wtmOrmBadge",  tw.best1RM + " kg",                  "", tw.best1RM, lw.best1RM);
+
+    // Override 1RM badge if it's an all-time PR
+    let allTime1RM = 0;
+    logs.forEach(l => l.sets.forEach(s => {
+      const orm = epley(s.reps, s.weight);
+      if (orm > allTime1RM) allTime1RM = orm;
+    }));
+    if (tw.best1RM > 0 && tw.best1RM >= allTime1RM) {
+      const bd = document.getElementById("wtmOrmBadge");
+      if (bd) bd.innerHTML = `<span class="db-wt-badge-pr">🏆 PR</span>`;
+    }
+
+    // 7-day sparkline
+    const spark = document.getElementById("dbSparkline");
+    const labelsEl = document.getElementById("wtSparkLabels");
+    if (!spark) return;
+
+    const dayVolumes = [];
+    const dayLabels  = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const label = d.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 2);
+      dayLabels.push(label);
+      const dayLogs = logs.filter(l => l.date === key);
+      let vol = 0;
+      dayLogs.forEach(l => l.sets.forEach(s => { vol += (s.reps||0)*(s.weight||0); }));
+      dayVolumes.push(Math.round(vol));
+    }
+
+    // Render day labels
+    if (labelsEl) {
+      labelsEl.innerHTML = dayLabels.map((l, i) =>
+        `<span class="${i === 6 ? 'db-wt-spark-label-today' : ''}">${l}</span>`
+      ).join("");
+    }
+
+    const maxVol = Math.max(...dayVolumes, 1);
+    const W = spark.offsetWidth || 600;
+    const H = 52;
+    spark.width  = W;
+    spark.height = H;
+    const ctx = spark.getContext("2d");
+    ctx.clearRect(0, 0, W, H);
+
+    const barW  = Math.floor(W / 7) - 4;
+    const gap   = 4;
+    const startX = Math.floor((W - (barW + gap) * 7) / 2);
+
+    dayVolumes.forEach((v, i) => {
+      const barH = v > 0 ? Math.max(6, Math.round((v / maxVol) * (H - 14))) : 4;
+      const x = startX + i * (barW + gap);
+      const y = H - barH - 2;
+      const isToday = i === 6;
+      const grad = ctx.createLinearGradient(0, y, 0, H);
+      grad.addColorStop(0, isToday ? "rgba(0,122,255,0.95)" : (v > 0 ? "rgba(48,209,88,0.8)" : "rgba(255,255,255,0.1)"));
+      grad.addColorStop(1, isToday ? "rgba(0,122,255,0.25)" : (v > 0 ? "rgba(48,209,88,0.15)" : "rgba(255,255,255,0.02)"));
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(x, y, barW, barH, [3, 3, 0, 0]);
+      ctx.fill();
+
+      // Value label on bar if > 0
+      if (v > 0 && barH > 14) {
+        ctx.fillStyle = "rgba(255,255,255,0.7)";
+        ctx.font = `bold ${Math.min(9, barW * 0.45)}px system-ui`;
+        ctx.textAlign = "center";
+        ctx.fillText(v > 999 ? (v/1000).toFixed(1)+"k" : v, x + barW/2, y - 2);
+      }
+    });
+  }
+
 });
