@@ -71,6 +71,36 @@ document.addEventListener("DOMContentLoaded", () => {
     `);
   // ───────────────────────────────────────────────────────────────
 
+  // ── PERMANENT MARKER: Platinum Gym, Suhagi ───────────────────
+  const PLATINUM_GYM = {
+    lat: 23.2187,
+    lng: 79.9563,
+    name: "Platinum Gym",
+    address: "Suhagi, Madhya Pradesh 482004"
+  };
+
+  const platinumIcon = L.divIcon({
+    className: "",
+    html: `<div class="hero-marker" style="background:linear-gradient(135deg,#b8860b,#ffe066);width:34px;height:34px;font-size:18px;box-shadow:0 0 0 4px rgba(255,215,0,0.4);border:2px solid #ffe066;">🏆</div>`,
+    iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -20]
+  });
+
+  L.marker([PLATINUM_GYM.lat, PLATINUM_GYM.lng], { icon: platinumIcon })
+    .addTo(map)
+    .bindPopup(`
+      <div style="font-family:'Inter',sans-serif">
+        <strong style="display:block;margin-bottom:2px;font-size:14px;color:#b8860b">🏆 ${PLATINUM_GYM.name}</strong>
+        <span style="display:block;background:linear-gradient(90deg,#b8860b,#ffe066);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;font-size:11px;margin-bottom:4px">⭐ PLATINUM MEMBER GYM</span>
+        <span style="display:block;color:#aaa;font-size:12px;margin-bottom:8px">${PLATINUM_GYM.address}</span>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${PLATINUM_GYM.lat},${PLATINUM_GYM.lng}"
+          target="_blank"
+          style="display:block;background:linear-gradient(135deg,#b8860b,#ffe066);color:#03111d;padding:4px 8px;border-radius:4px;text-align:center;text-decoration:none;font-weight:700;font-size:12px">
+          Navigate
+        </a>
+      </div>
+    `);
+  // ─────────────────────────────────────────────────────────────
+
   // Fetch nearby on load
   setTimeout(() => fetchNearby(centerLat, centerLng), 500);
 

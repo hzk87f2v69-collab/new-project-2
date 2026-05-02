@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ace Fitness Programs | Buy Goal-Based Fitness Tracks</title>
-    <link rel="stylesheet" href="/public/assets/css/styles.css" />
-  </head>
-  <body>
-        <header class="site-header">
+import os
+import glob
+
+html_files = glob.glob('/Users/rahulkushwaha/Documents/New project 2/frontend/*.html')
+
+new_header = """    <header class="site-header">
       <div class="nav">
         <!-- Left: Logo -->
         <a class="brand" href="/" aria-label="Ace Fitness Home">
@@ -52,61 +48,20 @@
           <a href="/contact">Contact</a>
         </nav>
       </div>
-    </header>
+    </header>"""
 
-    <main class="page-hero">
-      <section class="section">
-        <div class="container">
-          <div class="section-header">
-            <span class="eyebrow">Programs</span>
-            <h1>Choose the exact transformation track your body needs next.</h1>
-            <p>
-              Unlock a single course for a focused goal or combine tracks to build a complete physique system with better value.
-            </p>
-          </div>
-          <div class="program-grid" id="programGrid">
-            <p class="muted">Loading tracks...</p>
-          </div>
-        </div>
-      </section>
+for filepath in html_files:
+    with open(filepath, 'r') as f:
+        content = f.read()
+    
+    start_idx = content.find('<header class="site-header">')
+    end_idx = content.find('</header>') + len('</header>')
+    
+    if start_idx != -1 and end_idx != -1:
+        new_content = content[:start_idx] + new_header + content[end_idx:]
+        with open(filepath, 'w') as f:
+            f.write(new_content)
+        print(f"Updated {filepath}")
+    else:
+        print(f"Header not found in {filepath}")
 
-      <section class="section">
-        <div class="container">
-          <div class="section-header">
-            <span class="eyebrow">Bundles</span>
-            <h2>More commitment. Better value. Bigger transformation.</h2>
-          </div>
-          <div class="pricing-grid" id="bundleGrid"></div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <div class="container footer-grid">
-        <div>
-          <a class="brand" href="/">
-            <span class="brand-mark">AF</span>
-            <span>Ace Fitness</span>
-          </a>
-          <p class="muted">Structured transformation, clean delivery, and premium fitness positioning.</p>
-        </div>
-        <div class="footer-links">
-          <a href="/">Home</a>
-          <a href="/auth">Login</a>
-          <a href="/profile.html">Profile</a>
-        </div>
-        <div class="footer-links">
-          <a href="/contact">Contact Support</a>
-          <a href="mailto:primefficialyt@gmail.com">primefficialyt@gmail.com</a>
-        </div>
-        <div data-footer-social></div>
-      </div>
-    </footer>
-
-    <script src="/public/assets/js/app.js"></script>
-    <script src="/public/assets/js/social-contact.js"></script>
-    <script src="/public/assets/js/floating-whatsapp.js"></script>
-    <script src="/public/assets/js/upi-payment.js"></script>
-    <script src="/public/assets/js/programs.js"></script>
-  </body>
-</html>

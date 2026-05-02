@@ -12,36 +12,56 @@
     <link rel="stylesheet" href="/public/assets/css/styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container nav">
-        <a class="brand" href="/">
+        <header class="site-header">
+      <div class="nav">
+        <!-- Left: Logo -->
+        <a class="brand" href="/" aria-label="Ace Fitness Home">
           <span class="brand-mark">AF</span>
-          <span>Ace Fitness</span>
         </a>
-        <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="10" width="4" height="4" rx="1"/><rect x="18" y="10" width="4" height="4" rx="1"/>
-            <line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/>
-            <rect x="10" y="8" width="4" height="8" rx="1"/>
-          </svg>
-        </button>
+
+        <!-- Center: Desktop Links -->
+        <div class="nav-desktop-links">
+          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/programs">Programs</a>
+          <a class="nav-link" href="/dashboard">Dashboard</a>
+          <a class="nav-link" href="/workout-tracker">Tracker</a>
+          <a class="nav-link" href="/ai">AI Coach</a>
+          <a class="nav-link" href="/contact">Contact</a>
+        </div>
+
+        <!-- Right: Icons & Mobile Toggle -->
+        <div class="nav-icons">
+          <!-- Search Icon -->
+          <a class="nav-icon" href="#" aria-label="Search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+          <!-- Profile Icon -->
+          <a class="nav-icon" href="/profile.html" aria-label="Profile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </a>
+          <!-- Hamburger -->
+          <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Mobile Mega Dropdown (Full Screen) -->
         <nav class="nav-mega-menu" id="navMegaMenu">
-          <a href="/profile.html"><span class="menu-icon">&#128100;</span>Profile</a>
-          <a href="/"><span class="menu-icon">🏠</span>Home</a>
-          <a href="/programs"><span class="menu-icon">🎯</span>Programs</a>
-          <a href="/my-courses"><span class="menu-icon">🎓</span>My Courses</a>
-          <a href="/dashboard"><span class="menu-icon">📊</span>Dashboard</a>
-          <a href="/workout-tracker"><span class="menu-icon">🏋️</span>Workout Tracker</a>
-          <a href="/ai"><span class="menu-icon">🤖</span>AI Coach</a>
+          <a href="/">Home</a>
+          <a href="/programs">Programs</a>
+          <a href="/my-courses">My Courses</a>
+          <a href="/dashboard">Dashboard</a>
+          <a href="/workout-tracker">Workout Tracker</a>
+          <a href="/ai">AI Coach</a>
           <div class="nav-mega-divider"></div>
-          <a href="/contact"><span class="menu-icon">📩</span>Contact</a>
+          <a href="/contact">Contact</a>
         </nav>
       </div>
     </header>
 
     <main>
-      <section class="hero">
-        <div class="container hero-grid">
+      <section class="hero" style="padding-left: 2rem; padding-right: 2rem;">
+        <div class="hero-grid">
           <div class="hero-copy">
             <span class="eyebrow">Premium Fitness Coaching for India</span>
             <h1>Build a body that looks disciplined before you say a word.</h1>

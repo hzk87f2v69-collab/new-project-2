@@ -8,10 +8,15 @@ const qs = id => document.getElementById(id);
    Read localStorage data and build a summary
    to send to the AI as context. */
 const buildWorkoutContext = () => {
+  let contextStr = window.dashboardContext ? `${window.dashboardContext}\n\n` : "";
+  if (window.autoPilotData && window.autoPilotData.fitnessGoal) {
+    contextStr += `Profile stats: Weight ${window.autoPilotData.weightKg || "?"}kg, Height ${window.autoPilotData.heightCm || "?"}cm, Goal: ${window.autoPilotData.fitnessGoal}\n\n`;
+  }
+
   try {
     const logs = JSON.parse(localStorage.getItem("ace_wt_logs") || "[]");
     const lib  = JSON.parse(localStorage.getItem("ace_wt_library") || "{}");
-    if (!logs.length) return "No workout data logged yet.";
+    if (!logs.length) return contextStr + "No workout data logged yet.";
 
     const totalSessions = logs.length;
     const totalSets     = logs.reduce((s, l) => s + (l.sets?.length || 0), 0);
@@ -37,11 +42,11 @@ const buildWorkoutContext = () => {
       .map(([id, count]) => `${lib[id]?.name || id} (${count} sets)`)
       .join(", ");
 
-    return `Sessions: ${totalSessions} | Total sets: ${totalSets}
+    return contextStr + `Sessions: ${totalSessions} | Total sets: ${totalSets}
 Top exercises: ${top}
 Recent logs:\n${recent}`;
   } catch {
-    return "Workout data unavailable.";
+    return contextStr + "Workout data unavailable.";
   }
 };
 
@@ -189,28 +194,68 @@ qs("genDietBtn").addEventListener("click", async () => {
   }
 });
 
-/* ── PROFILE AUTO-FILL ──────────────────────────── */
-window.addEventListener("DOMContentLoaded", async () => {
-  // Auto-fill diet form from profile if available
-  try {
-    const p = JSON.parse(localStorage.getItem("ace_profile") || "null");
-    if (p) {
-      if (p.fitnessGoal)   { const el = qs("dietGoal");     if (el) el.value = p.fitnessGoal; }
-      if (p.weightKg)      { const el = qs("dietWeight");   if (el) el.value = p.weightKg; }
-      if (p.heightCm)      { const el = qs("dietHeight");   if (el) el.value = p.heightCm; }
-      if (p.age)           { const el = qs("dietAge");      if (el) el.value = p.age; }
-      if (p.activityLevel) { const el = qs("dietActivity"); if (el) el.value = p.activityLevel; }
-      if (p.dietType)      { const el = qs("dietType");     if (el) el.value = p.dietType; }
-      if (p.allergies)     { const el = qs("dietAllergies");if (el) el.value = p.allergies; }
+/* ── PROFILE AUTO-FILL & AUTO-PILOT ──────────────────────────── */
+window.autoPilotData = null;
 
-      // Show a "loaded from profile" notice
-      const notice = document.createElement("div");
-      notice.style.cssText = "background:rgba(48,209,88,0.12);border:1px solid rgba(48,209,88,0.3);border-radius:12px;padding:0.65rem 0.9rem;font-size:0.8rem;color:#30d158;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;";
-      notice.innerHTML = `✅ <span>Auto-filled from your <a href="/profile" style="color:#30d158;font-weight:700;text-decoration:underline">Profile</a>. Edit below if needed.</span>`;
-      const form = qs("dietGoal")?.closest(".ai-diet-form-card");
-      if (form) form.prepend(notice);
+window.addEventListener("DOMContentLoaded", async () => {
+  // 1. Accordion UI logic
+  const manToggle = qs("manualFormToggle");
+  const manContent = qs("manualFormContent");
+  const manChevron = qs("manualFormChevron");
+  if (manToggle && manContent) {
+    manToggle.addEventListener("click", () => {
+      const isHidden = manContent.style.display === "none";
+      manContent.style.display = isHidden ? "block" : "none";
+      manChevron.style.transform = isHidden ? "rotate(180deg)" : "rotate(0deg)";
+    });
+  }
+
+  // 2. Fetch Data
+  try {
+    const headers = typeof getHeaders === "function" ? getHeaders() : {};
+    const [profileRes, enrollmentsRes] = await Promise.allSettled([
+      api("/user/profile", { headers }),
+      api("/user/enrollments", { headers })
+    ]);
+
+    const pData = profileRes.status === "fulfilled" ? profileRes.value.profile : null;
+    const eData = enrollmentsRes.status === "fulfilled" ? enrollmentsRes.value : null;
+
+    // Cache enrollments for AI Coach
+    if (eData) {
+      const streak = localStorage.getItem('ace_streak') || 0;
+      window.dashboardContext = `Dashboard stats:\n- Total Courses Enrolled: ${eData.enrollments?.length || 0}\n- Active Streak: ${streak} days\n- Recent payments: ${eData.paymentHistory?.length || 0}`;
     }
-  } catch {}
+
+    // Process Profile Data
+    if (pData) {
+      window.autoPilotData = pData;
+      
+      if (pData.fitnessGoal)   { const el = qs("dietGoal");     if (el) el.value = pData.fitnessGoal; }
+      if (pData.weightKg)      { const el = qs("dietWeight");   if (el) el.value = pData.weightKg; }
+      if (pData.heightCm)      { const el = qs("dietHeight");   if (el) el.value = pData.heightCm; }
+      if (pData.age)           { const el = qs("dietAge");      if (el) el.value = pData.age; }
+      if (pData.activityLevel) { const el = qs("dietActivity"); if (el) el.value = pData.activityLevel; }
+      if (pData.dietType)      { const el = qs("dietType");     if (el) el.value = pData.dietType; }
+      if (pData.allergies)     { const el = qs("dietAllergies");if (el) el.value = pData.allergies; }
+
+      if (pData.weightKg && pData.fitnessGoal) {
+        const autoCard = qs("autoPilotCard");
+        if (autoCard) autoCard.style.display = "block";
+        
+        if (manContent) manContent.style.display = "none";
+        if (manChevron) manChevron.style.transform = "rotate(0deg)";
+      }
+    }
+  } catch (e) {
+    console.warn("Auto-Pilot initialization failed:", e);
+  }
+
+  // Bind Auto-Generate Button
+  const autoGenBtn = qs("autoGenDietBtn");
+  if (autoGenBtn) {
+    autoGenBtn.addEventListener("click", () => qs("genDietBtn").click());
+  }
 
   // Check if API key is set
   try {

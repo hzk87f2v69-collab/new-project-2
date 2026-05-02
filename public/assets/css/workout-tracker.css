@@ -97,7 +97,7 @@
 }
 .wt-my-ex-btn:hover { opacity: 0.75; }
 .wt-ex-badge {
-  background: #0a84ff;
+  background: #0066cc;
   color: #fff;
   font-size: 0.75rem;
   font-weight: 700;
@@ -166,7 +166,7 @@
   background: #2c2c2e;
   border: none;
   border-radius: 999px;
-  color: #0a84ff;
+  color: #0066cc;
   font-size: 0.88rem;
   font-weight: 600;
   padding: 0.4rem 0.85rem;
@@ -199,7 +199,7 @@
   background: #1c1c1e;
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 12px;
-  color: #0a84ff;
+  color: #0066cc;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
@@ -359,7 +359,7 @@
   outline: none;
   box-sizing: border-box;
 }
-.wt-1rm-field input:focus { border-color: #0a84ff; }
+.wt-1rm-field input:focus { border-color: #0066cc; }
 .wt-1rm-result {
   background: #1c1c1e;
   border-radius: 16px;
@@ -386,13 +386,13 @@
   right: 1.25rem;
   width: 3.2rem; height: 3.2rem;
   border-radius: 50%;
-  background: #0a84ff;
+  background: #0066cc;
   border: none;
   color: #fff;
   font-size: 1.6rem;
   line-height: 1;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(10,132,255,0.45);
+  box-shadow: 0 4px 20px rgba(0,102,204,0.45);
   display: none;
   align-items: center;
   justify-content: center;
@@ -495,12 +495,12 @@
   border-radius: 12px; color: #fff; font-size: 1rem;
   outline: none; box-sizing: border-box; transition: border-color 0.18s;
 }
-.wt-modal-field input:focus { border-color: #0a84ff; }
+.wt-modal-field input:focus { border-color: #0066cc; }
 .wt-modal-field input::placeholder { color: rgba(255,255,255,0.3); }
 
 .wt-modal-submit {
   width: 100%; padding: 0.9rem;
-  background: #0a84ff; border: none; border-radius: 14px;
+  background: #0066cc; border: none; border-radius: 14px;
   color: #fff; font-size: 1rem; font-weight: 700;
   cursor: pointer; transition: opacity 0.15s; margin-top: 0.5rem;
 }
@@ -525,7 +525,7 @@
 .wt-ex-pick-name { font-size: 0.88rem; font-weight: 600; }
 .wt-ex-pick-muscle { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
 .wt-ex-pick-add {
-  background: #0a84ff; border: none; border-radius: 8px;
+  background: #0066cc; border: none; border-radius: 8px;
   color: #fff; font-size: 0.75rem; font-weight: 700;
   padding: 0.3rem 0.65rem; cursor: pointer;
 }
@@ -542,7 +542,7 @@
 .wt-stat-card-val { font-size: 1.5rem; font-weight: 700; }
 .wt-stat-card-val.green { color: #30d158; }
 .wt-stat-card-val.orange { color: #ff9f0a; }
-.wt-stat-card-val.blue { color: #0a84ff; }
+.wt-stat-card-val.blue { color: #0066cc; }
 
 /* ── EMPTY STATES ─────────────────────────────── */
 .wt-empty-view {
@@ -553,7 +553,7 @@
 .wt-empty-text { color: rgba(255,255,255,0.4); font-size: 0.9rem; line-height: 1.6; }
 
 /* ── DAY COLOR ICONS ──────────────────────────── */
-.wt-icon-mon { background: rgba(10,132,255,0.2); }
+.wt-icon-mon { background: rgba(0,102,204,0.2); }
 .wt-icon-tue { background: rgba(48,209,88,0.2); }
 .wt-icon-wed { background: rgba(255,159,10,0.2); }
 .wt-icon-thu { background: rgba(255,69,58,0.2); }

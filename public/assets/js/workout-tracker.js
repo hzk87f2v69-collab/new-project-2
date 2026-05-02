@@ -44,6 +44,7 @@ const S = {
   activeTab: "sets",
   editingSetId: null,          // for edit flow
   editingLogId: null,
+  historyLevel: 0,
 };
 
 /* ── DATA ────────────────────────────────────────────────── */
@@ -143,12 +144,21 @@ const goBack = () => {
   cur.style.transform = "translateX(100%)";
   setTimeout(() => { cur.style.transform = ""; cur.style.transition = ""; }, 310);
 
-  const prev = document.querySelector(".wt-view.slide-behind");
-  if (prev) { prev.classList.remove("slide-behind"); prev.classList.add("is-active"); }
-  qs("addSetFab").classList.remove("visible");
-
-  if (S.activeView === "exercise") { S.activeView = "day"; }
-  else { S.activeView = "dashboard"; }
+  const prevId = VIEW_STACK.pop();
+  const prev = prevId ? document.getElementById(prevId) : null;
+  
+  if (prev) { 
+    prev.classList.remove("slide-behind"); 
+    prev.classList.add("is-active"); 
+    S.activeView = prev.id === "viewExercise" ? "exercise" : prev.id === "viewDay" ? "day" : "dashboard";
+  } else {
+    // Fallback if stack is empty
+    const oldPrev = document.querySelector(".wt-view.slide-behind");
+    if (oldPrev) { oldPrev.classList.remove("slide-behind"); oldPrev.classList.add("is-active"); }
+    S.activeView = "dashboard";
+  }
+  
+  qs("addSetFab").classList.toggle("visible", S.activeView === "exercise");
 };
 
 /* ── RENDER: DASHBOARD ───────────────────────────────────── */
@@ -185,7 +195,7 @@ const renderDashboard = () => {
 };
 
 /* ── RENDER: DAY VIEW ────────────────────────────────────── */
-const openDayView = dayKey => {
+const openDayView = (dayKey, pushState = true) => {
   S.selectedDay = dayKey;
   const plan = getPlan();
   const day = plan[dayKey];
@@ -241,10 +251,14 @@ const openDayView = dayKey => {
   }
 
   goTo("viewDay");
+  if (pushState) {
+    S.historyLevel = 1;
+    history.pushState({ level: 1, view: 'viewDay', day: dayKey }, '');
+  }
 };
 
 /* ── RENDER: EXERCISE VIEW ───────────────────────────────── */
-const openExerciseView = exId => {
+const openExerciseView = (exId, pushState = true) => {
   S.selectedEx = exId;
   S.activeTab = "sets";
   const lib = getLib() || {};
@@ -263,6 +277,10 @@ const openExerciseView = exId => {
   render1RMTab(exId);
   renderAnalyzeTab(exId);
   goTo("viewExercise");
+  if (pushState) {
+    S.historyLevel = 2;
+    history.pushState({ level: 2, view: 'viewExercise', ex: exId, day: S.selectedDay }, '');
+  }
 };
 
 /* ── SETS TAB ────────────────────────────────────────────── */
@@ -526,9 +544,36 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!localStorage.getItem(K_PLAN)) savePlan(structuredClone(DEFAULT_DAYS));
   renderDashboard();
 
-  /* Back buttons */
-  qs("backFromDay").addEventListener("click", () => { goBack(); renderDashboard(); });
-  qs("backFromExercise").addEventListener("click", () => { goBack(); });
+  /* History API Integration */
+  history.replaceState({ level: 0, view: 'dashboard' }, '');
+
+  window.addEventListener('popstate', (e) => {
+    const state = e.state;
+    if (!state) return;
+    
+    if (state.level < S.historyLevel) {
+      // Navigating back
+      const steps = S.historyLevel - state.level;
+      for (let i = 0; i < steps; i++) {
+        goBack();
+      }
+      S.historyLevel = state.level;
+      
+      if (state.view === 'dashboard') {
+        renderDashboard();
+      } else if (state.view === 'viewDay') {
+        S.selectedDay = state.day;
+      }
+    } else if (state.level > S.historyLevel) {
+      // Navigating forward
+      S.historyLevel = state.level;
+      if (state.view === 'viewDay') {
+        openDayView(state.day, false);
+      } else if (state.view === 'viewExercise') {
+        openExerciseView(state.ex, false);
+      }
+    }
+  });
 
   /* Dashboard actions */
   qs("newWorkoutBtn").addEventListener("click", () => {
