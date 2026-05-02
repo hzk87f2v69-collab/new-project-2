@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let map = null;
   let userMarker = null;
-  let centerLat = 23.2288729, centerLng = 79.9633208; // Glowstar Fitness Studio
+  let centerLat = 23.2375838, centerLng = 79.9647215; // Glowstar Fitness Studio
   let searchRadius = 5000;
   let activeTypes = new Set(["gym", "physio", "supplement"]);
   
@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── PERMANENT MARKER: Glowstar Fitness Studio ──────────────────
   const GLOWSTAR = {
-    lat: 23.2288729,
-    lng: 79.9633208,
+    lat: 23.2375838,
+    lng: 79.9647215,
     name: "Glowstar Fitness Studio",
     address: "Jabalpur, Madhya Pradesh"
   };
