@@ -150,9 +150,11 @@ select {
   width: auto;
   display: block;
   object-fit: contain;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, transform 0.3s;
   border-radius: 4px;
   filter: invert(1); /* Invert to make it white for dark header */
+  transform: scale(2.5);
+  transform-origin: left center;
 }
 
 .brand-mark:hover {
