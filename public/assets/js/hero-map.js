@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let map = null;
   let userMarker = null;
-  let centerLat = 20.5937, centerLng = 78.9629; // default india
+  let centerLat = 23.2288729, centerLng = 79.9633208; // Glowstar Fitness Studio
   let searchRadius = 5000;
   let activeTypes = new Set(["gym", "physio", "supplement"]);
   
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Init Map
-  map = L.map("heroMap", { zoomControl: false, scrollWheelZoom: true }).setView([centerLat, centerLng], 5);
+  map = L.map("heroMap", { zoomControl: false, scrollWheelZoom: true }).setView([centerLat, centerLng], 15);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
   
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -41,6 +41,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }).addTo(map);
 
   Object.values(layerGroups).forEach(group => group.addTo(map));
+
+  // ── PERMANENT MARKER: Glowstar Fitness Studio ──────────────────
+  const GLOWSTAR = {
+    lat: 23.2288729,
+    lng: 79.9633208,
+    name: "Glowstar Fitness Studio",
+    address: "Jabalpur, Madhya Pradesh"
+  };
+
+  const glowstarIcon = L.divIcon({
+    className: "",
+    html: `<div class="hero-marker" style="background:#0a84ff;width:32px;height:32px;font-size:18px;box-shadow:0 0 0 4px rgba(10,132,255,0.35);">🏋️</div>`,
+    iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -18]
+  });
+
+  const glowstarMarker = L.marker([GLOWSTAR.lat, GLOWSTAR.lng], { icon: glowstarIcon })
+    .addTo(map)
+    .bindPopup(`
+      <div style="font-family:'Inter',sans-serif">
+        <strong style="display:block;margin-bottom:4px;font-size:14px">📍 ${GLOWSTAR.name}</strong>
+        <span style="display:block;color:#aaa;font-size:12px;margin-bottom:8px">${GLOWSTAR.address}</span>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${GLOWSTAR.lat},${GLOWSTAR.lng}"
+          target="_blank"
+          style="display:block;background:#0a84ff;color:#fff;padding:4px 8px;border-radius:4px;text-align:center;text-decoration:none;font-weight:600;font-size:12px">
+          Navigate
+        </a>
+      </div>
+    `);
+  // ───────────────────────────────────────────────────────────────
+
+  // Fetch nearby on load
+  setTimeout(() => fetchNearby(centerLat, centerLng), 500);
 
   // Markers
   const createMarker = (type) => {
