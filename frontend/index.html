@@ -69,20 +69,31 @@
             </div>
           </div>
           <div class="hero-visual">
-            <div class="hero-panel">
-              <div class="hero-silhouette"></div>
-              <div class="floating-chip chip-top">
-                <div>
-                  <strong>Transformation System</strong>
-                  <span class="muted">Track progress week by week</span>
-                </div>
+            <div class="hero-panel" style="padding: 0; display: flex; flex-direction: column;">
+              
+              <!-- Map Container -->
+              <div id="heroMap" style="width: 100%; min-height: 460px; border-radius: 22px; z-index: 1;"></div>
+              
+              <!-- Overlay Controls Top -->
+              <div class="hero-map-overlay-top" style="position: absolute; top: 1rem; right: 1rem; z-index: 1000; pointer-events: none;">
+                <button id="heroLocBtn" class="btn btn-primary" style="pointer-events: auto; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                  Live Location
+                </button>
               </div>
-              <div class="floating-chip chip-bottom">
-                <div>
-                  <strong>Premium Dashboard</strong>
-                  <span class="muted">Courses unlock instantly during testing</span>
-                </div>
+
+              <!-- Loading Overlay -->
+              <div id="heroMapLoading" class="hide" style="position: absolute; inset: 0; background: rgba(7, 13, 24, 0.7); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; border-radius: 22px;">
+                <div class="map-spin" style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #0a84ff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
               </div>
+
+            </div>
+
+            <!-- Controls Outside Map Window -->
+            <div class="hero-map-chips" style="display: flex; gap: 0.5rem; justify-content: center; width: 100%; margin-top: 1rem;">
+              <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="gym">Gyms</button>
+              <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="physio">Physio</button>
+              <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="supplement">Supplements</button>
             </div>
           </div>
         </div>
@@ -193,62 +204,7 @@
         </div>
       </section>
 
-      <!-- ── SMART NEARBY MAP ── -->
-      <section class="section" id="nearbyMap">
-        <div class="container">
-          <div class="section-header">
-            <span class="eyebrow">Find Nearby</span>
-            <h2>Fitness Services Near You</h2>
-            <p class="muted">Discover gyms, physiotherapy clinics, and supplement shops.</p>
-          </div>
 
-          <div class="map-controls-row">
-            <button class="btn btn-primary map-loc-btn" id="mapLocateBtn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
-              Use Current Location
-            </button>
-            <div class="map-radius-select">
-              <label for="radiusSelect">Radius:</label>
-              <select id="radiusSelect">
-                <option value="2000">2 KM</option>
-                <option value="5000" selected>5 KM</option>
-                <option value="10000">10 KM</option>
-                <option value="15000">15 KM</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="map-filter-row">
-            <button class="map-pill active" data-type="all">All</button>
-            <button class="map-pill" data-type="gym">&#127947; Gyms</button>
-            <button class="map-pill" data-type="physio">&#129514; Physiotherapy</button>
-            <button class="map-pill" data-type="supplement">&#128138; Supplements</button>
-          </div>
-
-          <div class="map-layout-grid">
-            <div class="map-shell">
-              <div id="aceFitnessMap" style="height:100%;width:100%;min-height:420px">
-                <div class="map-locating" id="mapLocating">
-                  <div class="map-spin"></div>
-                  <span>Click 'Use Current Location' to begin&#8230;</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="results-panel">
-              <div class="results-header">
-                <h3 id="resultsCount">Waiting for location</h3>
-              </div>
-              <div class="results-list" id="resultsList">
-                <div class="results-empty-state">
-                  <p>Click "Use Current Location" to find nearby fitness services.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
 
       <section class="section">
         <div class="container">
@@ -333,7 +289,10 @@
     <script src="/public/assets/js/floating-whatsapp.js"></script>
     <script src="/public/assets/js/upi-payment.js"></script>
     <script src="/public/assets/js/index.js"></script>
+    
+    <!-- Hero Map System -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="/public/assets/js/map.js"></script>
+    <script src="/public/assets/js/hero-map.js"></script>
   </body>
 </html>
