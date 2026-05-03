@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ace Fitness Programs | Buy Goal-Based Fitness Tracks</title>
+    <title>Find a Gym | Ace Fitness</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/public/assets/css/styles.css" />
     <link rel="icon" type="image/jpeg" href="/public/assets/images/favicon.jpg">
-</head>
+  </head>
   <body>
     <header class="site-header">
       <div class="nav">
@@ -20,14 +21,14 @@
           <a href="/" class="nav-link">Home</a>
           <a href="/dashboard" class="nav-link">Progress</a>
           <a href="/workout-tracker" class="nav-link">Tracker</a>
-          <a href="/find-gyms" class="nav-link">Find Gyms</a>
+          <a href="/find-gyms" class="nav-link active">Find Gyms</a>
           <a href="/profile" class="nav-link">Profile</a>
         </div>
 
         <!-- Center (Mobile) / Right (Desktop): Toggle -->
         <div class="header-toggle">
-          <a href="/" class="toggle-btn" data-mode="workout">WORKOUT</a>
-          <a href="/programs" class="toggle-btn active" data-mode="course">COURSE</a>
+          <a href="/" class="toggle-btn active" data-mode="workout">WORKOUT</a>
+          <a href="/programs" class="toggle-btn" data-mode="course">COURSE</a>
         </div>
 
         <!-- Right: Icons -->
@@ -39,61 +40,35 @@
       </div>
     </header>
 
-    <main class="page-hero">
-      <section class="section">
+    <main>
+      <section class="section map-section" id="location-map" style="padding-top: 100px;">
         <div class="container">
           <div class="section-header">
-            <span class="eyebrow">Programs</span>
-            <h1>Choose the exact transformation track your body needs next.</h1>
-            <p>
-              Unlock a single course for a focused goal or combine tracks to build a complete physique system with better value.
-            </p>
+            <span class="eyebrow">FIND A GYM</span>
+            <h2>Locate facilities near you</h2>
           </div>
-          <div class="program-grid" id="programGrid">
-            <p class="muted">Loading tracks...</p>
+          
+          <div class="map-container glass-card">
+            <div id="heroMap" style="width: 100%; min-height: 500px; z-index: 1;"></div>
+            <div class="hero-map-overlay-top" style="position: absolute; top: 1rem; right: 1rem; z-index: 1000; pointer-events: none;">
+              <button id="heroLocBtn" class="btn btn-primary" style="pointer-events: auto; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                Live Location
+              </button>
+            </div>
+            <div id="heroMapLoading" class="hide" style="position: absolute; inset: 0; background: rgba(7, 13, 24, 0.7); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+              <div class="map-spin" style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #0a84ff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
           </div>
-        </div>
-      </section>
 
-      <section class="section">
-        <div class="container">
-          <div class="section-header">
-            <span class="eyebrow">Bundles</span>
-            <h2>More commitment. Better value. Bigger transformation.</h2>
+          <div class="hero-map-chips" style="display: flex; gap: 0.5rem; justify-content: center; width: 100%; margin-top: 1rem;">
+            <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="gym">Gyms</button>
+            <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="physio">Physio</button>
+            <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="supplement">Supplements</button>
           </div>
-          <div class="pricing-grid" id="bundleGrid"></div>
         </div>
       </section>
     </main>
-
-    <footer class="footer">
-      <div class="container footer-grid">
-        <div>
-          <a class="brand" href="/">
-            <img src="/public/assets/images/logo.png" alt="AF" class="brand-mark">
-            <span>Ace Fitness</span>
-          </a>
-          <p class="muted">Premium transformation programs with trust, structure, and strong conversion-first design.</p>
-        </div>
-        <div>
-          <h3>Explore</h3>
-          <div class="footer-links">
-            <a href="/programs">Programs</a>
-            <a href="/auth">Login / Register</a>
-            <a href="/dashboard">Dashboard</a>
-          </div>
-        </div>
-        <div>
-          <h3>Contact</h3>
-          <div class="footer-links">
-            <a href="/contact">Support</a>
-            <a href="mailto:primefficialyt@gmail.com">primefficialyt@gmail.com</a>
-            <a href="https://wa.me/917223888352" target="_blank" rel="noreferrer">WhatsApp Support</a>
-          </div>
-          <div data-footer-social></div>
-        </div>
-      </div>
-    </footer>
 
     <!-- Bottom Navigation (Mobile Only) -->
     <nav class="bottom-nav">
@@ -109,7 +84,7 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
         <span>Tracker</span>
       </a>
-      <a href="/find-gyms" class="nav-item">
+      <a href="/find-gyms" class="nav-item active">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
         <span>Find Gyms</span>
       </a>
@@ -120,9 +95,7 @@
     </nav>
 
     <script src="/public/assets/js/app.js"></script>
-    <script src="/public/assets/js/social-contact.js"></script>
-    <script src="/public/assets/js/floating-whatsapp.js"></script>
-    <script src="/public/assets/js/upi-payment.js"></script>
-    <script src="/public/assets/js/programs.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/public/assets/js/hero-map.js"></script>
   </body>
 </html>

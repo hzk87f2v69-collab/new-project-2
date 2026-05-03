@@ -8,12 +8,11 @@
       name="description"
       content="Ace Fitness helps Indian men transform with premium fat loss, muscle gain, strength, and home workout programs."
     />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/public/assets/css/styles.css" />
     <link rel="icon" type="image/jpeg" href="/public/assets/images/favicon.jpg">
 </head>
   <body>
-            <header class="site-header">
+    <header class="site-header">
       <div class="nav">
         <!-- Left: Logo -->
         <a class="brand" href="/" aria-label="Ace Fitness Home">
@@ -22,41 +21,25 @@
 
         <!-- Center: Desktop Links -->
         <div class="nav-desktop-links">
-          <a class="nav-link" href="/">Home</a>
-          <a class="nav-link" href="/programs">Programs</a>
-          <a class="nav-link" href="/dashboard">Dashboard</a>
-          <a class="nav-link" href="/workout-tracker">Tracker</a>
-          <a class="nav-link" href="/ai">AI Coach</a>
-          <a class="nav-link" href="/contact">Contact</a>
+          <a href="/" class="nav-link active">Home</a>
+          <a href="/dashboard" class="nav-link">Progress</a>
+          <a href="/workout-tracker" class="nav-link">Tracker</a>
+          <a href="/find-gyms" class="nav-link">Find Gyms</a>
+          <a href="/profile" class="nav-link">Profile</a>
         </div>
 
-        <!-- Right: Icons & Mobile Toggle -->
+        <!-- Center (Mobile) / Right (Desktop): Toggle -->
+        <div class="header-toggle">
+          <a href="/" class="toggle-btn active" data-mode="workout">WORKOUT</a>
+          <a href="/programs" class="toggle-btn" data-mode="course">COURSE</a>
+        </div>
+
+        <!-- Right: Icons -->
         <div class="nav-icons">
-          <!-- Search Icon -->
-          <a class="nav-icon" href="#" aria-label="Search">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <a class="ai-badge" href="/ai" aria-label="AI Coach">
+            <span>Ai<sup>+</sup></span>
           </a>
-          <!-- Profile Icon -->
-          <a class="nav-icon" href="/profile.html" aria-label="Profile">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </a>
-          <!-- Hamburger -->
-          <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
         </div>
-
-        <!-- Mobile Mega Dropdown (Full Screen) -->
-        <nav class="nav-mega-menu" id="navMegaMenu">
-          <a href="/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Home</a>
-          <a href="/programs"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 7h10"></path><path d="M7 12h10"></path><path d="M7 17h10"></path></svg>Programs</a>
-          <a href="/my-courses"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"></path><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"></path><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"></path><path d="M18 5v17"></path><path d="M6 5v17"></path><circle cx="12" cy="9" r="2"></circle></svg>My Courses</a>
-          <a href="/dashboard"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>Dashboard</a>
-          <a href="/workout-tracker"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H14.76a2 2 0 0 1 1.79 1.1L18 14"></path><path d="M6 14h12"></path><path d="M6 14v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4"></path><path d="M14 22v-4"></path><path d="M10 22v-4"></path><path d="M4 6h16"></path><path d="M4 10h16"></path></svg>Workout Tracker</a>
-          <a href="/ai"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path><path d="M12 8V4"></path><circle cx="12" cy="4" r="1"></circle></svg>AI Coach</a>
-          <div class="nav-mega-divider"></div>
-          <a href="/contact"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Contact</a>
-        </nav>
       </div>
     </header>
 
@@ -64,7 +47,6 @@
       <section class="hero-banner">
         <div class="container">
           <div class="hero-banner-content">
-            <span class="eyebrow" style="border-color: rgba(0, 102, 204, 0.4); color: var(--accent);">DISCIPLINE. TRAINING. TRANSFORMATION.</span>
             <h1 class="hero-banner-title">
               Stronger <span style="color: var(--accent);">Today.</span><br>
               Better <span style="color: var(--accent);">Every Day.</span>
@@ -75,131 +57,87 @@
             
             <div class="hero-features">
               <div class="hero-feature-item">
-
+                <div class="hero-feature-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
+                </div>
                 <div class="hero-feature-text">Personalized<br>Programs</div>
               </div>
               <div class="hero-feature-item">
-
+                <div class="hero-feature-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+                </div>
                 <div class="hero-feature-text">Workout<br>Tracking</div>
               </div>
               <div class="hero-feature-item">
-
+                <div class="hero-feature-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 12V7"></path><path d="M12 12h5"></path></svg>
+                </div>
                 <div class="hero-feature-text">Progress<br>Analytics</div>
               </div>
               <div class="hero-feature-item">
-
+                <div class="hero-feature-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.88-1.1 4.42-4.15 4.42-8.03 0-3.42-2.71-6.2-6.05-6.2-1.95 0-3.69 1.1-4.7 2.76"></path><path d="M12 21a9 9 0 0 1-9-9 9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-9 9Z"></path><path d="M12 12h.01"></path></svg>
+                </div>
                 <div class="hero-feature-text">Nutrition<br>Guidance</div>
               </div>
             </div>
           </div>
 
           <!-- Cards shown ONLY on mobile (below features, in empty space) -->
-          <div class="hero-mobile-cards">
-            <a href="/workout-tracker" class="hero-floating-card" style="text-decoration: none; color: inherit; cursor: pointer;">
-              <div class="eyebrow">WORKOUT TRACKER</div>
-              <svg id="wtChartMobile" viewBox="0 0 200 80" style="width: 100%; height: 50px; margin-bottom: 0.8rem; overflow: visible;">
-                <line x1="0" y1="20" x2="200" y2="20" stroke="rgba(255,255,255,0.1)" stroke-width="1"></line>
-                <line x1="0" y1="40" x2="200" y2="40" stroke="rgba(255,255,255,0.1)" stroke-width="1"></line>
-                <line x1="0" y1="60" x2="200" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1"></line>
-                <polyline id="wtLineMobile" points="0,60 200,60" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
-                <g id="wtDotsMobile"></g>
-              </svg>
-              <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                <div>
-                  <div style="font-size: 0.65rem; color: var(--muted); margin-bottom: 0.2rem;">TODAY'S CALORIES</div>
-                  <div style="font-size: 1.3rem; font-weight: 800;"><span id="wtCalMobile">—</span> <span style="font-size: 0.75rem; font-weight: 400; color: var(--muted);">kcal</span></div>
-                </div>
-                <div style="color: var(--accent);">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path></svg>
-                </div>
+          <div class="hero-dashboard-grid">
+            <a href="/workout-tracker" class="dashboard-card glass-card">
+              <div class="card-header">
+                <span class="card-title">WORKOUT TRACKER</span>
               </div>
-            </a>
-            <div class="hero-floating-card" id="wpCardMobile">
-              <div class="eyebrow">WEEKLY PROGRESS</div>
-              <!-- populated by JS -->
-              <div id="wpBodyMobile" class="wp-body">
-                <div class="wp-empty">
-                  <div style="color:var(--accent);flex-shrink:0">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  </div>
-                  <div style="font-size:0.8rem;color:var(--text);line-height:1.4">Stay consistent and see real results.</div>
-                </div>
-                <div style="font-size:0.75rem;font-weight:700;color:var(--accent);margin-top:0.5rem">KEEP GOING!</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- Original Map Section Preserved -->
-      <section class="section" id="location-map">
-        <div class="container">
-          <div class="section-header">
-            <span class="eyebrow">Find a Gym</span>
-            <h2>Locate facilities near you</h2>
-          </div>
-          <!-- Map + Sidebar cards grid for desktop -->
-          <div class="map-with-cards">
-            <!-- Left: Floating cards (desktop only) -->
-            <div class="map-with-cards-side">
-              <a href="/workout-tracker" class="hero-floating-card" style="text-decoration: none; color: inherit; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
-                <div class="eyebrow">WORKOUT TRACKER</div>
-                <svg id="wtChartDesktop" viewBox="0 0 200 80" style="width: 100%; height: 55px; margin-bottom: 0.8rem; overflow: visible;">
-                  <line x1="0" y1="20" x2="200" y2="20" stroke="rgba(255,255,255,0.1)" stroke-width="1"></line>
-                  <line x1="0" y1="40" x2="200" y2="40" stroke="rgba(255,255,255,0.1)" stroke-width="1"></line>
-                  <line x1="0" y1="60" x2="200" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1"></line>
-                  <polyline id="wtLineDesktop" points="0,60 200,60" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
-                  <g id="wtDotsDesktop"></g>
+              <div class="card-body">
+                <svg id="wtChartMobile" viewBox="0 0 200 80" class="chart-svg">
+                  <polyline id="wtLineMobile" points="0,60 200,60" fill="none" stroke="var(--accent)" stroke-width="3"></polyline>
+                  <g id="wtDotsMobile"></g>
                 </svg>
-                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                  <div>
-                    <div style="font-size: 0.65rem; color: var(--muted); margin-bottom: 0.2rem;">TODAY'S CALORIES</div>
-                    <div style="font-size: 1.4rem; font-weight: 800;"><span id="wtCalDesktop">—</span> <span style="font-size: 0.8rem; font-weight: 400; color: var(--muted);">kcal</span></div>
+                <div class="card-footer">
+                  <div class="metric">
+                    <span class="metric-label">TODAY'S CALORIES</span>
+                    <span class="metric-value"><span id="wtCalMobile">48</span> <small>kcal</small></span>
                   </div>
-                  <div style="color: var(--accent);">
+                  <div class="metric-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path></svg>
                   </div>
                 </div>
-              </a>
-              <div class="hero-floating-card" id="wpCardDesktop">
-                <div class="eyebrow">WEEKLY PROGRESS</div>
-                <!-- populated by JS -->
-                <div id="wpBodyDesktop" class="wp-body">
-                  <div class="wp-empty">
-                    <div style="color:var(--accent);flex-shrink:0">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    </div>
-                    <div style="font-size:0.9rem;color:var(--text);line-height:1.4">Stay consistent and see real results.</div>
-                  </div>
-                  <div style="font-size:0.85rem;font-weight:700;color:var(--accent);margin-top:0.5rem">KEEP GOING!</div>
-                </div>
               </div>
-            </div>
+            </a>
 
-            <!-- Right: Map -->
-            <div class="map-with-cards-main">
-              <div class="hero-panel" style="padding: 0; display: flex; flex-direction: column;">
-                <div id="heroMap" style="width: 100%; min-height: 420px; border-radius: 22px; z-index: 1;"></div>
-                <div class="hero-map-overlay-top" style="position: absolute; top: 1rem; right: 1rem; z-index: 1000; pointer-events: none;">
-                  <button id="heroLocBtn" class="btn btn-primary" style="pointer-events: auto; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
-                    Live Location
-                  </button>
-                </div>
-                <div id="heroMapLoading" class="hide" style="position: absolute; inset: 0; background: rgba(7, 13, 24, 0.7); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; border-radius: 22px;">
-                  <div class="map-spin" style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #0a84ff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                </div>
+            <div class="dashboard-card glass-card">
+              <div class="card-header">
+                <span class="card-title">WEEKLY PROGRESS</span>
               </div>
-              <div class="hero-map-chips" style="display: flex; gap: 0.5rem; justify-content: center; width: 100%; margin-top: 1rem;">
-                <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="gym">Gyms</button>
-                <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="physio">Physio</button>
-                <button class="hero-chip active" style="flex: 1; padding: 0.8rem 0; font-size: 0.9rem;" data-type="supplement">Supplements</button>
+              <div class="card-body" id="wpBodyMobile">
+                <div class="wp-metrics-grid">
+                  <div class="wp-metric">
+                    <div class="wp-val">480</div>
+                    <div class="wp-label">VOL KG <span class="badge">▲ NEW</span></div>
+                  </div>
+                  <div class="wp-metric">
+                    <div class="wp-val">1</div>
+                    <div class="wp-label">SETS <span class="badge">▲ NEW</span></div>
+                  </div>
+                  <div class="wp-metric">
+                    <div class="wp-val">1/6</div>
+                    <div class="wp-label">DAYS <span class="badge">▲ NEW</span></div>
+                  </div>
+                  <div class="wp-metric">
+                    <div class="wp-val">56</div>
+                    <div class="wp-label">1RM <span class="badge">▲ NEW</span></div>
+                  </div>
+                </div>
+                <div class="wp-footer">vs last week</div>
               </div>
             </div>
           </div>
+
         </div>
       </section>
+
+
 
       <section class="section">
         <div class="container">
@@ -386,16 +324,37 @@
       </div>
     </footer>
 
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+      <a href="/" class="nav-item active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="/dashboard" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+        <span>Progress</span>
+      </a>
+      <a href="/workout-tracker" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
+        <span>Tracker</span>
+      </a>
+      <a href="/find-gyms" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+        <span>Find Gyms</span>
+      </a>
+      <a href="/profile" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+
     <script src="/public/assets/js/app.js"></script>
     <script src="/public/assets/js/social-contact.js"></script>
     <script src="/public/assets/js/floating-whatsapp.js"></script>
     <script src="/public/assets/js/upi-payment.js"></script>
     <script src="/public/assets/js/index.js"></script>
     
-    <!-- Hero Map System -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="/public/assets/js/hero-map.js"></script>
+
     <script>
     /* ── Workout Tracker Card Integration ─────────────────── */
     (function () {
@@ -517,10 +476,10 @@
 
       function badge(cur, prev) {
         if (prev === 0 && cur === 0) return '';
-        if (prev === 0) return '<span class="wp-badge-up">▲ NEW</span>';
+        if (prev === 0) return '<span class="badge badge-up">▲ NEW</span>';
         const pct = ((cur - prev) / prev * 100).toFixed(1);
         const up  = cur >= prev;
-        return `<span class="wp-badge-${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(pct)}%</span>`;
+        return `<span class="badge badge-${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(pct)}%</span>`;
       }
 
       function render(bodyId, tw, lw) {
@@ -530,25 +489,25 @@
         if (tw.sets === 0) return; // keep default motivational state
 
         el.innerHTML = `
-          <div class="wp-metrics">
+          <div class="wp-metrics-grid">
             <div class="wp-metric">
-              <div class="wp-metric-val">${tw.volume > 999 ? (tw.volume/1000).toFixed(1)+'k' : tw.volume}</div>
-              <div class="wp-metric-label">Vol kg ${badge(tw.volume, lw.volume)}</div>
+              <div class="wp-val">${tw.volume > 999 ? (tw.volume/1000).toFixed(1)+'k' : tw.volume}</div>
+              <div class="wp-label">VOL KG ${badge(tw.volume, lw.volume)}</div>
             </div>
             <div class="wp-metric">
-              <div class="wp-metric-val">${tw.sets}</div>
-              <div class="wp-metric-label">Sets ${badge(tw.sets, lw.sets)}</div>
+              <div class="wp-val">${tw.sets}</div>
+              <div class="wp-label">SETS ${badge(tw.sets, lw.sets)}</div>
             </div>
             <div class="wp-metric">
-              <div class="wp-metric-val">${tw.days}<span style="font-size:0.55em;opacity:0.5">/6</span></div>
-              <div class="wp-metric-label">Days ${badge(tw.days, lw.days)}</div>
+              <div class="wp-val">${tw.days}<span style="font-size:0.55em;opacity:0.5">/6</span></div>
+              <div class="wp-label">DAYS ${badge(tw.days, lw.days)}</div>
             </div>
             <div class="wp-metric">
-              <div class="wp-metric-val">${tw.best1RM}</div>
-              <div class="wp-metric-label">1RM ${badge(tw.best1RM, lw.best1RM)}</div>
+              <div class="wp-val">${tw.best1RM}</div>
+              <div class="wp-label">1RM ${badge(tw.best1RM, lw.best1RM)}</div>
             </div>
           </div>
-          <div style="font-size:0.65rem;color:var(--muted);margin-top:0.5rem;text-align:right">vs last week</div>`;
+          <div class="wp-footer">vs last week</div>`;
       }
 
       function init() {

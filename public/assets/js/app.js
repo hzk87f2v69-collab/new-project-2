@@ -371,43 +371,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     initFloatingWhatsApp();
   }
 
-  // ── Mobile Menu toggle ──────────────────────────────────────
-  const dumbbellBtn = document.getElementById("navDumbbell");
-  const megaMenu    = document.getElementById("navMegaMenu");
-  
-  const hamburgerSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
-  const closeSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-
-  if (dumbbellBtn && megaMenu) {
-    const toggleMenu = (forceClose = false) => {
-      const isOpening = forceClose ? false : !megaMenu.classList.contains("open");
-      
-      if (isOpening) {
-        megaMenu.classList.add("open");
-        document.body.style.overflow = "hidden";
-        dumbbellBtn.innerHTML = closeSvg;
-      } else {
-        megaMenu.classList.remove("open");
-        document.body.style.overflow = "";
-        dumbbellBtn.innerHTML = hamburgerSvg;
-      }
-    };
-
-    dumbbellBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleMenu();
+  // ── Header Toggle ──────────────────────────────────────────
+  const toggleButtons = document.querySelectorAll(".toggle-btn");
+  toggleButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      toggleButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const mode = btn.dataset.mode;
+      console.log(`Switched to ${mode} mode`);
     });
-    
-    // Close when clicking outside
-    document.addEventListener("click", () => toggleMenu(true));
-    megaMenu.addEventListener("click", (e) => {
-      if(e.target.tagName !== 'A') {
-        e.stopPropagation();
-      } else {
-        toggleMenu(true);
-      }
-    });
-  }
+  });
+
+  // ── Bottom Navigation Active State ──────────────────────────
+  const path = window.location.pathname;
+  const bottomNavItems = document.querySelectorAll(".bottom-nav .nav-item");
+  bottomNavItems.forEach(item => {
+    const itemPath = item.getAttribute("href");
+    if (path === itemPath || (path === "/" && itemPath === "/")) {
+      bottomNavItems.forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+    }
+  });
 
   // ── Global Scroll Reveal Animation ───────────────────────────
   const observerOptions = {

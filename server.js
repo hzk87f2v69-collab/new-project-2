@@ -131,7 +131,7 @@ app.post("/api/ai/diet", express.json(), async (req, res) => {
   }
 });
 // ────────────────────────────────────────────────────────
-app.get(["/", "/programs", "/auth", "/dashboard", "/profile", "/my-courses", "/player", "/contact", "/payment-success", "/workout-tracker", "/ai"], (req, res) => {
+app.get(["/", "/programs", "/auth", "/dashboard", "/profile", "/my-courses", "/player", "/contact", "/payment-success", "/workout-tracker", "/ai", "/find-gyms"], (req, res) => {
   const routeMap = {
     "/": "index.html",
     "/programs": "programs.html",
@@ -143,7 +143,8 @@ app.get(["/", "/programs", "/auth", "/dashboard", "/profile", "/my-courses", "/p
     "/contact": "contact.html",
     "/payment-success": "payment-success.html",
     "/workout-tracker": "workout-tracker.html",
-    "/ai": "ai.html"
+    "/ai": "ai.html",
+    "/find-gyms": "map.html"
   };
 
   res.sendFile(path.join(__dirname, "frontend", routeMap[req.path]));
