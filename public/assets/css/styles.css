@@ -106,13 +106,15 @@ select {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  padding: 4px;
+  padding: 3px;
   gap: 2px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
+  width: 190px;
+  height: 38px;
 }
 
 @media (min-width: 1024px) {
@@ -130,7 +132,7 @@ select {
   color: rgba(255, 255, 255, 0.45);
   font-size: 11px;
   font-weight: 700;
-  padding: 8px 18px;
+  padding: 0;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -140,13 +142,14 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
 }
 
 .toggle-btn.active {
-  background: rgba(10, 132, 255, 0.18);
+  background: rgba(10, 132, 255, 0.22);
   color: #fff;
-  border-color: rgba(10, 132, 255, 0.3);
-  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.2);
+  border: 1px solid rgba(10, 132, 255, 0.6);
+  box-shadow: 0 0 15px rgba(10, 132, 255, 0.25);
 }
 
 .ai-badge {
@@ -1331,48 +1334,6 @@ a.hero-floating-card:hover {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.floating-whatsapp {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 60;
-  display: grid;
-  place-items: center;
-  width: 4.25rem;
-  height: 4.25rem;
-  padding: 0;
-  border-radius: 999px;
-  background: rgba(28, 28, 30, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.floating-whatsapp:hover {
-  transform: translateY(-3px) scale(1.02);
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
-}
-
-.floating-whatsapp-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.26);
-  animation: whatsappPulse 2.8s ease-out infinite;
-}
-
-.floating-whatsapp-icon {
-  position: relative;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 999px;
-  background: rgba(44, 44, 46, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0;
-}
-
 .payment-modal {
   position: fixed;
   inset: 0;
@@ -1618,17 +1579,7 @@ a.hero-floating-card:hover {
   }
 }
 
-@keyframes whatsappPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.26);
-  }
-  70% {
-    box-shadow: 0 0 0 18px rgba(0, 102, 204, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0);
-  }
-}
+
 
 .helper,
 .status-text {
@@ -1929,6 +1880,12 @@ a.hero-floating-card:hover {
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+@media (max-width: 1023px) {
+  .footer {
+    display: none !important;
+  }
+}
+
 .footer-grid {
   display: grid;
   gap: 1rem;
@@ -2013,6 +1970,9 @@ a.hero-floating-card:hover {
 }
 
 @media (max-width: 767px) {
+  body {
+    padding-bottom: 110px;
+  }
   .nav {
     justify-content: space-between;
   }
@@ -2027,10 +1987,25 @@ a.hero-floating-card:hover {
     flex: 1 1 180px;
   }
 
-  .floating-whatsapp {
-    right: 0.9rem;
-    left: auto;
-    bottom: 0.9rem;
+  .bottom-nav {
+    width: calc(100% - 40px);
+    bottom: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Move map controls up on mobile to avoid overlap */
+  .hero-map-overlay-top {
+    top: auto !important;
+    bottom: 110px !important;
+    right: 16px !important;
+  }
+
+  .leaflet-control-zoom {
+    margin-bottom: 90px !important;
+  }
+
+  .leaflet-control-attribution {
+    display: none !important;
   }
 
   .footer-socials {
@@ -2430,6 +2405,8 @@ body.player-page {
    ============================================================ */
 
 .db-shell {
+  min-height: 100vh;
+  padding-top: 80px;
   padding-bottom: 5rem;
 }
 

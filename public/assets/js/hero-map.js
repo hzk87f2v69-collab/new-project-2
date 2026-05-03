@@ -7,22 +7,37 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!mapContainer) return;
 
   const CAT_CONFIG = {
-    gym:        { color: "#0a84ff", icon: "🏋️", label: "Gym" },
-    physio:     { color: "#ff2d55", icon: "🩺", label: "Physio" },
-    supplement: { color: "#ffcc00", icon: "💊", label: "Supplement" }
+    gym: { color: "#0a84ff", icon: "🏋️", label: "Gym" }
   };
 
   let map = null;
   let userMarker = null;
-  let centerLat = 23.2375838, centerLng = 79.9647215; // Glowstar Fitness Studio
-  let searchRadius = 5000;
-  let activeTypes = new Set(["gym", "physio", "supplement"]);
+  let centerLat = 23.1817, centerLng = 79.9554; // Centered around Jabalpur gym cluster
+  let activeTypes = new Set(["gym"]);
   
   const layerGroups = {
-    gym: L.layerGroup(),
-    physio: L.layerGroup(),
-    supplement: L.layerGroup()
+    gym: L.layerGroup()
   };
+
+  const PARTNER_GYMS = [
+    { name: "Anytime Fitness", lat: 23.1679, lng: 79.9326 },
+    { name: "My Fitness Gym", lat: 23.1817, lng: 79.9554 },
+    { name: "Smart Gym Narmada", lat: 23.1508, lng: 79.9096 },
+    { name: "Cult Gym Napier Town", lat: 23.1654, lng: 79.9448 },
+    { name: "Fitness Anytym Gym", lat: 23.1831, lng: 79.9581 },
+    { name: "Royal Fitness Garha", lat: 23.1612, lng: 79.9185 },
+    { name: "Energica Gym", lat: 23.1968, lng: 79.9872 },
+    { name: "Fitness Era Gym", lat: 23.1786, lng: 79.9513 },
+    { name: "24 Gym", lat: 23.1547, lng: 79.9242 },
+    { name: "Asia’s Gym Civic Centre", lat: 23.1702, lng: 79.9395 },
+    { name: "Jabalpur Gym City", lat: 23.1859, lng: 79.9464 },
+    { name: "Transform 360 Gym", lat: 23.1848, lng: 79.9627 },
+    { name: "The Gold Mace Gym", lat: 23.1974, lng: 79.9821 },
+    { name: "Fitness Jungle", lat: 23.1804, lng: 79.9706 },
+    { name: "Evolve Fitness", lat: 23.1718, lng: 79.9498 },
+    { name: "Royal Fitness Napier Town", lat: 23.1668, lng: 79.9431 },
+    { name: "Olympus Gym", lat: 23.1937, lng: 79.9754 }
+  ];
 
   let fetchedPlaces = [];
 
@@ -33,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Init Map
-  map = L.map("heroMap", { zoomControl: false, scrollWheelZoom: true }).setView([centerLat, centerLng], 15);
+  map = L.map("heroMap", { zoomControl: false, scrollWheelZoom: true }).setView([centerLat, centerLng], 14);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
   
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -42,64 +57,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   Object.values(layerGroups).forEach(group => group.addTo(map));
 
-  // ── PERMANENT MARKER: Glowstar Fitness Studio ──────────────────
-  const GLOWSTAR = {
-    lat: 23.2375838,
-    lng: 79.9647215,
-    name: "Glowstar Fitness Studio",
-    address: "Jabalpur, Madhya Pradesh"
-  };
-
-  const glowstarIcon = L.divIcon({
+  // ── ADD PARTNER GYMS ───────────────────────────────────────────
+  const gymIcon = L.divIcon({
     className: "",
-    html: `<div class="hero-marker" style="background:#0a84ff;width:32px;height:32px;font-size:18px;box-shadow:0 0 0 4px rgba(10,132,255,0.35);">🏋️</div>`,
-    iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -18]
+    html: `<div class="hero-marker" style="background:#0a84ff;width:30px;height:30px;font-size:16px;box-shadow:0 0 0 3px rgba(10,132,255,0.25);">🏋️</div>`,
+    iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -15]
   });
 
-  const glowstarMarker = L.marker([GLOWSTAR.lat, GLOWSTAR.lng], { icon: glowstarIcon })
-    .addTo(map)
-    .bindPopup(`
-      <div style="font-family:'Inter',sans-serif">
-        <strong style="display:block;margin-bottom:4px;font-size:14px">📍 ${GLOWSTAR.name}</strong>
-        <span style="display:block;color:#aaa;font-size:12px;margin-bottom:8px">${GLOWSTAR.address}</span>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=${GLOWSTAR.lat},${GLOWSTAR.lng}"
-          target="_blank"
-          style="display:block;background:#0a84ff;color:#fff;padding:4px 8px;border-radius:4px;text-align:center;text-decoration:none;font-weight:600;font-size:12px">
-          Navigate
-        </a>
-      </div>
-    `);
+  PARTNER_GYMS.forEach(gym => {
+    L.marker([gym.lat, gym.lng], { icon: gymIcon })
+      .addTo(layerGroups.gym)
+      .bindPopup(`
+        <div style="font-family:'Inter',sans-serif">
+          <strong style="display:block;margin-bottom:4px;font-size:14px">📍 ${gym.name}</strong>
+          <span style="display:block;color:#aaa;font-size:12px;margin-bottom:8px">Jabalpur, Madhya Pradesh</span>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${gym.lat},${gym.lng}"
+            target="_blank"
+            style="display:block;background:#0a84ff;color:#fff;padding:4px 8px;border-radius:4px;text-align:center;text-decoration:none;font-weight:600;font-size:12px">
+            Navigate
+          </a>
+        </div>
+      `);
+  });
   // ───────────────────────────────────────────────────────────────
-
-  // ── PERMANENT MARKER: Platinum Gym, Suhagi ───────────────────
-  const PLATINUM_GYM = {
-    lat: 23.2187,
-    lng: 79.9563,
-    name: "Platinum Gym",
-    address: "Suhagi, Madhya Pradesh 482004"
-  };
-
-  const platinumIcon = L.divIcon({
-    className: "",
-    html: `<div class="hero-marker" style="background:linear-gradient(135deg,#b8860b,#ffe066);width:34px;height:34px;font-size:18px;box-shadow:0 0 0 4px rgba(255,215,0,0.4);border:2px solid #ffe066;">🏆</div>`,
-    iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -20]
-  });
-
-  L.marker([PLATINUM_GYM.lat, PLATINUM_GYM.lng], { icon: platinumIcon })
-    .addTo(map)
-    .bindPopup(`
-      <div style="font-family:'Inter',sans-serif">
-        <strong style="display:block;margin-bottom:2px;font-size:14px;color:#b8860b">🏆 ${PLATINUM_GYM.name}</strong>
-        <span style="display:block;background:linear-gradient(90deg,#b8860b,#ffe066);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;font-size:11px;margin-bottom:4px">⭐ PLATINUM MEMBER GYM</span>
-        <span style="display:block;color:#aaa;font-size:12px;margin-bottom:8px">${PLATINUM_GYM.address}</span>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=${PLATINUM_GYM.lat},${PLATINUM_GYM.lng}"
-          target="_blank"
-          style="display:block;background:linear-gradient(135deg,#b8860b,#ffe066);color:#03111d;padding:4px 8px;border-radius:4px;text-align:center;text-decoration:none;font-weight:700;font-size:12px">
-          Navigate
-        </a>
-      </div>
-    `);
-  // ─────────────────────────────────────────────────────────────
 
   // Fetch nearby on load
   setTimeout(() => fetchNearby(centerLat, centerLng), 500);
@@ -114,82 +94,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Overpass
-  const getQuery = (lat, lng, r) => `[out:json][timeout:25];(
-    node["leisure"="fitness_centre"](around:${r},${lat},${lng});
-    node["amenity"="gym"](around:${r},${lat},${lng});
-    way["leisure"="fitness_centre"](around:${r},${lat},${lng});
-    node["healthcare"="physiotherapist"](around:${r},${lat},${lng});
-    node["amenity"="physiotherapist"](around:${r},${lat},${lng});
-    node["shop"="nutrition_supplements"](around:${r},${lat},${lng});
-  );out center;`;
-
-  const classify = (tags) => {
-    if (tags.leisure === "fitness_centre" || tags.amenity === "gym") return "gym";
-    if (tags.healthcare === "physiotherapist" || tags.amenity === "physiotherapist") return "physio";
-    if (tags.shop === "nutrition_supplements") return "supplement";
-    return null;
-  };
-
   const updateMap = () => {
     Object.values(layerGroups).forEach(g => g.clearLayers());
 
-    fetchedPlaces.forEach(p => {
-      if (activeTypes.has(p.type)) {
-        const marker = L.marker([p.lat, p.lng], { icon: createMarker(p.type) });
-        const directions = `https://www.google.com/maps/dir/?api=1&origin=${centerLat},${centerLng}&destination=${p.lat},${p.lng}`;
-        
+    // Render Partner Gyms
+    if (activeTypes.has("gym")) {
+      PARTNER_GYMS.forEach(gym => {
+        const marker = L.marker([gym.lat, gym.lng], { icon: gymIcon });
         marker.bindPopup(`
           <div style="font-family:'Inter',sans-serif">
-            <strong style="display:block;margin-bottom:4px;font-size:14px">${p.name}</strong>
-            <span style="display:block;color:#aaa;font-size:12px;margin-bottom:8px">${p.address}</span>
-            <a href="${directions}" target="_blank" style="display:block;background:#0a84ff;color:#fff;padding:4px 8px;border-radius:4px;text-align:center;text-decoration:none;font-weight:600;font-size:12px">Navigate</a>
+            <strong style="display:block;margin-bottom:4px;font-size:14px">📍 ${gym.name}</strong>
+            <span style="display:block;color:#aaa;font-size:12px;margin-bottom:8px">Jabalpur, Madhya Pradesh</span>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${gym.lat},${gym.lng}"
+              target="_blank"
+              style="display:block;background:#0a84ff;color:#fff;padding:4px 8px;border-radius:4px;text-align:center;text-decoration:none;font-weight:600;font-size:12px">
+              Navigate
+            </a>
           </div>
         `);
-        layerGroups[p.type].addLayer(marker);
-      }
-    });
-  };
-
-  const fetchNearby = async (lat, lng) => {
-    els.loading.classList.remove("hide");
-    try {
-      const res = await fetch("https://overpass-api.de/api/interpreter", {
-        method: "POST",
-        body: "data=" + encodeURIComponent(getQuery(lat, lng, searchRadius))
+        layerGroups.gym.addLayer(marker);
       });
-      const data = await res.json();
-      let elements = data.elements || [];
-
-      // Fallback
-      if (elements.length === 0) {
-        elements = [
-          { id: 1, lat: lat+0.01, lon: lng+0.01, tags: { name: "Flex Gym", leisure: "fitness_centre", "addr:street": "Main Road" } },
-          { id: 2, lat: lat-0.01, lon: lng-0.02, tags: { name: "Pro Physio", healthcare: "physiotherapist" } },
-          { id: 3, lat: lat+0.02, lon: lng-0.01, tags: { name: "Elite Supplements", shop: "nutrition_supplements" } }
-        ];
-      }
-
-      fetchedPlaces = elements.map(el => {
-        const tLat = el.lat ?? el.center?.lat;
-        const tLng = el.lon ?? el.center?.lon;
-        const type = classify(el.tags);
-        if (!tLat || !tLng || !type) return null;
-        
-        return {
-          id: el.id, lat: tLat, lng: tLng, type: type,
-          name: el.tags?.name || CAT_CONFIG[type].label,
-          address: [el.tags?.["addr:street"], el.tags?.["addr:housenumber"]].filter(Boolean).join(" ") || "Local Area"
-        };
-      }).filter(Boolean);
-
-      updateMap();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      els.loading.classList.add("hide");
     }
   };
+
+  // Initial render
+  updateMap();
 
   // Location logic
   els.locBtn.addEventListener("click", () => {
@@ -204,13 +133,12 @@ document.addEventListener("DOMContentLoaded", () => {
       else userMarker = L.circleMarker([centerLat, centerLng], { radius: 8, fillColor: "#fff", color: "#0a84ff", weight: 3, fillOpacity: 1 }).addTo(map).bindPopup("You");
       
       map.setView([centerLat, centerLng], 14);
-      fetchNearby(centerLat, centerLng);
 
       els.locBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg> Update Location`;
       els.locBtn.disabled = false;
     }, err => {
-      alert("Location denied.");
-      els.locBtn.innerHTML = `Use Location`;
+      alert("Location permission denied.");
+      els.locBtn.innerHTML = `Live Location`;
       els.locBtn.disabled = false;
     });
   });

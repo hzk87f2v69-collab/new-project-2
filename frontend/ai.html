@@ -9,7 +9,12 @@
       /* ── PAGE SHELL ─────────────────────── */
       body { background:#000; min-height:100vh; }
 
-      .ai-page { background:#000; color:#fff; font-family:-apple-system,'SF Pro Display',system-ui,sans-serif; padding-bottom:2rem; }
+      .ai-page {
+        background:#000; color:#fff;
+        font-family:-apple-system,'SF Pro Display',system-ui,sans-serif;
+        padding-top: 80px;
+        padding-bottom: 2rem;
+      }
 
       /* ── HEADER ─────────────────────────── */
       .ai-header {
@@ -26,8 +31,7 @@
 
       /* ── TABS ───────────────────────────── */
       .ai-tabs {
-        display:flex; gap:0.5rem; padding:0.75rem 1.25rem;
-        border-bottom:1px solid rgba(255,255,255,0.07);
+        display:flex; justify-content:center; padding:0.5rem 1.25rem 1rem;
       }
       .ai-tab {
         flex:1; padding:0.65rem 0;
@@ -39,6 +43,14 @@
 
       .ai-pane { display:none; }
       .ai-pane.active { display:block; }
+
+      .ai-sticky-top {
+        position: sticky;
+        top: 68px; /* Fixed site header height */
+        background: #000;
+        z-index: 900;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+      }
 
       /* ── COACH CHAT ─────────────────────── */
       .ai-chat-wrap {
@@ -187,6 +199,36 @@
 
       .ai-diet-result { display:none; }
       .ai-diet-result.show { display:block; }
+
+      /* ── RESPONSIVE FIXES ──────────────── */
+      @media (max-width: 1023px) {
+        .ai-chat-input-row {
+          position: fixed;
+          bottom: 110px; /* Positioned exactly above the footer pill */
+          left: 50%;
+          transform: translateX(-50%);
+          width: calc(100% - 40px);
+          max-width: 440px;
+          padding: 8px 12px;
+          background: rgba(28, 28, 30, 0.85);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-top: none; /* Remove desktop separator line */
+          border-radius: 999px;
+          z-index: 1000;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .ai-chat-wrap {
+          height: calc(100dvh - 120px);
+        }
+        .ai-chat-messages {
+          padding-bottom: 140px; /* Space for the floating input pill */
+        }
+        .ai-diet-wrap {
+          padding-bottom: 120px;
+        }
+      }
     </style>
     <link rel="icon" type="image/jpeg" href="/public/assets/images/favicon.jpg">
 </head>
@@ -209,11 +251,9 @@
 
         <!-- Center (Mobile) / Right (Desktop): Toggle -->
         <div class="header-toggle">
-          <a href="/" class="toggle-btn" data-mode="workout">WORKOUT</a>
-          <a href="/programs" class="toggle-btn" data-mode="course">COURSE</a>
-        </div>
-
-        <!-- Right: Icons -->
+          <a href="#" class="toggle-btn ai-tab active" data-tab="coach">AI COACH</a>
+          <a href="#" class="toggle-btn ai-tab" data-tab="diet">AI DIET</a>
+        </div><!-- Right: Icons -->
         <div class="nav-icons">
           <a class="ai-badge active" href="/ai" aria-label="AI Coach">
             <span>Ai<sup>+</sup></span>
@@ -223,24 +263,6 @@
     </header>
 
     <div class="ai-page">
-      <div class="ai-header">
-        <div class="ai-header-icon">🤖</div>
-        <div>
-          <div class="ai-header-title">AI Fitness Assistant</div>
-          <div class="ai-header-sub">Powered by Google Gemini</div>
-        </div>
-      </div>
-
-      <div id="noKeyBanner" class="ai-no-key-banner" style="display:none">
-        ⚠️ <strong>Gemini API key not set.</strong> Open your <code>.env</code> file and set <code>GEMINI_API_KEY=your_key</code>, then restart the server.
-        Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>
-      </div>
-
-      <div class="ai-tabs">
-        <button class="ai-tab active" data-tab="coach">💬 AI Coach</button>
-        <button class="ai-tab" data-tab="diet">🥗 Diet Generator</button>
-      </div>
-
       <!-- ── COACH TAB ── -->
       <div id="paneCoach" class="ai-pane active">
         <div class="ai-chat-wrap">

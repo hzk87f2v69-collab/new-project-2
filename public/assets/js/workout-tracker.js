@@ -6,6 +6,8 @@
 const K_PLAN = "ace_wt_plan";
 const K_LIB = "ace_wt_library";
 const K_LOGS = "ace_wt_logs";
+const K_MODE = "ace_wt_mode";
+
 
 /* ── DEFAULTS ───────────────────────────────────────────── */
 const DEFAULT_DAYS = {
@@ -159,6 +161,13 @@ const SEED_EXERCISES = [
   { name: "Box Jumps", muscle: "Legs" },
   { name: "Thrusters", muscle: "Full Body" },
   { name: "Rowing", muscle: "Back" },
+
+  // Athletic (Running / Swimming)
+  { name: "Outdoor Running", muscle: "Athletic" },
+  { name: "Swimming (Laps)", muscle: "Athletic" },
+  { name: "Cycling", muscle: "Athletic" },
+  { name: "Sprints", muscle: "Athletic" },
+  { name: "Treadmill Run", muscle: "Athletic" },
 ];
 
 /* ── STATE ───────────────────────────────────────────────── */
@@ -184,6 +193,8 @@ const saveLib = v => localStorage.setItem(K_LIB, JSON.stringify(v));
 
 const getLogs = () => JSON.parse(localStorage.getItem(K_LOGS) || "[]");
 const saveLogs = v => localStorage.setItem(K_LOGS, JSON.stringify(v));
+
+
 
 const initLibrary = () => {
   const existingLib = getLib() || {};
@@ -845,6 +856,8 @@ const renderMyExList = (filter = "") => {
   );
 };
 
+
+
 /* ── INIT ────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
   initLibrary();
@@ -937,8 +950,56 @@ document.addEventListener("DOMContentLoaded", () => {
   qs("closeExModal").addEventListener("click", () => closeModal("addExModal"));
   qs("closeMyExModal").addEventListener("click", () => closeModal("myExModal"));
 
+  /* Settings modal handlers */
+  const settingsModal = qs("settingsModal");
+  const modeBtns = document.querySelectorAll(".mode-btn");
+  let currentMode = localStorage.getItem(K_MODE) || "gym";
+
+  const applyMode = (mode) => {
+    console.log("Applying Mode:", mode);
+    currentMode = mode;
+    localStorage.setItem(K_MODE, mode);
+    
+    const weightInput = document.getElementById("setWeight");
+    const repsInput = document.getElementById("setReps");
+    const weightLabel = document.querySelector("label[for='setWeight']");
+    const repsLabel = document.querySelector("label[for='setReps']");
+
+    if (mode === "running") {
+      if (weightLabel) weightLabel.textContent = "Distance (km/m)";
+      if (repsLabel) repsLabel.textContent = "Time (min/sec)";
+      if (weightInput) weightInput.placeholder = "5.0";
+      if (repsInput) repsInput.placeholder = "25:00";
+    } else {
+      if (weightLabel) weightLabel.textContent = "Weight (kg)";
+      if (repsLabel) repsLabel.textContent = "Reps";
+      if (weightInput) weightInput.placeholder = "60";
+      if (repsInput) repsInput.placeholder = "10";
+    }
+  };
+
+  modeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      modeBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  qs("saveSettingsBtn")?.addEventListener("click", () => {
+    const activeBtn = document.querySelector(".mode-btn.active");
+    if (activeBtn) {
+      applyMode(activeBtn.dataset.mode);
+    }
+    closeModal("settingsModal");
+    renderDashboard();
+  });
+
+  qs("closeSettingsModal")?.addEventListener("click", () => closeModal("settingsModal"));
+  
+  applyMode(currentMode);
+
   /* Close modals on backdrop click */
-  ["addSetModal", "addExModal", "myExModal"].forEach(id => {
+  ["addSetModal", "addExModal", "myExModal", "settingsModal"].forEach(id => {
     qs(id).addEventListener("click", e => { if (e.target === qs(id)) closeModal(id); });
   });
 
@@ -982,47 +1043,13 @@ document.addEventListener("DOMContentLoaded", () => {
       e.stopPropagation();
       showCtxMenu(settingsBtn, [
         {
-          icon: "⬇️", label: "Export Data",
+          icon: "⚙️", label: "Tracker Settings",
           action: () => {
-            const data = { plan: getPlan(), lib: getLib(), logs: getLogs() };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `ace-fitness-backup-${todayStr()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+            openModal("settingsModal");
+            modeBtns.forEach(btn => btn.classList.toggle("active", btn.dataset.mode === currentMode));
           }
         },
-        {
-          icon: "⬆️", label: "Import Data",
-          action: () => {
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = ".json";
-            input.onchange = ev => {
-              const file = ev.target.files[0];
-              if (!file) return;
-              const reader = new FileReader();
-              reader.onload = r => {
-                try {
-                  const data = JSON.parse(r.target.result);
-                  if (data.plan && data.lib && data.logs) {
-                    savePlan(data.plan); saveLib(data.lib); saveLogs(data.logs);
-                    alert("Data imported successfully!");
-                    location.reload();
-                  } else {
-                    alert("Invalid backup format.");
-                  }
-                } catch(err) {
-                  alert("Failed to parse file.");
-                }
-              };
-              reader.readAsText(file);
-            };
-            input.click();
-          }
-        },
+
         {
           icon: "🗑", label: "Factory Reset", danger: true,
           action: () => {
@@ -1091,7 +1118,6 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!confirm(`Permanently delete "${name}" from your library?`)) return;
           delete lib[S.selectedEx];
           saveLib(lib);
-          // Remove from all days
           const plan = getPlan();
           Object.keys(plan).forEach(d => {
             plan[d].exercises = plan[d].exercises.filter(id => id !== S.selectedEx);
@@ -1104,7 +1130,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ]);
   });
 
-
   document.querySelectorAll(".wt-tab").forEach(tab =>
     tab.addEventListener("click", () => {
       document.querySelectorAll(".wt-tab").forEach(t => t.classList.remove("is-active"));
@@ -1116,5 +1141,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   );
 
+  /* The WORKOUT / CALORIES toggle is handled exclusively by calorie-tracker.js */
 
 });

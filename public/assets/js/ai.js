@@ -52,7 +52,8 @@ Recent logs:\n${recent}`;
 
 /* ── TABS ───────────────────────────────────────── */
 document.querySelectorAll(".ai-tab").forEach(tab => {
-  tab.addEventListener("click", () => {
+  tab.addEventListener("click", (e) => {
+    if (tab.tagName === "A") e.preventDefault();
     document.querySelectorAll(".ai-tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".ai-pane").forEach(p => p.classList.remove("active"));
     tab.classList.add("active");
