@@ -1,0 +1,16 @@
+{
+  "name": "Ace Fitness",
+  "short_name": "AceFitness",
+  "description": "Premium Fitness & Personal Coaching",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#03111d",
+  "theme_color": "#20c7ff",
+  "icons": [
+    {
+      "src": "/public/assets/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

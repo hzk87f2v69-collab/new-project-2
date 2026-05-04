@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dashboardData = await api("/user/enrollments", { headers: getHeaders(false) });
       const enrollment    = dashboardData.enrollments.find((e) => e.trackId === trackId);
       completedClasses    = enrollment?.completedClasses || [];
-      if (!enrollment) { window.location.href = "/programs"; return; }
+      if (!enrollment) { window.location.replace("/programs"); return; }
     }
 
     const data  = await api(`/tracks/${trackId}/classes`);

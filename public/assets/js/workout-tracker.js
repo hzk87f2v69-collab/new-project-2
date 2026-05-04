@@ -172,6 +172,7 @@ const SEED_EXERCISES = [
 
 /* ── STATE ───────────────────────────────────────────────── */
 const S = {
+  activeMode: "workout",
   activeView: "dashboard",   // "dashboard" | "day" | "exercise"
   selectedDay: null,
   selectedEx: null,
@@ -182,13 +183,29 @@ const S = {
 };
 
 /* ── DATA ────────────────────────────────────────────────── */
-const genId = () => crypto.randomUUID ? crypto.randomUUID()
+const genId = () => (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID()
   : Date.now().toString(36) + Math.random().toString(36).slice(2);
 
-const getPlan = () => JSON.parse(localStorage.getItem(K_PLAN) || "null") || structuredClone(DEFAULT_DAYS);
+const getPlan = () => {
+  try {
+    const p = JSON.parse(localStorage.getItem(K_PLAN));
+    if (!p || Object.keys(p).length === 0 || Array.isArray(p)) return structuredClone(DEFAULT_DAYS);
+    return p;
+  } catch (e) {
+    return structuredClone(DEFAULT_DAYS);
+  }
+};
 const savePlan = v => localStorage.setItem(K_PLAN, JSON.stringify(v));
 
-const getLib = () => JSON.parse(localStorage.getItem(K_LIB) || "null") || null;
+const getLib = () => {
+  try {
+    const l = JSON.parse(localStorage.getItem(K_LIB));
+    if (!l || Object.keys(l).length === 0 || Array.isArray(l)) return null;
+    return l;
+  } catch (e) {
+    return null;
+  }
+};
 const saveLib = v => localStorage.setItem(K_LIB, JSON.stringify(v));
 
 const getLogs = () => JSON.parse(localStorage.getItem(K_LOGS) || "[]");
@@ -266,7 +283,7 @@ const VIEW_STACK = []; // navigation history stack
 const goTo = (viewId) => {
   const curEl = document.querySelector(".wt-view.is-active");
   const nextEl = qs(viewId);
-  if (curEl === nextEl) return;
+  if (!nextEl || curEl === nextEl) return;
 
   // Push current view into stack (behind)
   if (curEl) {
@@ -275,15 +292,22 @@ const goTo = (viewId) => {
     VIEW_STACK.push(curEl.id);
   }
 
+  nextEl.classList.remove("slide-behind");
   nextEl.classList.add("is-active");
   nextEl.scrollTop = 0;
   S.activeView = viewId;
-  qs("addSetFab").classList.toggle("visible", viewId === "viewExercise");
+  
+  const fab = qs("addSetFab");
+  if (fab) fab.classList.toggle("visible", viewId === "viewExercise");
 };
 
 const goBack = () => {
   const cur = document.querySelector(".wt-view.is-active");
   if (!cur) return;
+  
+  // Don't go back if we are already at the top level of the current mode
+  if (VIEW_STACK.length === 0) return;
+
   cur.classList.remove("is-active");
   cur.style.transition = "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)";
   cur.style.transform = "translateX(100%)";
@@ -303,7 +327,8 @@ const goBack = () => {
     S.activeView = "dashboard";
   }
   
-  qs("addSetFab").classList.toggle("visible", S.activeView === "exercise");
+  const fab = qs("addSetFab");
+  if (fab) fab.classList.toggle("visible", S.activeView === "exercise");
 };
 
 /* ── WEEKLY PROGRESS HELPERS ────────────────────────────── */
@@ -740,8 +765,19 @@ const render1RMTab = exId => {
 };
 
 /* ── MODALS ──────────────────────────────────────────────── */
-const openModal = id => qs(id).classList.remove("hide");
-const closeModal = id => qs(id).classList.add("hide");
+const openModal = id => {
+  qs(id).classList.remove("hide");
+  qs("addSetFab").style.opacity = "0";
+  qs("addSetFab").style.pointerEvents = "none";
+};
+const closeModal = id => {
+  qs(id).classList.add("hide");
+  // Only show back if we are in the correct view
+  if (S.activeView === "viewExercise") {
+    qs("addSetFab").style.opacity = "1";
+    qs("addSetFab").style.pointerEvents = "auto";
+  }
+};
 
 /* Add Set */
 const openAddSetModal = () => {
@@ -862,15 +898,28 @@ const renderMyExList = (filter = "") => {
 document.addEventListener("DOMContentLoaded", () => {
   initLibrary();
   if (!localStorage.getItem(K_PLAN)) savePlan(structuredClone(DEFAULT_DAYS));
-  renderDashboard();
+  
+  // Initial Render & State Restoration
+  const initialState = history.state;
+  renderDashboard(); // Always start with dashboard to ensure DOM and stack foundation
 
-  /* History API Integration */
-  history.replaceState({ level: 0, view: 'dashboard' }, '');
+  if (initialState && initialState.level !== undefined && initialState.level > 0) {
+    S.historyLevel = initialState.level;
+    if (initialState.view === 'viewDay') {
+      openDayView(initialState.day, false);
+    } else if (initialState.view === 'viewExercise') {
+      if (initialState.day) openDayView(initialState.day, false);
+      openExerciseView(initialState.ex, false);
+    }
+  } else {
+    // Normal first load
+    history.replaceState({ level: 0, view: 'dashboard' }, '');
+  }
 
   window.addEventListener('popstate', (e) => {
     const state = e.state;
     if (!state) return;
-    
+
     if (state.level < S.historyLevel) {
       // Navigating back
       const steps = S.historyLevel - state.level;
@@ -879,19 +928,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       S.historyLevel = state.level;
       
-      if (state.view === 'dashboard') {
-        renderDashboard();
-      } else if (state.view === 'viewDay') {
-        S.selectedDay = state.day;
-      }
+      if (state.view === 'dashboard') renderDashboard();
+      else if (state.view === 'viewDay') S.selectedDay = state.day;
     } else if (state.level > S.historyLevel) {
       // Navigating forward
-      S.historyLevel = state.level;
       if (state.view === 'viewDay') {
         openDayView(state.day, false);
       } else if (state.view === 'viewExercise') {
+        // If jumping from 0 to 2, we need to pass through level 1 to build stack
+        if (S.historyLevel < 1 && state.day) openDayView(state.day, false);
         openExerciseView(state.ex, false);
       }
+      S.historyLevel = state.level;
     }
   });
 
@@ -1141,6 +1189,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   );
 
-  /* The WORKOUT / CALORIES toggle is handled exclusively by calorie-tracker.js */
+
 
 });

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (isLoggedIn()) {
-    window.location.href = "/dashboard";
+    window.location.replace("/dashboard");
     return;
   }
 
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       clearPurchaseSelection();
-      window.location.href = "/dashboard";
+      window.location.replace("/dashboard");
     } catch (error) {
       setStatus(authStatus, error.message, "error");
     } finally {
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       clearPurchaseSelection();
-      window.location.href = "/dashboard";
+      window.location.replace("/dashboard");
     } catch (error) {
       setStatus(authStatus, error.message, "error");
     } finally {

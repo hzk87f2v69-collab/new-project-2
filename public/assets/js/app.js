@@ -222,7 +222,7 @@ const fetchTracks = async (force = false) => {
 
 const ensureAuth = () => {
   if (!isLoggedIn()) {
-    window.location.href = "/auth";
+    window.location.replace("/auth");
     return false;
   }
   return true;
@@ -371,16 +371,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initFloatingWhatsApp();
   }
 
-  // ── Header Toggle ──────────────────────────────────────────
-  const toggleButtons = document.querySelectorAll(".toggle-btn");
-  toggleButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      toggleButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const mode = btn.dataset.mode;
-      console.log(`Switched to ${mode} mode`);
-    });
-  });
+  // Note: .toggle-btn listener removed here as it is handled by specific module scripts (e.g. workout-tracker.js) to avoid conflicts.
 
   // ── Bottom Navigation Active State ──────────────────────────
   const path = window.location.pathname;
@@ -424,3 +415,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.error('Service Worker registration failed', err));
+  });
+}
