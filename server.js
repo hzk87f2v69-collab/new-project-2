@@ -132,6 +132,11 @@ app.post("/api/ai/diet", express.json(), async (req, res) => {
 });
 // ────────────────────────────────────────────────────────
 app.get(["/", "/programs", "/auth", "/dashboard", "/profile", "/my-courses", "/player", "/contact", "/payment-success", "/workout-tracker", "/ai", "/find-gyms"], (req, res) => {
+  // Normalize path: remove trailing slash except for root
+  const cleanPath = req.path.length > 1 && req.path.endsWith("/") 
+    ? req.path.slice(0, -1) 
+    : req.path;
+
   const routeMap = {
     "/": "index.html",
     "/programs": "programs.html",
@@ -147,7 +152,12 @@ app.get(["/", "/programs", "/auth", "/dashboard", "/profile", "/my-courses", "/p
     "/find-gyms": "map.html"
   };
 
-  res.sendFile(path.join(__dirname, "frontend", routeMap[req.path]));
+  const fileName = routeMap[cleanPath];
+  if (fileName) {
+    res.sendFile(path.join(__dirname, "frontend", fileName));
+  } else {
+    res.status(404).sendFile(path.join(__dirname, "frontend", "index.html"));
+  }
 });
 
 app.use(notFound);
