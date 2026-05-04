@@ -292,13 +292,9 @@ const goTo = (viewId) => {
     VIEW_STACK.push(curEl.id);
   }
 
-  nextEl.classList.remove("slide-behind");
   nextEl.classList.add("is-active");
   nextEl.scrollTop = 0;
   S.activeView = viewId;
-  
-  const fab = qs("addSetFab");
-  if (fab) fab.classList.toggle("visible", viewId === "viewExercise");
 };
 
 const goBack = () => {
@@ -326,9 +322,6 @@ const goBack = () => {
     if (oldPrev) { oldPrev.classList.remove("slide-behind"); oldPrev.classList.add("is-active"); }
     S.activeView = "dashboard";
   }
-  
-  const fab = qs("addSetFab");
-  if (fab) fab.classList.toggle("visible", S.activeView === "exercise");
 };
 
 /* ── WEEKLY PROGRESS HELPERS ────────────────────────────── */
@@ -772,11 +765,8 @@ const openModal = id => {
 };
 const closeModal = id => {
   qs(id).classList.add("hide");
-  // Only show back if we are in the correct view
-  if (S.activeView === "viewExercise") {
-    qs("addSetFab").style.opacity = "1";
-    qs("addSetFab").style.pointerEvents = "auto";
-  }
+  qs("addSetFab").style.opacity = "1";
+  qs("addSetFab").style.pointerEvents = "auto";
 };
 
 /* Add Set */
@@ -991,8 +981,16 @@ document.addEventListener("DOMContentLoaded", () => {
     addExerciseToDay(id);
   });
 
-  /* FAB (add set) */
-  qs("addSetFab").addEventListener("click", openAddSetModal);
+  /* FAB (context-aware action) */
+  qs("addSetFab").addEventListener("click", () => {
+    if (S.activeView === "viewDashboard" || S.activeView === "dashboard") {
+      qs("newWorkoutBtn")?.click();
+    } else if (S.activeView === "viewDay" || S.activeView === "day") {
+      qs("addExBtn")?.click();
+    } else {
+      openAddSetModal();
+    }
+  });
   qs("saveSetBtn").addEventListener("click", saveSet);
   qs("closeSetModal").addEventListener("click", () => closeModal("addSetModal"));
   qs("closeExModal").addEventListener("click", () => closeModal("addExModal"));
