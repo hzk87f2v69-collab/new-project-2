@@ -198,10 +198,15 @@ const startServer = async () => {
   } else {
     console.warn("Starting Ace Fitness in local demo mode without MongoDB.");
   }
-
-  app.listen(PORT, HOST, () => {
-    console.log(`Ace Fitness server running on http://${HOST}:${PORT}`);
-  });
+  if (require.main === module) {
+    app.listen(PORT, HOST, () => {
+      console.log(`Ace Fitness server running on http://${HOST}:${PORT}`);
+    });
+  }
 };
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = app;

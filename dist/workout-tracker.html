@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness | Workout Tracker</title>
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <link rel="stylesheet" href="../public/assets/css/workout-tracker.css" />
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#20c7ff">
+</head>
+  <body class="wt-page">
+
+    <header class="site-header">
+      <div class="nav">
+        <!-- Left: Logo -->
+        <a class="brand" href="index.html" aria-label="Ace Fitness Home">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
+        </a>
+
+        <!-- Center: Desktop Links -->
+        <div class="nav-desktop-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="dashboard.html" class="nav-link">Progress</a>
+          <a href="workout-tracker.html" class="nav-link active">Tracker</a>
+          <a href="map.html" class="nav-link">Find Gyms</a>
+          <a href="profile.html" class="nav-link">Profile</a>
+        </div>
+
+        <!-- Center (Mobile) / Right (Desktop): Toggle -->
+        <div class="header-toggle">
+          <a href="#" class="toggle-btn active" data-mode="workout">WORKOUT</a>
+        </div><!-- Right: Icons -->
+        <div class="nav-icons">
+          <a class="ai-badge" href="ai.html" aria-label="AI Coach">
+            <span>Ai<sup>+</sup></span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════ APP SHELL ══════════ -->
+    <div id="wtApp" class="wt-app">
+
+      <!-- ── VIEW 1: DASHBOARD ── -->
+      <section id="viewDashboard" class="wt-view is-active">
+        <div class="wt-dash-header">
+          <h1 class="wt-dash-title">Workout Tracker</h1>
+          <button class="wt-settings-btn" id="settingsBtn" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+
+        <div class="wt-quick-actions">
+          <button class="wt-action-btn" id="newWorkoutBtn">
+            <span class="wt-action-btn-icon">⚡</span>New Workout
+          </button>
+          <button class="wt-action-btn" id="newPlanBtn">
+            <span class="wt-action-btn-icon">📋</span>New Custom Plan
+          </button>
+        </div>
+
+        <button class="wt-my-ex-btn" id="myExercisesBtn">
+          <span>💪 My Exercises</span>
+          <span class="wt-ex-badge" id="totalExCount">0</span>
+        </button>
+
+        <div id="dayListContainer" class="wt-day-list"></div>
+      </section>
+
+      <!-- ── VIEW 2: DAY DETAIL ── -->
+      <section id="viewDay" class="wt-view">
+        <div class="wt-sub-header">
+          <div class="wt-sub-title-wrap">
+            <h2 class="wt-sub-title" id="dayViewTitle">MONDAY</h2>
+          </div>
+          <button class="wt-settings-btn" id="editDayBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+          </button>
+        </div>
+
+        <div class="wt-day-action-row">
+          <button class="wt-outline-btn" id="addExBtn">+ Exercises</button>
+          <button class="wt-outline-btn" id="notesBtn">📝 Notes</button>
+        </div>
+
+        <div id="dayExerciseList" class="wt-ex-list"></div>
+      </section>
+
+      <!-- ── VIEW 3: EXERCISE DETAIL ── -->
+      <section id="viewExercise" class="wt-view">
+        <div class="wt-sub-header">
+          <h2 class="wt-ex-detail-title" id="exDetailTitle">Exercise</h2>
+          <button class="wt-settings-btn" id="exOptionsBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+          </button>
+        </div>
+
+        <div class="wt-tabs">
+          <button class="wt-tab is-active" data-tab="sets">Sets</button>
+          <button class="wt-tab" data-tab="analyze">Analyze</button>
+          <button class="wt-tab" data-tab="1rm">1RM</button>
+        </div>
+
+        <div id="tabSets"    class="wt-tab-pane is-active"><div id="setHistoryContainer"></div></div>
+        <div id="tabAnalyze" class="wt-tab-pane"><div id="analyzeContainer"></div></div>
+        <div id="tab1rm"     class="wt-tab-pane"><div id="oneRmContainer"></div></div>
+
+
+      </section>
+
+
+
+    </div><!-- /wtApp -->
+    <button class="wt-fab" id="addSetFab">+</button>
+
+    <!-- ══════════ MODALS ══════════ -->
+
+    <!-- Add/Log Set Modal -->
+    <div class="wt-modal-backdrop hide" id="addSetModal">
+      <div class="wt-modal-sheet">
+        <div class="wt-modal-handle"></div>
+        <div class="wt-modal-header">
+          <h3 class="wt-modal-title" id="addSetModalTitle">Log Set</h3>
+          <button class="wt-modal-close" id="closeSetModal">✕</button>
+        </div>
+        <div class="wt-modal-body">
+          <div class="wt-field-row">
+            <div class="wt-modal-field">
+              <label for="setReps">Reps</label>
+              <input id="setReps" type="number" min="1" placeholder="10" inputmode="numeric" />
+            </div>
+            <div class="wt-modal-field">
+              <label for="setWeight">Weight (kg)</label>
+              <input id="setWeight" type="number" min="0" step="0.5" placeholder="60" inputmode="decimal" />
+            </div>
+          </div>
+          <div class="wt-modal-field">
+            <label for="setNotes">Notes (optional)</label>
+            <input id="setNotes" type="text" placeholder="e.g. Felt easy" />
+          </div>
+          <button class="wt-modal-submit" id="saveSetBtn">Save Set</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Exercise to Day Modal -->
+    <div class="wt-modal-backdrop hide" id="addExModal">
+      <div class="wt-modal-sheet">
+        <div class="wt-modal-handle"></div>
+        <div class="wt-modal-header">
+          <h3 class="wt-modal-title">Add Exercise</h3>
+          <button class="wt-modal-close" id="closeExModal">✕</button>
+        </div>
+        <div class="wt-modal-body">
+          <input class="wt-ex-picker-search" id="exPickerSearch" type="text" placeholder="Search exercises…" autocomplete="off" />
+          <div id="exPickerList" class="wt-ex-picker-list"></div>
+          <div class="wt-ex-new-form">
+            <h4>Create new exercise</h4>
+            <div class="wt-modal-field">
+              <label for="newExName">Name</label>
+              <input id="newExName" type="text" placeholder="e.g. Incline Bench Press" />
+            </div>
+            <div class="wt-modal-field">
+              <label for="newExMuscle">Muscle Group</label>
+              <input id="newExMuscle" type="text" placeholder="e.g. Chest" />
+            </div>
+            <button class="wt-modal-submit" id="createExBtn">Create &amp; Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Exercises Library Modal -->
+    <div class="wt-modal-backdrop hide" id="myExModal">
+      <div class="wt-modal-sheet">
+        <div class="wt-modal-handle"></div>
+        <div class="wt-modal-header">
+          <h3 class="wt-modal-title">My Exercises</h3>
+          <button class="wt-modal-close" id="closeMyExModal">✕</button>
+        </div>
+        <div class="wt-modal-body">
+          <input class="wt-ex-picker-search" id="myExSearch" type="text" placeholder="Search…" />
+          <div id="myExList" class="wt-ex-picker-list"></div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="dashboard.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+        <span>Progress</span>
+      </a>
+      <a href="workout-tracker.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
+        <span>Tracker</span>
+      </a>
+      <a href="map.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+        <span>Find Gyms</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+    
+    <!-- Settings Modal -->
+    <div class="wt-modal-backdrop hide" id="settingsModal">
+      <div class="wt-modal-sheet">
+        <div class="wt-modal-handle"></div>
+        <div class="wt-modal-header">
+          <h3 class="wt-modal-title">Tracker Settings</h3>
+          <button class="wt-modal-close" id="closeSettingsModal">✕</button>
+        </div>
+        <div class="wt-modal-body">
+          <div class="wt-modal-field">
+            <label>Tracking Mode</label>
+            <div class="header-toggle" style="position: static; transform: none; width: 100%; margin: 0.5rem 0 1rem; height: 42px;">
+              <button class="toggle-btn mode-btn active" data-mode="gym">GYM</button>
+              <button class="toggle-btn mode-btn" data-mode="running">RUNNING</button>
+            </div>
+            <p class="muted" style="font-size: 0.75rem; margin-top: -0.5rem;">
+              Running mode optimizes the tracker for distance-based sports like Running and Swimming.
+            </p>
+          </div>
+          <button class="wt-modal-submit" id="saveSettingsBtn">Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../public/assets/js/app.js"></script>
+    <script src="../public/assets/js/workout-tracker.js"></script>
+  
+    <!-- Global tracker navigation handled by workout-tracker.js -->
+</body>
+</html>

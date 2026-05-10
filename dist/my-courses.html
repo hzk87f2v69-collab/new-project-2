@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness My Courses | Access Your Programs</title>
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#20c7ff">
+</head>
+  <body>
+            <header class="site-header">
+      <div class="nav">
+        <!-- Left: Logo -->
+        <a class="brand" href="index.html" aria-label="Ace Fitness Home">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
+        </a>
+
+        <!-- Center: Desktop Links -->
+        <div class="nav-desktop-links">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="programs.html">Programs</a>
+          <a class="nav-link" href="dashboard.html">Dashboard</a>
+          <a class="nav-link" href="workout-tracker.html">Tracker</a>
+          <a class="nav-link" href="ai.html">AI Coach</a>
+          <a class="nav-link" href="contact.html">Contact</a>
+        </div>
+
+        <!-- Right: Icons & Mobile Toggle -->
+        <div class="nav-icons">
+          <!-- Search Icon -->
+          <a class="nav-icon" href="#" aria-label="Search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+          <!-- Profile Icon -->
+          <a class="nav-icon" href="profile.html" aria-label="Profile">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </a>
+          <!-- Hamburger -->
+          <button class="nav-dumbbell" id="navDumbbell" type="button" aria-label="Open menu">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Mobile Mega Dropdown (Full Screen) -->
+        <nav class="nav-mega-menu" id="navMegaMenu">
+          <a href="index.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Home</a>
+          <a href="programs.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 7h10"></path><path d="M7 12h10"></path><path d="M7 17h10"></path></svg>Programs</a>
+          <a href="my-courses.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"></path><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"></path><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"></path><path d="M18 5v17"></path><path d="M6 5v17"></path><circle cx="12" cy="9" r="2"></circle></svg>My Courses</a>
+          <a href="dashboard.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>Dashboard</a>
+          <a href="workout-tracker.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H14.76a2 2 0 0 1 1.79 1.1L18 14"></path><path d="M6 14h12"></path><path d="M6 14v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4"></path><path d="M14 22v-4"></path><path d="M10 22v-4"></path><path d="M4 6h16"></path><path d="M4 10h16"></path></svg>Workout Tracker</a>
+          <a href="ai.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path><path d="M12 8V4"></path><circle cx="12" cy="4" r="1"></circle></svg>AI Coach</a>
+          <div class="nav-mega-divider"></div>
+          <a href="contact.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="dashboard-shell">
+      <section class="page-hero">
+        <div class="container">
+          <article class="dashboard-card owned-hero-card">
+            <div class="section-header owned-hero-copy">
+              <span class="eyebrow" id="myCoursesEyebrow">My Courses</span>
+              <h1 id="myCoursesTitle">Loading your unlocked courses...</h1>
+              <p id="myCoursesSubtitle">We’re preparing your purchased programs and course progress.</p>
+            </div>
+            <div class="metric-grid">
+              <article class="metric-card">
+                <span class="muted">Owned Courses</span>
+                <strong id="ownedCoursesCount">0</strong>
+              </article>
+              <article class="metric-card">
+                <span class="muted">Average Progress</span>
+                <strong id="ownedCoursesProgress">0%</strong>
+              </article>
+              <article class="metric-card">
+                <span class="muted">Completed Classes</span>
+                <strong id="ownedCoursesClasses">0</strong>
+              </article>
+              <article class="metric-card">
+                <span class="muted">Newly Unlocked</span>
+                <strong id="ownedCoursesUnlocked">0</strong>
+              </article>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <article class="dashboard-card">
+            <div class="owned-courses-heading">
+              <div>
+                <span class="eyebrow">Course Access</span>
+                <h2>Your training library</h2>
+              </div>
+              <p class="muted" id="myCoursesStatus">Use each course card to start lessons or continue where you left off.</p>
+            </div>
+            <div class="course-grid" id="ownedCoursesContainer"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="../public/assets/js/app.js"></script>
+    <script src="../public/assets/js/my-courses.js"></script>
+  </body>
+</html>

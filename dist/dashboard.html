@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness Dashboard | Progress and Courses</title>
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#20c7ff">
+</head>
+  <body>
+    <header class="site-header">
+      <div class="nav">
+        <!-- Left: Logo -->
+        <a class="brand" href="index.html" aria-label="Ace Fitness Home">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
+        </a>
+
+        <!-- Center: Desktop Links -->
+        <div class="nav-desktop-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="dashboard.html" class="nav-link active">Progress</a>
+          <a href="workout-tracker.html" class="nav-link">Tracker</a>
+          <a href="map.html" class="nav-link">Find Gyms</a>
+          <a href="profile.html" class="nav-link">Profile</a>
+        </div>
+
+        <!-- Center (Mobile) / Right (Desktop): Toggle -->
+        <div class="header-toggle">
+          <a href="#" class="toggle-btn active" data-mode="weekly">WEEKLY</a>
+          <a href="#" class="toggle-btn" data-mode="monthly">MONTHLY</a>
+        </div><!-- Right: Icons -->
+        <div class="nav-icons">
+          <a class="ai-badge" href="ai.html" aria-label="AI Coach">
+            <span>Ai<sup>+</sup></span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="db-shell">
+
+      <!-- ── TOP HERO ROW ───────────────────────────────────── -->
+      <section class="db-hero">
+        <div class="container">
+          <div class="db-hero-top">
+            <div>
+              <span class="eyebrow">Your Dashboard</span>
+              <h1 class="db-welcome">Welcome back, <span id="profileName">—</span> 👊</h1>
+              <p class="muted" id="profileEmail"></p>
+            </div>
+            <div class="db-badges" id="badgeRow"></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── WORKOUT STRENGTH PANEL ─────────────────────── -->
+      <section class="section" id="workoutStrengthSection" style="padding-top:1.5rem;padding-bottom:0">
+        <div class="container">
+          <div class="db-bottom-head" style="margin-bottom:1.25rem">
+            <span class="eyebrow">Workout Tracker</span>
+            <h2 class="db-section-title">Workout Strength</h2>
+          </div>
+
+          <article class="db-wt-panel" id="workoutStrengthPanel">
+            <div class="db-wt-metrics" id="wtMetricsRow">
+              <div class="db-wt-metric" id="wtm-volume">
+                <div class="db-wt-metric-val" id="wtmVolVal">—</div>
+                <div class="db-wt-metric-label">
+                  Weekly Volume
+                  <span class="db-wt-badge" id="wtmVolBadge"></span>
+                </div>
+              </div>
+              <div class="db-wt-metric" id="wtm-sets">
+                <div class="db-wt-metric-val" id="wtmSetsVal">—</div>
+                <div class="db-wt-metric-label">
+                  Sets
+                  <span class="db-wt-badge" id="wtmSetsBadge"></span>
+                </div>
+              </div>
+              <div class="db-wt-metric" id="wtm-days">
+                <div class="db-wt-metric-val" id="wtmDaysVal">—</div>
+                <div class="db-wt-metric-label">
+                  Active Days
+                  <span class="db-wt-badge" id="wtmDaysBadge"></span>
+                </div>
+              </div>
+              <div class="db-wt-metric" id="wtm-orm">
+                <div class="db-wt-metric-val" id="wtmOrmVal">—</div>
+                <div class="db-wt-metric-label">
+                  Best 1RM
+                  <span class="db-wt-badge" id="wtmOrmBadge"></span>
+                </div>
+              </div>
+            </div>
+            <div class="db-wt-spark-wrap">
+              <div class="db-wt-spark-labels" id="wtSparkLabels"></div>
+              <canvas id="dbSparkline" height="52"></canvas>
+              <div class="db-wt-spark-footer">
+                <span class="db-wt-spark-note">📊 7-Day Volume Trend</span>
+                <a href="workout-tracker.html" class="db-wt-goto">Open Tracker →</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── MIDDLE: RADAR GRAPH + QUICK STATS ─────────────── -->
+      <section class="section">
+        <div class="container db-mid-grid">
+
+          <!-- Radar Graph Card -->
+          <article class="db-graph-card">
+            <div class="db-card-head">
+              <span class="eyebrow">Analytics</span>
+              <h2 class="db-section-title">Transformation Progress Metrics</h2>
+              <p class="muted">Based on your real course activity, lessons completed, and consistency.</p>
+            </div>
+            <div class="db-radar-wrap">
+              <canvas id="radarChart" aria-label="Transformation progress radar chart"></canvas>
+            </div>
+            <div class="db-radar-legend">
+              <span class="db-legend-dot" style="background:var(--accent)"></span>This Week
+              <span class="db-legend-dot" style="background:var(--success);margin-left:1rem"></span>Last Week
+            </div>
+          </article>
+
+          <!-- Quick Stat Cards -->
+          <div class="db-stat-col">
+            <article class="db-stat-card">
+              <div class="db-stat-icon">🎯</div>
+              <div>
+                <p class="db-stat-label">Course Completion</p>
+                <div class="db-ring-wrap">
+                  <svg class="db-ring" viewBox="0 0 80 80">
+                    <circle class="db-ring-bg" cx="40" cy="40" r="32"/>
+                    <circle class="db-ring-fill" id="ringFill" cx="40" cy="40" r="32" stroke-dasharray="201 201" stroke-dashoffset="201"/>
+                  </svg>
+                  <span class="db-ring-label" id="ringLabel">0%</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="db-stat-card">
+              <div class="db-stat-icon">🔥</div>
+              <div>
+                <p class="db-stat-label">Consistency Score</p>
+                <p class="db-stat-big" id="consistencyScore">—</p>
+                <p class="muted" style="font-size:0.8rem">Based on active days this week</p>
+              </div>
+            </article>
+
+            <article class="db-stat-card">
+              <div class="db-stat-icon">⚡</div>
+              <div>
+                <p class="db-stat-label">Discipline Score</p>
+                <p class="db-stat-big" id="disciplineScore">—</p>
+                <p class="muted" style="font-size:0.8rem">Lessons + logins + momentum</p>
+              </div>
+            </article>
+
+            <article class="db-stat-card">
+              <div class="db-stat-icon">📅</div>
+              <div>
+                <p class="db-stat-label">Member Since</p>
+                <p class="db-stat-big" id="joinedDate">—</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── BOTTOM: COURSES + PAYMENTS ────────────────────── -->
+
+      <section class="section">
+        <div class="container">
+          <div class="db-bottom-head">
+            <span class="eyebrow">My Courses</span>
+            <h2 class="db-section-title">Purchased Programs</h2>
+          </div>
+          <div class="course-grid" id="coursesContainer">
+            <article class="dashboard-card page-message-card">
+              <p class="muted">Loading your courses…</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="db-bottom-head">
+            <span class="eyebrow">Payments</span>
+            <h2 class="db-section-title">Payment History</h2>
+          </div>
+          <article class="dashboard-card">
+            <ul class="payment-list" id="paymentsContainer">
+              <li class="muted">Loading…</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── BOTTOM: QUICK STAT PILLS ────────────────────────── -->
+      <section class="section" style="padding-top:1rem">
+        <div class="container">
+          <div class="db-pill-row">
+            <div class="db-pill">
+              <span class="db-pill-icon">🎯</span>
+              <div>
+                <span class="db-pill-label">Purchased Tracks</span>
+                <strong id="metricTracks" class="db-pill-val">0</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">✅</span>
+              <div>
+                <span class="db-pill-label">Classes Done</span>
+                <strong id="metricClasses" class="db-pill-val">0</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">📈</span>
+              <div>
+                <span class="db-pill-label">Avg Progress</span>
+                <strong id="metricProgress" class="db-pill-val">0%</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">💳</span>
+              <div>
+                <span class="db-pill-label">Payments</span>
+                <strong id="metricPayments" class="db-pill-val">0</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">🔥</span>
+              <div>
+                <span class="db-pill-label">Streak Days</span>
+                <strong id="metricStreak" class="db-pill-val">1</strong>
+              </div>
+            </div>
+            <div class="db-pill">
+              <span class="db-pill-icon">⏱</span>
+              <div>
+                <span class="db-pill-label">Est. Hrs Trained</span>
+                <strong id="metricHours" class="db-pill-val">0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="dashboard.html" class="nav-item active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+        <span>Progress</span>
+      </a>
+      <a href="workout-tracker.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
+        <span>Tracker</span>
+      </a>
+      <a href="map.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+        <span>Find Gyms</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+    <script src="../public/assets/js/app.js"></script>
+    <script src="../public/assets/js/dashboard.js"></script>
+  </body>
+</html>

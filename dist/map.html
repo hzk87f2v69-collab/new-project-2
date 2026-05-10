@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find a Gym | Ace Fitness</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+      <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#20c7ff">
+</head>
+  <body>
+    <header class="site-header">
+      <div class="nav">
+        <!-- Left: Logo -->
+        <a class="brand" href="index.html" aria-label="Ace Fitness Home">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
+        </a>
+
+        <!-- Center: Desktop Links -->
+        <div class="nav-desktop-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="dashboard.html" class="nav-link">Progress</a>
+          <a href="workout-tracker.html" class="nav-link">Tracker</a>
+          <a href="map.html" class="nav-link active">Find Gyms</a>
+          <a href="profile.html" class="nav-link">Profile</a>
+        </div>
+
+        
+
+        <!-- Right: Icons -->
+        <div class="nav-icons">
+          <a class="ai-badge" href="ai.html" aria-label="AI Coach">
+            <span>Ai<sup>+</sup></span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section map-section" id="location-map" style="padding-top: 100px;">
+        <div class="container">
+          <div class="section-header">
+            <span class="eyebrow">FIND A GYM</span>
+            <h2>Locate facilities near you</h2>
+          </div>
+          
+          <div class="map-container glass-card">
+            <div id="heroMap" style="width: 100%; min-height: 500px; z-index: 1;"></div>
+            <div class="hero-map-overlay-top" style="position: absolute; top: 1rem; right: 1rem; z-index: 1000; pointer-events: none;">
+              <button id="heroLocBtn" class="btn btn-primary" style="pointer-events: auto; padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                Live Location
+              </button>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="dashboard.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+        <span>Progress</span>
+      </a>
+      <a href="workout-tracker.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
+        <span>Tracker</span>
+      </a>
+      <a href="map.html" class="nav-item active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+        <span>Find Gyms</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+    <script src="../public/assets/js/app.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../public/assets/js/hero-map.js"></script>
+  </body>
+</html>

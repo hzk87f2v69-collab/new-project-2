@@ -1,6 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { registerUser, loginUser } = require("../controllers/authController");
+const { registerUser, loginUser, firebaseLogin } = require("../controllers/authController");
 const validate = require("../middleware/validateMiddleware");
 const asyncHandler = require("../utils/asyncHandler");
 
@@ -27,6 +27,15 @@ router.post(
   ],
   validate,
   asyncHandler(loginUser)
+);
+
+router.post(
+  "/firebase-login",
+  [
+    body("firebaseToken").notEmpty().withMessage("Firebase token is required.")
+  ],
+  validate,
+  asyncHandler(firebaseLogin)
 );
 
 module.exports = router;
