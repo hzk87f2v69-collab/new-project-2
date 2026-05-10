@@ -3948,14 +3948,19 @@ body.player-page {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
+  width: 90px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--accent);
   color: #fff;
   text-align: center;
   border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.label-wrapper {
+  position: relative;
+  min-width: 80px;
 }
 
 .skeleton-bio {
@@ -4008,5 +4013,45 @@ body.player-page {
   display: grid;
   place-items: center;
   cursor: pointer;
+}
+
+
+/* ── BIO EDITING STYLES ── */
+
+.name-edit-wrapper, .bio-edit-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.bio-inline-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+
+.bio-inline-textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px;
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.btn-primary-glow {
+  background: var(--accent) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(32, 199, 255, 0.3);
 }
 

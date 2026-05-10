@@ -15,6 +15,7 @@ const createSafeUser = (user) => ({
   _id: user._id,
   id: user._id,
   name: user.name,
+  bio: user.bio,
   avatar: user.avatar,
   email: user.email,
   phoneNumber: user.phoneNumber,
@@ -29,7 +30,9 @@ const createSafeUser = (user) => ({
   dietType: user.dietType,
   allergies: user.allergies,
   benchPR: user.benchPR,
+  benchPRLabel: user.benchPRLabel,
   deadliftPR: user.deadliftPR,
+  deadliftPRLabel: user.deadliftPRLabel,
   purchasedTracks: [...user.purchasedTracks],
   completedClasses: [...user.completedClasses],
   createdAt: user.createdAt
@@ -41,6 +44,7 @@ const createUser = async ({ name, email, password }) => {
   const user = {
     _id: createId(),
     name: name.trim(),
+    bio: "Athlete | Pro Trainer | Gym Enthusiast",
     avatar: "",
     email: normalizedEmail,
     phoneNumber: "",
@@ -55,7 +59,9 @@ const createUser = async ({ name, email, password }) => {
     dietType: "",
     allergies: "",
     benchPR: "0",
+    benchPRLabel: "Bench PR",
     deadliftPR: "0",
+    deadliftPRLabel: "Deadlift PR",
     passwordHash,
     purchasedTracks: [],
     completedClasses: [],
@@ -160,6 +166,7 @@ const getEnrollmentDashboard = (userId) => {
     profile: {
       name: user.name,
       email: user.email,
+      bio: user.bio || "Athlete | Pro Trainer | Gym Enthusiast",
       joinedAt: user.createdAt
     },
     purchasedTracks: [...user.purchasedTracks],
@@ -180,6 +187,7 @@ const getUserProfile = (userId) => {
   return {
     profile: {
       name: user.name,
+      bio: user.bio || "Athlete | Pro Trainer | Gym Enthusiast",
       avatar: user.avatar || "",
       email: user.email,
       phoneNumber: user.phoneNumber || "",
@@ -194,7 +202,9 @@ const getUserProfile = (userId) => {
       dietType: user.dietType || "",
       allergies: user.allergies || "",
       benchPR: user.benchPR || "0",
+      benchPRLabel: user.benchPRLabel || "Bench PR",
       deadliftPR: user.deadliftPR || "0",
+      deadliftPRLabel: user.deadliftPRLabel || "Deadlift PR",
       joinedAt: user.createdAt
     }
   };
@@ -206,7 +216,8 @@ const updateUserProfile = (userId, payload) => {
     throw new Error("User not found.");
   }
 
-  user.name = payload.name.trim();
+  user.name = (payload.name || "").trim();
+  user.bio = (payload.bio || "").trim();
   user.avatar = payload.avatar || "";
   user.phoneNumber = (payload.phoneNumber || "").trim();
   user.fitnessGoal = (payload.fitnessGoal || "").trim();
@@ -220,7 +231,9 @@ const updateUserProfile = (userId, payload) => {
   user.dietType = (payload.dietType || "").trim();
   user.allergies = (payload.allergies || "").trim();
   user.benchPR = (payload.benchPR || "0").trim();
+  user.benchPRLabel = (payload.benchPRLabel || "Bench PR").trim();
   user.deadliftPR = (payload.deadliftPR || "0").trim();
+  user.deadliftPRLabel = (payload.deadliftPRLabel || "Deadlift PR").trim();
   return createSafeUser(user);
 };
 

@@ -21,7 +21,9 @@ const buildProfileResponse = (user) => ({
     dietType: user.dietType || "",
     allergies: user.allergies || "",
     benchPR: user.benchPR || "0",
+    benchPRLabel: user.benchPRLabel || "Bench PR",
     deadliftPR: user.deadliftPR || "0",
+    deadliftPRLabel: user.deadliftPRLabel || "Deadlift PR",
     joinedAt: user.createdAt
   }
 });
@@ -83,8 +85,9 @@ const getEnrollments = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   const payload = {
-    name: req.body.name.trim(),
+    name: (req.body.name || "").trim(),
     avatar: req.body.avatar || "",
+    bio: (req.body.bio || "").trim(),
     phoneNumber: (req.body.phoneNumber || "").trim(),
     fitnessGoal: (req.body.fitnessGoal || "").trim(),
     age: parseOptionalNumber(req.body.age),
@@ -97,7 +100,9 @@ const updateProfile = async (req, res) => {
     dietType: (req.body.dietType || "").trim(),
     allergies: (req.body.allergies || "").trim(),
     benchPR: (req.body.benchPR || "0").trim(),
-    deadliftPR: (req.body.deadliftPR || "0").trim()
+    benchPRLabel: (req.body.benchPRLabel || "Bench PR").trim(),
+    deadliftPR: (req.body.deadliftPR || "0").trim(),
+    deadliftPRLabel: (req.body.deadliftPRLabel || "Deadlift PR").trim()
   };
 
   if (!isDatabaseConnected()) {
@@ -110,6 +115,7 @@ const updateProfile = async (req, res) => {
 
   req.user.name = payload.name;
   req.user.avatar = payload.avatar;
+  req.user.bio = payload.bio;
   req.user.phoneNumber = payload.phoneNumber;
   req.user.fitnessGoal = payload.fitnessGoal;
   req.user.age = payload.age;
@@ -122,7 +128,9 @@ const updateProfile = async (req, res) => {
   req.user.dietType = payload.dietType;
   req.user.allergies = payload.allergies;
   req.user.benchPR = payload.benchPR;
+  req.user.benchPRLabel = payload.benchPRLabel;
   req.user.deadliftPR = payload.deadliftPR;
+  req.user.deadliftPRLabel = payload.deadliftPRLabel;
   await req.user.save();
 
   res.json({

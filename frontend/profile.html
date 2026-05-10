@@ -42,24 +42,35 @@
                 <span class="value" id="displayStreak">12</span>
                 <span class="label">Streak</span>
               </div>
-              <div class="metric-item pr-editable" data-pr="bench">
+              <div class="metric-item">
                 <span class="value" id="displayBenchPR">100</span>
-                <span class="label">Bench PR</span>
-                <input type="text" id="inputBenchPR" class="pr-inline-input" hidden>
+                <div class="label-wrapper pr-editable" data-pr="bench">
+                  <span class="label" id="displayBenchPRLabel">Bench PR</span>
+                  <input type="text" id="inputBenchPRLabel" class="pr-inline-input" hidden>
+                </div>
               </div>
-              <div class="metric-item pr-editable" data-pr="deadlift">
+              <div class="metric-item">
                 <span class="value" id="displayDeadliftPR">180</span>
-                <span class="label">Deadlift PR</span>
-                <input type="text" id="inputDeadliftPR" class="pr-inline-input" hidden>
+                <div class="label-wrapper pr-editable" data-pr="deadlift">
+                  <span class="label" id="displayDeadliftPRLabel">Deadlift PR</span>
+                  <input type="text" id="inputDeadliftPRLabel" class="pr-inline-input" hidden>
+                </div>
               </div>
             </div>
           </div>
           <div class="skeleton-bio">
-            <h2 id="displayUserName">Alex Sterling</h2>
-            <p id="displayBio">Athlete | Pro Trainer | Gym Enthusiast</p>
+            <div class="name-edit-wrapper">
+              <h2 id="displayUserName">Alex Sterling</h2>
+              <input type="text" id="inputUserName" class="bio-inline-input" hidden>
+            </div>
+            <div class="bio-edit-wrapper">
+              <p id="displayBio">Athlete | Pro Trainer | Gym Enthusiast</p>
+              <textarea id="inputBio" class="bio-inline-textarea" hidden></textarea>
+            </div>
           </div>
           <div class="skeleton-actions">
-            <button type="submit" form="profileForm" class="btn-edit-profile">Update Performance</button>
+            <button type="button" id="editProfileBtn" class="btn-edit-profile">Edit Profile</button>
+            <button type="submit" form="profileForm" id="saveProfileBtn" class="btn-edit-profile btn-primary-glow" hidden>Save Changes</button>
             <button type="button" class="btn-icon-square">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
             </button>

@@ -9,10 +9,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     userName: document.getElementById("displayUserName"),
     streak: document.getElementById("displayStreak"),
     benchPR: document.getElementById("displayBenchPR"),
+    benchPRLabel: document.getElementById("displayBenchPRLabel"),
     deadliftPR: document.getElementById("displayDeadliftPR"),
+    deadliftPRLabel: document.getElementById("displayDeadliftPRLabel"),
     bmi: document.getElementById("displayBMI"),
-    recovery: document.getElementById("displayRecovery")
+    recovery: document.getElementById("displayRecovery"),
+    bio: document.getElementById("displayBio")
   };
+
+  const editProfileBtn = document.getElementById("editProfileBtn");
+  const saveProfileBtn = document.getElementById("saveProfileBtn");
+  const inputUserName = document.getElementById("inputUserName");
+  const inputBio = document.getElementById("inputBio");
 
   const avatarImg = document.getElementById("profileAvatar");
   const avatarUpload = document.getElementById("avatarUpload");
@@ -21,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentAvatarBase64 = "";
 
   const fields = {
-    name: document.getElementById("profileName"),
     age: document.getElementById("profileAge"),
     phoneNumber: document.getElementById("profilePhoneNumber"),
     heightCm: document.getElementById("profileHeightCm"),
@@ -32,13 +39,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     activityLevel: document.getElementById("profileActivity"),
     dietType: document.getElementById("profileDietType"),
     benchPR: "0",
-    deadliftPR: "0"
+    benchPRLabel: "Bench PR",
+    deadliftPR: "0",
+    deadliftPRLabel: "Deadlift PR",
+    bio: ""
   };
+
+  // ── Edit Profile Toggle ────────────────────────────────────
+  editProfileBtn?.addEventListener("click", () => {
+    const isEditing = editProfileBtn.textContent === "Cancel";
+    
+    if (!isEditing) {
+      displayFields.userName.hidden = true;
+      displayFields.bio.hidden = true;
+      inputUserName.hidden = false;
+      inputBio.hidden = false;
+      
+      inputUserName.value = displayFields.userName.textContent;
+      inputBio.value = displayFields.bio.textContent;
+      
+      editProfileBtn.textContent = "Cancel";
+      saveProfileBtn.hidden = false;
+    } else {
+      displayFields.userName.hidden = false;
+      displayFields.bio.hidden = false;
+      inputUserName.hidden = true;
+      inputBio.hidden = true;
+      
+      editProfileBtn.textContent = "Edit Profile";
+      saveProfileBtn.hidden = true;
+    }
+  });
 
   // ── PR Inline Editing ──────────────────────────────────────
   const setupPREditing = (type) => {
-    const display = document.getElementById(`display${type}PR`);
-    const input = document.getElementById(`input${type}PR`);
+    const display = document.getElementById(`display${type}PRLabel`);
+    const input = document.getElementById(`input${type}PRLabel`);
     const container = display?.parentElement;
 
     if (!display || !input) return;
@@ -55,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       input.hidden = true;
       if (input.value.trim()) {
         display.textContent = input.value.trim();
-        fields[type === "Bench" ? "benchPR" : "deadliftPR"] = input.value.trim();
+        fields[type === "Bench" ? "benchPRLabel" : "deadliftPRLabel"] = input.value.trim();
       }
     });
 
@@ -69,7 +105,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const heatmapGrid = document.getElementById("consistencyHeatmap");
 
-  if (!form || !status) return;
+  if (!form) {
+    console.error("Profile form not found!");
+    return;
+  }
 
   // ── Avatar Upload Logic ────────────────────────────────────
   avatarEditBtn?.addEventListener("click", () => avatarUpload?.click());
@@ -103,7 +142,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const generateHeatmap = () => {
     if (!heatmapGrid) return;
     heatmapGrid.innerHTML = "";
-    // Generate 105 cells (7x15) to match the reference look more closely
     for (let i = 0; i < 105; i++) {
       const cell = document.createElement("div");
       const level = Math.floor(Math.random() * 5);
@@ -113,8 +151,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const populateForm = (profile) => {
-    if (fields.name) fields.name.value = profile.name || "";
     if (displayFields.userName) displayFields.userName.textContent = profile.name || "Athlete";
+    if (displayFields.bio) displayFields.bio.textContent = profile.bio || "Athlete | Pro Trainer | Gym Enthusiast";
     
     if (profile.avatar && avatarImg) {
       avatarImg.src = profile.avatar;
@@ -122,9 +160,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (displayFields.benchPR) displayFields.benchPR.textContent = profile.benchPR || "0";
+    if (displayFields.benchPRLabel) displayFields.benchPRLabel.textContent = profile.benchPRLabel || "Bench PR";
     if (displayFields.deadliftPR) displayFields.deadliftPR.textContent = profile.deadliftPR || "0";
+    if (displayFields.deadliftPRLabel) displayFields.deadliftPRLabel.textContent = profile.deadliftPRLabel || "Deadlift PR";
+    
     fields.benchPR = profile.benchPR || "0";
+    fields.benchPRLabel = profile.benchPRLabel || "Bench PR";
     fields.deadliftPR = profile.deadliftPR || "0";
+    fields.deadliftPRLabel = profile.deadliftPRLabel || "Deadlift PR";
+    fields.bio = profile.bio || "Athlete | Pro Trainer | Gym Enthusiast";
     
     if (fields.age) fields.age.value = profile.age ?? "";
     if (fields.phoneNumber) fields.phoneNumber.value = profile.phoneNumber || "";
@@ -136,31 +180,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (fields.activityLevel) fields.activityLevel.value = profile.activityLevel || "Moderate";
     if (fields.dietType) fields.dietType.value = profile.dietType || "No restriction";
 
-    // Set fitness goal radio
     if (profile.fitnessGoal) {
       const radio = document.querySelector(`input[name="fitnessGoal"][value="${profile.fitnessGoal}"]`);
       if (radio) radio.checked = true;
     }
 
-    // Update display metrics
     if (displayFields.bmi) {
         displayFields.bmi.textContent = calculateBMI(profile.weightKg, profile.heightCm);
     }
 
-    // Generate dummy heatmap
     generateHeatmap();
-
-    // Cache for AI
-    localStorage.setItem("ace_profile", JSON.stringify({
-      name: profile.name,
-      fitnessGoal: profile.fitnessGoal,
-      age: profile.age,
-      heightCm: profile.heightCm,
-      weightKg: profile.weightKg,
-      activityLevel: profile.activityLevel,
-      dietType: profile.dietType,
-      healthNotes: profile.healthNotes
-    }));
   };
 
   const loadProfile = async () => {
@@ -176,61 +205,75 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadProfile();
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const submitButton = form.querySelector("button[type='submit']");
-    const selectedGoal = document.querySelector('input[name="fitnessGoal"]:checked')?.value || "";
-
-    const payload = {
-      name: state.user?.name || "Athlete", // Use current name if field is not visible
-      avatar: currentAvatarBase64,
-      age: fields.age?.value || null,
-      phoneNumber: fields.phoneNumber?.value || "",
-      heightCm: fields.heightCm?.value || null,
-      weightKg: fields.weightKg?.value || null,
-      bodyFat: fields.bodyFat?.value || null,
-      muscleMass: fields.muscleMass?.value || null,
-      fitnessGoal: selectedGoal,
-      activityLevel: fields.activityLevel?.value || "",
-      dietType: fields.dietType?.value || "",
-      healthNotes: fields.healthNotes?.value || "",
-      benchPR: fields.benchPR,
-      deadliftPR: fields.deadliftPR
-    };
-
-    setButtonBusy(submitButton, true, "Syncing Performance...");
-    setStatus(status, "Syncing with athlete servers...");
-
+  const handleProfileSave = async () => {
     try {
+      const selectedGoal = document.querySelector('input[name="fitnessGoal"]:checked')?.value || "";
+
+      const payload = {
+        name: !inputUserName.hidden ? inputUserName.value : displayFields.userName.textContent,
+        avatar: currentAvatarBase64,
+        bio: !inputBio.hidden ? inputBio.value : displayFields.bio.textContent,
+        age: fields.age?.value || null,
+        phoneNumber: fields.phoneNumber?.value || "",
+        heightCm: fields.heightCm?.value || null,
+        weightKg: fields.weightKg?.value || null,
+        bodyFat: fields.bodyFat?.value || null,
+        muscleMass: fields.muscleMass?.value || null,
+        fitnessGoal: selectedGoal,
+        activityLevel: fields.activityLevel?.value || "",
+        dietType: fields.dietType?.value || "",
+        healthNotes: fields.healthNotes?.value || "",
+        benchPR: fields.benchPR,
+        benchPRLabel: fields.benchPRLabel,
+        deadliftPR: fields.deadliftPR,
+        deadliftPRLabel: fields.deadliftPRLabel
+      };
+
+      if (saveProfileBtn) setButtonBusy(saveProfileBtn, true, "Syncing...");
+
       const data = await api("/user/profile", {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(payload)
       });
 
-      populateForm(data.profile);
-
-      if (state.user) {
-        state.user.name = data.profile.name;
-        localStorage.setItem("acefitness_user", JSON.stringify(state.user));
-      }
-
-      setStatus(status, "Performance profile updated successfully.", "success");
+      setStatus(status, "Profile updated successfully!", "success");
       
-      // Auto recalculate BMI on screen
-      if (displayFields.bmi) {
-        displayFields.bmi.textContent = calculateBMI(payload.weightKg, payload.heightCm);
+      if (data.profile) {
+        populateForm(data.profile);
+        
+        const storedUser = JSON.parse(localStorage.getItem("acefitness_user") || "{}");
+        storedUser.name = data.profile.name;
+        storedUser.avatar = data.profile.avatar;
+        localStorage.setItem("acefitness_user", JSON.stringify(storedUser));
+        state.user = storedUser;
       }
       
+      displayFields.userName.hidden = false;
+      displayFields.bio.hidden = false;
+      inputUserName.hidden = true;
+      inputBio.hidden = true;
+      
+      editProfileBtn.textContent = "Edit Profile";
+      saveProfileBtn.hidden = true;
     } catch (error) {
+      console.error("SAVE ERROR:", error);
       setStatus(status, error.message, "error");
     } finally {
-      setButtonBusy(submitButton, false);
+      if (saveProfileBtn) setButtonBusy(saveProfileBtn, false, "Save Changes");
     }
+  };
+
+  saveProfileBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    handleProfileSave();
   });
 
-  // Real-time BMI calculation
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    handleProfileSave();
+  });
+
   [fields.weightKg, fields.heightCm].forEach(el => {
     el?.addEventListener("input", () => {
       if (displayFields.bmi) {

@@ -21,24 +21,40 @@ const { isDemoMode, isDatabaseConnected } = require("./utils/runtimeState");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || "127.0.0.1";
-const CLIENT_URL = process.env.CLIENT_URL || `http://localhost:${PORT}`;
-const allowedOrigins = new Set([
-  CLIENT_URL,
-  `http://localhost:${PORT}`,
-  `http://127.0.0.1:${PORT}`
-]);
+
+// ── CORS CONFIGURATION ──────────────────────────────────────
+const allowedOrigins = [
+  "http://localhost:5000",
+  "http://127.0.0.1:5000",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000"
+];
+
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
+
+if (process.env.ALLOWED_ORIGINS) {
+  const extraOrigins = process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim());
+  allowedOrigins.push(...extraOrigins);
+}
 
 app.use(
   cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.has(origin)) {
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === "development") {
         callback(null, true);
-        return;
+      } else {
+        console.error(`CORS blocked for origin: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
       }
-
-      callback(new Error("Not allowed by CORS"));
     },
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 

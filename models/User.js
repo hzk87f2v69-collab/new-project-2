@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true
     },
+    bio: {
+      type: String,
+      default: "Athlete | Pro Trainer | Gym Enthusiast"
+    },
     phoneNumber: {
       type: String,
       trim: true,
@@ -68,9 +72,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "0"
     },
+    benchPRLabel: {
+      type: String,
+      default: "Bench PR"
+    },
     deadliftPR: {
       type: String,
       default: "0"
+    },
+    deadliftPRLabel: {
+      type: String,
+      default: "Deadlift PR"
     },
     dietType: {
       type: String,

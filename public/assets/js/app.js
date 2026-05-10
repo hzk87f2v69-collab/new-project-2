@@ -1,4 +1,16 @@
-const API_BASE = "/api";
+// ── DYNAMIC API BASE CONFIGURATION ─────────────────────────
+// Set your deployed backend URL here if different from frontend domain
+const PROD_BACKEND_URL = "https://your-backend-api.vercel.app"; 
+
+const getApiBase = () => {
+  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  if (isLocal) return "/api";
+  
+  // If deployed, use the full backend URL or relative if same domain
+  return PROD_BACKEND_URL + "/api";
+};
+
+const API_BASE = getApiBase();
 const PURCHASE_SELECTION_KEY = "acefitness_selection";
 
 const ACE_PAYMENT_CONFIG = {
@@ -65,7 +77,7 @@ const loadAppConfig = async (force = false) => {
   }
 
   try {
-    const response = await fetch("/health");
+    const response = await fetch(`${API_BASE.replace("/api", "")}/health`);
     const data = await response.json().catch(() => ({}));
     state.appConfig = {
       demoMode: Boolean(data.demoMode),
