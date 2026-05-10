@@ -7,13 +7,21 @@ const mockStore = require("../utils/mockStore");
 const buildProfileResponse = (user) => ({
   profile: {
     name: user.name,
+    avatar: user.avatar || "",
     email: user.email,
     phoneNumber: user.phoneNumber || "",
     fitnessGoal: user.fitnessGoal || "",
     age: user.age ?? null,
     heightCm: user.heightCm ?? null,
     weightKg: user.weightKg ?? null,
+    bodyFat: user.bodyFat ?? null,
+    muscleMass: user.muscleMass ?? null,
     healthNotes: user.healthNotes || "",
+    activityLevel: user.activityLevel || "",
+    dietType: user.dietType || "",
+    allergies: user.allergies || "",
+    benchPR: user.benchPR || "0",
+    deadliftPR: user.deadliftPR || "0",
     joinedAt: user.createdAt
   }
 });
@@ -76,12 +84,20 @@ const getEnrollments = async (req, res) => {
 const updateProfile = async (req, res) => {
   const payload = {
     name: req.body.name.trim(),
+    avatar: req.body.avatar || "",
     phoneNumber: (req.body.phoneNumber || "").trim(),
     fitnessGoal: (req.body.fitnessGoal || "").trim(),
     age: parseOptionalNumber(req.body.age),
     heightCm: parseOptionalNumber(req.body.heightCm),
     weightKg: parseOptionalNumber(req.body.weightKg),
-    healthNotes: (req.body.healthNotes || "").trim()
+    bodyFat: parseOptionalNumber(req.body.bodyFat),
+    muscleMass: parseOptionalNumber(req.body.muscleMass),
+    healthNotes: (req.body.healthNotes || "").trim(),
+    activityLevel: (req.body.activityLevel || "").trim(),
+    dietType: (req.body.dietType || "").trim(),
+    allergies: (req.body.allergies || "").trim(),
+    benchPR: (req.body.benchPR || "0").trim(),
+    deadliftPR: (req.body.deadliftPR || "0").trim()
   };
 
   if (!isDatabaseConnected()) {
@@ -93,12 +109,20 @@ const updateProfile = async (req, res) => {
   }
 
   req.user.name = payload.name;
+  req.user.avatar = payload.avatar;
   req.user.phoneNumber = payload.phoneNumber;
   req.user.fitnessGoal = payload.fitnessGoal;
   req.user.age = payload.age;
   req.user.heightCm = payload.heightCm;
   req.user.weightKg = payload.weightKg;
+  req.user.bodyFat = payload.bodyFat;
+  req.user.muscleMass = payload.muscleMass;
   req.user.healthNotes = payload.healthNotes;
+  req.user.activityLevel = payload.activityLevel;
+  req.user.dietType = payload.dietType;
+  req.user.allergies = payload.allergies;
+  req.user.benchPR = payload.benchPR;
+  req.user.deadliftPR = payload.deadliftPR;
   await req.user.save();
 
   res.json({

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     payments: document.getElementById("metricPayments"),
   };
 
-  logoutBtn?.addEventListener("click", () => { clearAuth(); window.location.href = "/"; });
+  logoutBtn?.addEventListener("click", () => { clearAuth(); window.location.href = window.location.protocol === "file:" ? "index.html" : "/"; });
 
   // ── Streak tracking via localStorage ─────────────────────────────────────
   const today    = new Date().toDateString();
@@ -266,14 +266,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="progress-bar"><span style="width:${track.progress}%"></span></div>
             <div class="db-course-foot">
               <span class="muted" style="font-size:0.85rem">${track.progress}% complete</span>
-              <a class="btn" href="/player?track=${track.trackId}">Continue →</a>
+              <a class="btn" href="player.html?track=${track.trackId}">Continue →</a>
             </div>
           </article>
         `).join("")
       : `<article class="dashboard-card page-message-card">
            <h3>No courses unlocked yet</h3>
            <p>One unlock away from structured coaching and visible results.</p>
-           <div class="stack-actions"><a class="btn" href="/programs">Explore Programs</a></div>
+           <div class="stack-actions"><a class="btn" href="programs.html">Explore Programs</a></div>
          </article>`;
 
     // ── Payments ──────────────────────────────────────────────────────────────
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <article class="dashboard-card page-message-card">
         <h3>Could not load dashboard</h3>
         <p class="status-text error">${err.message}</p>
-        <div class="stack-actions"><a class="btn" href="/programs">Browse Programs</a></div>
+        <div class="stack-actions"><a class="btn" href="programs.html">Browse Programs</a></div>
       </article>`;
     paymentsContainer.innerHTML = "<li class='status-text error'>Payment history unavailable.</li>";
 

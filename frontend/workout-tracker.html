@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ace Fitness | Workout Tracker</title>
-    <link rel="stylesheet" href="/public/assets/css/styles.css" />
-    <link rel="stylesheet" href="/public/assets/css/workout-tracker.css" />
-    <link rel="icon" type="image/jpeg" href="/public/assets/images/favicon.jpg">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <link rel="stylesheet" href="../public/assets/css/workout-tracker.css" />
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+    <link rel="manifest" href="./manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#20c7ff">
@@ -17,17 +17,17 @@
     <header class="site-header">
       <div class="nav">
         <!-- Left: Logo -->
-        <a class="brand" href="/" aria-label="Ace Fitness Home">
-          <img src="/public/assets/images/logo.png" alt="AF" class="brand-mark">
+        <a class="brand" href="index.html" aria-label="Ace Fitness Home">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
         </a>
 
         <!-- Center: Desktop Links -->
         <div class="nav-desktop-links">
-          <a href="/" class="nav-link">Home</a>
-          <a href="/dashboard" class="nav-link">Progress</a>
-          <a href="/workout-tracker" class="nav-link active">Tracker</a>
-          <a href="/find-gyms" class="nav-link">Find Gyms</a>
-          <a href="/profile" class="nav-link">Profile</a>
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="dashboard.html" class="nav-link">Progress</a>
+          <a href="workout-tracker.html" class="nav-link active">Tracker</a>
+          <a href="map.html" class="nav-link">Find Gyms</a>
+          <a href="profile.html" class="nav-link">Profile</a>
         </div>
 
         <!-- Center (Mobile) / Right (Desktop): Toggle -->
@@ -35,7 +35,7 @@
           <a href="#" class="toggle-btn active" data-mode="workout">WORKOUT</a>
         </div><!-- Right: Icons -->
         <div class="nav-icons">
-          <a class="ai-badge" href="/ai" aria-label="AI Coach">
+          <a class="ai-badge" href="ai.html" aria-label="AI Coach">
             <span>Ai<sup>+</sup></span>
           </a>
         </div>
@@ -193,23 +193,23 @@
 
     <!-- Bottom Navigation (Mobile Only) -->
     <nav class="bottom-nav">
-      <a href="/" class="nav-item">
+      <a href="index.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         <span>Home</span>
       </a>
-      <a href="/dashboard" class="nav-item">
+      <a href="dashboard.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
         <span>Progress</span>
       </a>
-      <a href="/workout-tracker" class="nav-item">
+      <a href="workout-tracker.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
         <span>Tracker</span>
       </a>
-      <a href="/find-gyms" class="nav-item">
+      <a href="map.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
         <span>Find Gyms</span>
       </a>
-      <a href="/profile" class="nav-item">
+      <a href="profile.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         <span>Profile</span>
       </a>
@@ -239,8 +239,8 @@
       </div>
     </div>
 
-    <script src="/public/assets/js/app.js"></script>
-    <script src="/public/assets/js/workout-tracker.js"></script>
+    <script src="../public/assets/js/app.js"></script>
+    <script src="../public/assets/js/workout-tracker.js"></script>
   
     <!-- Global tracker navigation handled by workout-tracker.js -->
 </body>

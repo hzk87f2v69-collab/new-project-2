@@ -38,10 +38,21 @@ const getHeaders = (isJson = true) => {
 };
 
 const api = async (path, options = {}) => {
-  const response = await fetch(`${API_BASE}${path}`, options);
+  let response;
+
+  try {
+    response = await fetch(`${API_BASE}${path}`, options);
+  } catch (error) {
+    throw new Error("Local server is not running.");
+  }
+
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 401) {
+      clearAuth();
+    }
+
     throw new Error(data.message || "Something went wrong.");
   }
 
@@ -221,10 +232,6 @@ const fetchTracks = async (force = false) => {
 };
 
 const ensureAuth = () => {
-  if (!isLoggedIn()) {
-    window.location.replace("/auth");
-    return false;
-  }
   return true;
 };
 
@@ -318,7 +325,7 @@ const launchDemoUnlock = async (selection) => {
   }
 
   clearPurchaseSelection();
-  window.location.href = unlockData.redirectTo || "/my-courses";
+  window.location.href = window.location.protocol === "file:" ? "my-courses.html" : (unlockData.redirectTo || "/my-courses");
   return true;
 };
 
@@ -358,8 +365,42 @@ const resumePendingPurchase = async () => {
   return true;
 };
 
+const rewriteFilePreviewLinks = () => {
+  if (window.location.protocol !== "file:") return;
+
+  const routeMap = {
+    "/": "index.html",
+    "/index": "index.html",
+    "/auth": "auth.html",
+    "/dashboard": "dashboard.html",
+    "/programs": "programs.html",
+    "/workout-tracker": "workout-tracker.html",
+    "/find-gyms": "map.html",
+    "/profile": "profile.html",
+    "/profile.html": "profile.html",
+    "/my-courses": "my-courses.html",
+    "/player": "player.html",
+    "/contact": "contact.html",
+    "/payment-success": "payment-success.html",
+    "/ai": "ai.html"
+  };
+
+  document.querySelectorAll("a[href^='/']").forEach(link => {
+    const rawHref = link.getAttribute("href");
+    const match = rawHref.match(/^([^?#]+)(.*)$/);
+    const route = match?.[1] || rawHref;
+    const suffix = match?.[2] || "";
+    const fileName = routeMap[route];
+
+    if (fileName) {
+      link.setAttribute("href", `${fileName}${suffix}`);
+    }
+  });
+};
+
 
 document.addEventListener("DOMContentLoaded", async () => {
+  rewriteFilePreviewLinks();
   updateNav();
   await loadAppConfig().catch(() => null);
 
@@ -384,40 +425,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // ── Global Scroll Reveal Animation ───────────────────────────
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.15
-  };
-
-  const scrollObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-revealed');
-      } else {
-        // Remove class when out of view so it animates again next time
-        entry.target.classList.remove('is-revealed');
-      }
-    });
-  }, observerOptions);
-
-  // Target common elements across the app
-  const revealElements = document.querySelectorAll('.hero-text > *, .dashboard-card, .program-card, .testimonial-card, .pricing-card, .course-card, .wt-view, .ai-diet-form-card, .contact-card, .profile-card');
-  revealElements.forEach((el, index) => {
-    el.classList.add('reveal-on-scroll');
-    // Optional: Add a slight stagger delay based on DOM order for grouped cards
-    if (el.matches('.dashboard-card, .program-card, .testimonial-card, .pricing-card, .course-card')) {
-       el.style.transitionDelay = `${(index % 4) * 0.1}s`;
-    }
-    scrollObserver.observe(el);
+  // Animations disabled as per request
+  const revealElements = document.querySelectorAll('.reveal-on-scroll');
+  revealElements.forEach(el => {
+    el.classList.add('is-revealed');
   });
 
 });
 
 
 // Register Service Worker for PWA
-if ('serviceWorker' in navigator) {
+if (window.location.protocol !== "file:" && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(reg => console.log('Service Worker registered', reg))

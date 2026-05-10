@@ -15,13 +15,21 @@ const createSafeUser = (user) => ({
   _id: user._id,
   id: user._id,
   name: user.name,
+  avatar: user.avatar,
   email: user.email,
   phoneNumber: user.phoneNumber,
   fitnessGoal: user.fitnessGoal,
   age: user.age,
   heightCm: user.heightCm,
   weightKg: user.weightKg,
+  bodyFat: user.bodyFat,
+  muscleMass: user.muscleMass,
   healthNotes: user.healthNotes,
+  activityLevel: user.activityLevel,
+  dietType: user.dietType,
+  allergies: user.allergies,
+  benchPR: user.benchPR,
+  deadliftPR: user.deadliftPR,
   purchasedTracks: [...user.purchasedTracks],
   completedClasses: [...user.completedClasses],
   createdAt: user.createdAt
@@ -33,13 +41,21 @@ const createUser = async ({ name, email, password }) => {
   const user = {
     _id: createId(),
     name: name.trim(),
+    avatar: "",
     email: normalizedEmail,
     phoneNumber: "",
     fitnessGoal: "",
     age: null,
     heightCm: null,
     weightKg: null,
+    bodyFat: null,
+    muscleMass: null,
     healthNotes: "",
+    activityLevel: "",
+    dietType: "",
+    allergies: "",
+    benchPR: "0",
+    deadliftPR: "0",
     passwordHash,
     purchasedTracks: [],
     completedClasses: [],
@@ -164,13 +180,21 @@ const getUserProfile = (userId) => {
   return {
     profile: {
       name: user.name,
+      avatar: user.avatar || "",
       email: user.email,
       phoneNumber: user.phoneNumber || "",
       fitnessGoal: user.fitnessGoal || "",
       age: user.age,
       heightCm: user.heightCm,
       weightKg: user.weightKg,
+      bodyFat: user.bodyFat,
+      muscleMass: user.muscleMass,
       healthNotes: user.healthNotes || "",
+      activityLevel: user.activityLevel || "",
+      dietType: user.dietType || "",
+      allergies: user.allergies || "",
+      benchPR: user.benchPR || "0",
+      deadliftPR: user.deadliftPR || "0",
       joinedAt: user.createdAt
     }
   };
@@ -183,13 +207,20 @@ const updateUserProfile = (userId, payload) => {
   }
 
   user.name = payload.name.trim();
+  user.avatar = payload.avatar || "";
   user.phoneNumber = (payload.phoneNumber || "").trim();
   user.fitnessGoal = (payload.fitnessGoal || "").trim();
   user.age = payload.age ?? null;
   user.heightCm = payload.heightCm ?? null;
   user.weightKg = payload.weightKg ?? null;
+  user.bodyFat = payload.bodyFat ?? null;
+  user.muscleMass = payload.muscleMass ?? null;
   user.healthNotes = (payload.healthNotes || "").trim();
-
+  user.activityLevel = (payload.activityLevel || "").trim();
+  user.dietType = (payload.dietType || "").trim();
+  user.allergies = (payload.allergies || "").trim();
+  user.benchPR = (payload.benchPR || "0").trim();
+  user.deadliftPR = (payload.deadliftPR || "0").trim();
   return createSafeUser(user);
 };
 

@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   logoutBtn?.addEventListener("click", () => {
     clearAuth();
-    window.location.href = "/";
+    window.location.href = window.location.protocol === "file:" ? "index.html" : "/";
   });
 
   try {
@@ -107,8 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                   </div>
                   <div class="progress-bar"><span style="width:${track.progress}%"></span></div>
                   <div class="stack-actions">
-                    <a class="btn" href="/player?track=${track.trackId}">${actionLabel}</a>
-                    <a class="btn-outline" href="/dashboard">View Dashboard</a>
+                    <a class="btn" href="player.html?track=${track.trackId}">${actionLabel}</a>
+                    <a class="btn-outline" href="dashboard.html">View Dashboard</a>
                   </div>
                 </article>
               `;
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <h3>No courses unlocked yet</h3>
             <p>You are one unlock away from structured coaching, premium programs, and measurable progress.</p>
             <div class="stack-actions">
-              <a class="btn" href="/programs">Explore Programs</a>
+              <a class="btn" href="programs.html">Explore Programs</a>
             </div>
           </article>
         `;
@@ -133,8 +133,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h3>Your courses are unavailable right now</h3>
         <p class="status-text error">${error.message}</p>
         <div class="stack-actions">
-          <a class="btn" href="/dashboard">Open Dashboard</a>
-          <a class="btn-outline" href="/programs">Browse Programs</a>
+          <a class="btn" href="dashboard.html">Open Dashboard</a>
+          <a class="btn-outline" href="programs.html">Browse Programs</a>
         </div>
       </article>
     `;

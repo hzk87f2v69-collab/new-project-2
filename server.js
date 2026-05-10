@@ -22,10 +22,22 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || "127.0.0.1";
 const CLIENT_URL = process.env.CLIENT_URL || `http://localhost:${PORT}`;
+const allowedOrigins = new Set([
+  CLIENT_URL,
+  `http://localhost:${PORT}`,
+  `http://127.0.0.1:${PORT}`
+]);
 
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.has(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true
   })
 );
@@ -171,7 +183,7 @@ const startServer = async () => {
     console.warn("Starting Ace Fitness in local demo mode without MongoDB.");
   }
 
-  app.listen(PORT, () => {
+  app.listen(PORT, HOST, () => {
     console.log(`Ace Fitness server running on http://${HOST}:${PORT}`);
   });
 };

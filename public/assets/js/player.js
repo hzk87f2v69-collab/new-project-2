@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <article class="pv-module-card pv-msg-card">
         <p class="status-text error">${message}</p>
         <div class="stack-actions" style="margin-top:1rem;">
-          <a class="btn" href="/programs">Browse Programs</a>
+          <a class="btn" href="programs.html">Browse Programs</a>
         </div>
       </article>
     `;
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dashboardData = await api("/user/enrollments", { headers: getHeaders(false) });
       const enrollment    = dashboardData.enrollments.find((e) => e.trackId === trackId);
       completedClasses    = enrollment?.completedClasses || [];
-      if (!enrollment) { window.location.replace("/programs"); return; }
+      if (!enrollment) { window.location.replace(window.location.protocol === "file:" ? "programs.html" : "/programs"); return; }
     }
 
     const data  = await api(`/tracks/${trackId}/classes`);

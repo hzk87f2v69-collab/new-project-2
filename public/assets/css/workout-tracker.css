@@ -3,22 +3,37 @@
    ═══════════════════════════════════════════════ */
 
 /* ── PAGE & APP SHELL ─────────────────────────── */
+html,
+.wt-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
 .wt-page { background: var(--bg); }
 
 .wt-app {
   position: relative;
   width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   padding-top: 80px;
   background: var(--bg);
   color: var(--text);
+  overflow-x: hidden;
+  contain: paint;
 }
 
 /* ── VIEWS ────────────────────────────────────── */
 .wt-view {
   position: absolute;
   inset: 0;
+  width: 100%;
+  max-width: 100%;
   bottom: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   transform: translateX(100%);
@@ -28,6 +43,10 @@
 }
 .wt-view.is-active  { transform: translateX(0); }
 .wt-view.slide-behind { transform: translateX(-28%); }
+.wt-view:not(.is-active):not(.slide-behind) {
+  visibility: hidden;
+  pointer-events: none;
+}
 
 /* ── DASHBOARD HEADER ─────────────────────────── */
 .wt-dash-header {
@@ -64,6 +83,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  min-width: 0;
   padding: 0.85rem 1rem;
   background: var(--panel);
   backdrop-filter: blur(20px);
@@ -77,6 +97,9 @@
   cursor: pointer;
   transition: transform 0.25s, box-shadow 0.25s, opacity 0.15s;
   text-align: left;
+}
+.wt-action-btn {
+  overflow-wrap: anywhere;
 }
 .wt-action-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
 .wt-action-btn-icon { font-size: 1.1rem; }
@@ -138,6 +161,10 @@
   flex-shrink: 0;
 }
 .wt-day-info { flex: 1; }
+.wt-day-info,
+.wt-day-right {
+  min-width: 0;
+}
 .wt-day-name {
   font-size: 0.88rem;
   font-weight: 700;
@@ -147,6 +174,12 @@
   margin-bottom: 0.18rem;
 }
 .wt-day-muscles { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+.wt-day-name,
+.wt-day-muscles {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .wt-day-right {
   display: flex;
@@ -742,4 +775,3 @@ body:has(.wt-modal-backdrop:not(.hide)) .wt-fab {
   display: block;
   border-radius: 4px;
 }
-

@@ -8,9 +8,9 @@
       name="description"
       content="Ace Fitness helps Indian men transform with premium fat loss, muscle gain, strength, and home workout programs."
     />
-    <link rel="stylesheet" href="/public/assets/css/styles.css" />
-    <link rel="icon" type="image/jpeg" href="/public/assets/images/favicon.jpg">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+    <link rel="manifest" href="./manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#20c7ff">
@@ -19,28 +19,28 @@
     <header class="site-header">
       <div class="nav">
         <!-- Left: Logo -->
-        <a class="brand" href="/" aria-label="Ace Fitness Home">
-          <img src="/public/assets/images/logo.png" alt="AF" class="brand-mark">
+        <a class="brand" href="index.html" aria-label="Ace Fitness Home">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
         </a>
 
         <!-- Center: Desktop Links -->
         <div class="nav-desktop-links">
-          <a href="/" class="nav-link active">Home</a>
-          <a href="/dashboard" class="nav-link">Progress</a>
-          <a href="/workout-tracker" class="nav-link">Tracker</a>
-          <a href="/find-gyms" class="nav-link">Find Gyms</a>
-          <a href="/profile" class="nav-link">Profile</a>
+          <a href="index.html" class="nav-link active">Home</a>
+          <a href="dashboard.html" class="nav-link">Progress</a>
+          <a href="workout-tracker.html" class="nav-link">Tracker</a>
+          <a href="map.html" class="nav-link">Find Gyms</a>
+          <a href="profile.html" class="nav-link">Profile</a>
         </div>
 
         <!-- Center (Mobile) / Right (Desktop): Toggle -->
         <div class="header-toggle">
-          <a href="/" class="toggle-btn active" data-mode="workout">WORKOUT</a>
-          <a href="/programs" class="toggle-btn" data-mode="course">COURSE</a>
+          <a href="index.html" class="toggle-btn active" data-mode="workout">WORKOUT</a>
+          <a href="programs.html" class="toggle-btn" data-mode="course">COURSE</a>
         </div>
 
         <!-- Right: Icons -->
         <div class="nav-icons">
-          <a class="ai-badge" href="/ai" aria-label="AI Coach">
+          <a class="ai-badge" href="ai.html" aria-label="AI Coach">
             <span>Ai<sup>+</sup></span>
           </a>
         </div>
@@ -87,49 +87,61 @@
             </div>
           </div>
 
-          <!-- Cards shown ONLY on mobile (below features, in empty space) -->
-          <div class="hero-dashboard-grid">
-            <a href="/workout-tracker" class="dashboard-card glass-card">
-              <div class="card-header">
-                <div class="wt-card-main">
-                  <div class="wt-status-tag">ACTIVE</div>
-                  <h4 class="wt-card-label">WORKOUT TRACKER</h4>
-                  <div class="wt-divider"></div>
-                  <div class="wt-card-body">
-                    <p class="wt-card-text">Keep your momentum high and track every set.</p>
-                    <div class="stack-actions" style="margin-top: 1rem;">
-                      <a class="btn" href="/workout-tracker">Open Tracker →</a>
-                    </div>
-                  </div>
+          <div class="hero-tracker-module">
+            <div class="hero-tracker-widget glass-card" id="homeTrackerWidget">
+              <div class="home-widget-top">
+                <div>
+                  <span class="home-widget-kicker">Today</span>
+                  <h3 id="homeTrackerDay">Workout Plan</h3>
+                  <p id="homeTrackerMuscles">Open the tracker to build your split.</p>
+                </div>
+                <div class="home-widget-ring" aria-label="Weekly completion">
+                  <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="42"></circle>
+                    <circle cx="50" cy="50" r="42" id="homeTrackerRing"></circle>
+                  </svg>
+                  <span id="homeTrackerPercent">0%</span>
                 </div>
               </div>
-            </a>
 
-            <div class="dashboard-card glass-card">
-              <div class="card-header">
-                <span class="card-title">WEEKLY PROGRESS</span>
-              </div>
-              <div class="card-body" id="wpBodyMobile">
-                <div class="wp-metrics-grid">
-                  <div class="wp-metric">
-                    <div class="wp-val">480</div>
-                    <div class="wp-label">VOL KG <span class="badge">▲ NEW</span></div>
-                  </div>
-                  <div class="wp-metric">
-                    <div class="wp-val">1</div>
-                    <div class="wp-label">SETS <span class="badge">▲ NEW</span></div>
-                  </div>
-                  <div class="wp-metric">
-                    <div class="wp-val">1/6</div>
-                    <div class="wp-label">DAYS <span class="badge">▲ NEW</span></div>
-                  </div>
-                  <div class="wp-metric">
-                    <div class="wp-val">56</div>
-                    <div class="wp-label">1RM <span class="badge">▲ NEW</span></div>
-                  </div>
+              <div class="home-widget-stats">
+                <div>
+                  <strong id="homeTrackerSets">0</strong>
+                  <span>sets</span>
                 </div>
-                <div class="wp-footer">vs last week</div>
+                <div>
+                  <strong id="homeTrackerVolume">0</strong>
+                  <span>kg vol</span>
+                </div>
+                <div>
+                  <strong id="homeTrackerStreak">0</strong>
+                  <span>days</span>
+                </div>
               </div>
+
+              <div class="home-widget-plan">
+                <div class="home-widget-plan-title">Next up</div>
+                <div id="homeTrackerExercises" class="home-widget-exercises">
+                  <span>Add exercises in Tracker</span>
+                </div>
+              </div>
+
+              <div class="home-widget-actions">
+                <a class="btn" href="workout-tracker.html">Start Workout</a>
+                <a class="btn-outline" href="dashboard.html">View Progress</a>
+              </div>
+            </div>
+
+            <div class="hero-tracker-copy">
+              <div class="hero-tracker-pill" aria-hidden="true"></div>
+              <div class="hero-tracker-copy-card glass-card">
+                <span class="wt-status-tag">ACTIVE</span>
+                <h4 class="wt-card-label">WORKOUT TRACKER</h4>
+              </div>
+              <div class="hero-tracker-copy-card glass-card">
+                <p class="wt-card-text">Keep your momentum high and track every set.</p>
+              </div>
+              <a class="btn hero-tracker-cta" href="workout-tracker.html">Open Tracker →</a>
             </div>
           </div>
 
@@ -297,8 +309,8 @@
     <footer class="footer">
       <div class="container footer-grid">
         <div>
-          <a class="brand" href="/">
-            <img src="/public/assets/images/logo.png" alt="AF" class="brand-mark">
+          <a class="brand" href="index.html">
+            <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
             <span>Ace Fitness</span>
           </a>
           <p class="muted">Premium transformation programs with trust, structure, and strong conversion-first design.</p>
@@ -306,15 +318,15 @@
         <div>
           <h3>Explore</h3>
           <div class="footer-links">
-            <a href="/programs">Programs</a>
-            <a href="/auth">Login / Register</a>
-            <a href="/dashboard">Dashboard</a>
+            <a href="programs.html">Programs</a>
+            <a href="auth.html">Login / Register</a>
+            <a href="dashboard.html">Dashboard</a>
           </div>
         </div>
         <div>
           <h3>Contact</h3>
           <div class="footer-links">
-            <a href="/contact">Support</a>
+            <a href="contact.html">Support</a>
             <a href="mailto:primefficialyt@gmail.com">primefficialyt@gmail.com</a>
             <a href="https://wa.me/917223888352" target="_blank" rel="noreferrer">WhatsApp Support</a>
           </div>
@@ -325,33 +337,33 @@
 
     <!-- Bottom Navigation (Mobile Only) -->
     <nav class="bottom-nav">
-      <a href="/" class="nav-item active">
+      <a href="index.html" class="nav-item active">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         <span>Home</span>
       </a>
-      <a href="/dashboard" class="nav-item">
+      <a href="dashboard.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
         <span>Progress</span>
       </a>
-      <a href="/workout-tracker" class="nav-item">
+      <a href="workout-tracker.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
         <span>Tracker</span>
       </a>
-      <a href="/find-gyms" class="nav-item">
+      <a href="map.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
         <span>Find Gyms</span>
       </a>
-      <a href="/profile" class="nav-item">
+      <a href="profile.html" class="nav-item">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         <span>Profile</span>
       </a>
     </nav>
 
-    <script src="/public/assets/js/app.js"></script>
-    <script src="/public/assets/js/social-contact.js"></script>
+    <script src="../public/assets/js/app.js"></script>
+    <script src="../public/assets/js/social-contact.js"></script>
 
-    <script src="/public/assets/js/upi-payment.js"></script>
-    <script src="/public/assets/js/index.js"></script>
+    <script src="../public/assets/js/upi-payment.js"></script>
+    <script src="../public/assets/js/index.js"></script>
     
 
     <script>

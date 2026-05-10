@@ -4,58 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ace Fitness Login | Secure Access</title>
-    <link rel="stylesheet" href="/public/assets/css/styles.css" />
-    <link rel="icon" type="image/jpeg" href="/public/assets/images/favicon.jpg">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+    <link rel="manifest" href="./manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#20c7ff">
 </head>
-  <body>
+  <body class="auth-page">
     <header class="site-header">
       <div class="nav">
-        <!-- Left: Logo -->
-        <a class="brand" href="/" aria-label="Ace Fitness Home">
-          <img src="/public/assets/images/logo.png" alt="AF" class="brand-mark">
-        </a>
-
-        <!-- Center: Desktop Links -->
-        <div class="nav-desktop-links">
-          <a href="/" class="nav-link">Home</a>
-          <a href="/dashboard" class="nav-link">Progress</a>
-          <a href="/workout-tracker" class="nav-link">Tracker</a>
-          <a href="/find-gyms" class="nav-link">Find Gyms</a>
-          <a href="/profile" class="nav-link active">Profile</a>
+        <div class="brand" aria-label="Ace Fitness">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
         </div>
-
-        
-
-        <!-- Right: Icons -->
-        <div class="nav-icons">
-          <a class="ai-badge" href="/ai" aria-label="AI Coach">
-            <span>Ai<sup>+</sup></span>
-          </a>
-        </div>
+        <span class="auth-header-pill">Members only</span>
       </div>
     </header>
 
     <main class="auth-shell">
-      <section class="section">
+      <section class="auth-section">
         <div class="container auth-grid">
-          <div class="section-header">
-            <span class="eyebrow">Member Access</span>
-            <h1>Secure your account and unlock structured progress.</h1>
+          <div class="section-header auth-copy">
+            <span class="eyebrow">Secure Access</span>
+            <h1>Login once. Train everywhere.</h1>
             <p>
-              Register once, use the instant dummy checkout, and access your purchased programs from a premium dashboard
-              built for consistency.
+              Your programs, tracker, AI coach, profile, and progress stay unlocked on this browser until you log out.
             </p>
           </div>
-          <div class="auth-card">
+          <div class="auth-card liquid-glass-card">
             <div class="auth-tabs">
-              <button class="auth-tab active" id="loginTab" type="button">Login</button>
-              <button class="auth-tab" id="registerTab" type="button">Register</button>
+              <button class="auth-tab active" id="loginTab" type="button" data-auth-tab="login">Login</button>
+              <button class="auth-tab" id="registerTab" type="button" data-auth-tab="register">Register</button>
             </div>
-            <form class="auth-form active" id="loginForm">
+            <form class="auth-form active" id="loginForm" method="post" data-auth-form="login" novalidate>
               <div class="field">
                 <label for="loginEmail">Email</label>
                 <input id="loginEmail" name="email" type="email" required />
@@ -66,7 +47,7 @@
               </div>
               <button class="btn" type="submit">Login</button>
             </form>
-            <form class="auth-form" id="registerForm">
+            <form class="auth-form" id="registerForm" method="post" data-auth-form="register" novalidate>
               <div class="field">
                 <label for="registerName">Name</label>
                 <input id="registerName" name="name" type="text" required />
@@ -87,31 +68,7 @@
       </section>
     </main>
 
-    <!-- Bottom Navigation (Mobile Only) -->
-    <nav class="bottom-nav">
-      <a href="/" class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-        <span>Home</span>
-      </a>
-      <a href="/dashboard" class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
-        <span>Progress</span>
-      </a>
-      <a href="/workout-tracker" class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
-        <span>Tracker</span>
-      </a>
-      <a href="/find-gyms" class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
-        <span>Find Gyms</span>
-      </a>
-      <a href="/profile" class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        <span>Profile</span>
-      </a>
-    </nav>
-
-    <script src="/public/assets/js/app.js"></script>
-    <script src="/public/assets/js/auth.js"></script>
+    <script src="../public/assets/js/app.js"></script>
+    <script src="../public/assets/js/auth.js?v=5"></script>
   </body>
 </html>

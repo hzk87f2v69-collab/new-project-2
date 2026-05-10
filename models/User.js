@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    avatar: {
+      type: String,
+      default: ""
+    },
     email: {
       type: String,
       required: true,
@@ -40,7 +44,40 @@ const userSchema = new mongoose.Schema(
       min: 0,
       default: null
     },
+    bodyFat: {
+      type: Number,
+      min: 0,
+      default: null
+    },
+    muscleMass: {
+      type: Number,
+      min: 0,
+      default: null
+    },
     healthNotes: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    activityLevel: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    benchPR: {
+      type: String,
+      default: "0"
+    },
+    deadliftPR: {
+      type: String,
+      default: "0"
+    },
+    dietType: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    allergies: {
       type: String,
       trim: true,
       default: ""
