@@ -123,6 +123,7 @@
     setBusy(button, true, "Creating Account...");
 
     try {
+      // Always use backend registration first — it's reliable
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -135,7 +136,16 @@
         throw new Error(result.message || "Registration failed.");
       }
 
-      // Success!
+      // Also register on Firebase silently in the background (non-blocking)
+      if (window.firebaseAuthModule && window.firebaseAuthModule.isConfigured) {
+        try {
+          const { auth, createUserWithEmailAndPassword } = window.firebaseAuthModule;
+          await createUserWithEmailAndPassword(auth, email, password);
+        } catch (fbErr) {
+          console.warn("Firebase background registration skipped:", fbErr.message);
+        }
+      }
+
       if (typeof saveAuth === "function") {
         saveAuth(result.token, result.user);
       } else {
@@ -190,6 +200,7 @@
     setBusy(button, true, "Signing in...");
 
     try {
+      // Always use backend login first — it's reliable
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -202,7 +213,16 @@
         throw new Error(result.message || "Login failed.");
       }
 
-      // Success!
+      // Also sign into Firebase silently in the background (non-blocking)
+      if (window.firebaseAuthModule && window.firebaseAuthModule.isConfigured) {
+        try {
+          const { auth, signInWithEmailAndPassword } = window.firebaseAuthModule;
+          await signInWithEmailAndPassword(auth, email, password);
+        } catch (fbErr) {
+          console.warn("Firebase background login skipped:", fbErr.message);
+        }
+      }
+
       if (typeof saveAuth === "function") {
         saveAuth(result.token, result.user);
       } else {

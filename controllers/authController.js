@@ -86,7 +86,7 @@ const firebaseLogin = async (req, res) => {
     if (!isDatabaseConnected()) {
       let user = mockStore.findUserByEmail(email);
       if (!user) {
-        user = mockStore.createUser({ name: name || "User", email, password: "firebase-login" });
+        user = await mockStore.createUser({ name: name || "User", email, password: "firebase-login" });
       }
       return res.json(buildAuthResponse("Firebase login successful.", user));
     }

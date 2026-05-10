@@ -1,0 +1,33 @@
+{
+  "users": [
+    {
+      "_id": "9cde7022-72e5-4313-977b-0a92c07eda9b",
+      "name": "test account",
+      "bio": "one of the 100 tester and send feedback",
+      "avatar": "",
+      "email": "fixed_user_unique_123@example.com",
+      "phoneNumber": "",
+      "fitnessGoal": "",
+      "age": null,
+      "heightCm": null,
+      "weightKg": null,
+      "bodyFat": null,
+      "muscleMass": null,
+      "healthNotes": "",
+      "activityLevel": "",
+      "dietType": "",
+      "allergies": "",
+      "benchPR": "0",
+      "benchPRLabel": "Bench PR",
+      "deadliftPR": "0",
+      "deadliftPRLabel": "Deadlift PR",
+      "passwordHash": "$2a$10$QcO1wqE6CgorlSzdKUxaluLt5eOfcYJkG/.Tv8.bAawi1RqZdx3yy",
+      "purchasedTracks": [],
+      "completedClasses": [],
+      "createdAt": "2026-05-10T20:35:37.739Z"
+    }
+  ],
+  "enrollments": [],
+  "payments": [],
+  "inquiries": []
+}

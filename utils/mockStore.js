@@ -1,11 +1,40 @@
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const { trackSeed } = require("../data/tracks");
 
-const users = [];
-const enrollments = [];
-const payments = [];
-const inquiries = [];
+const DB_FILE = path.join(__dirname, "../data/mock_db.json");
+
+let users = [];
+let enrollments = [];
+let payments = [];
+let inquiries = [];
+
+const loadData = () => {
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const data = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
+      users = data.users || [];
+      enrollments = data.enrollments || [];
+      payments = data.payments || [];
+      inquiries = data.inquiries || [];
+    }
+  } catch (e) {
+    console.error("Failed to load mock DB:", e);
+  }
+};
+
+const saveData = () => {
+  try {
+    const data = JSON.stringify({ users, enrollments, payments, inquiries }, null, 2);
+    fs.writeFileSync(DB_FILE, data);
+  } catch (e) {
+    console.error("Failed to save mock DB:", e);
+  }
+};
+
+loadData();
 
 const createId = () => crypto.randomUUID();
 
@@ -43,8 +72,8 @@ const createUser = async ({ name, email, password }) => {
   const passwordHash = await bcrypt.hash(password, 10);
   const user = {
     _id: createId(),
-    name: name.trim(),
-    bio: "Athlete | Pro Trainer | Gym Enthusiast",
+    name: "test account",
+    bio: "one of the 100 tester and send feedback",
     avatar: "",
     email: normalizedEmail,
     phoneNumber: "",
@@ -69,6 +98,7 @@ const createUser = async ({ name, email, password }) => {
   };
 
   users.push(user);
+  saveData();
   return createSafeUser(user);
 };
 
@@ -234,6 +264,7 @@ const updateUserProfile = (userId, payload) => {
   user.benchPRLabel = (payload.benchPRLabel || "Bench PR").trim();
   user.deadliftPR = (payload.deadliftPR || "0").trim();
   user.deadliftPRLabel = (payload.deadliftPRLabel || "Deadlift PR").trim();
+  saveData();
   return createSafeUser(user);
 };
 

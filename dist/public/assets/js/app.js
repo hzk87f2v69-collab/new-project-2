@@ -1,16 +1,7 @@
 // ── DYNAMIC API BASE CONFIGURATION ─────────────────────────
-// Set your deployed backend URL here if different from frontend domain
-const PROD_BACKEND_URL = "https://your-backend-api.vercel.app"; 
-
-const getApiBase = () => {
-  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-  if (isLocal) return "/api";
-  
-  // If deployed, use the full backend URL or relative if same domain
-  return PROD_BACKEND_URL + "/api";
-};
-
-const API_BASE = getApiBase();
+// With Firebase Hosting rewrites, the API is always accessible at /api 
+// relative to the frontend domain. This permanently eliminates CORS issues.
+const API_BASE = "/api";
 const PURCHASE_SELECTION_KEY = "acefitness_selection";
 
 const ACE_PAYMENT_CONFIG = {
