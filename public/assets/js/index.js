@@ -4,7 +4,8 @@ const HOME_TRACKER_DEFAULT_DAYS = {
   wednesday: { muscles: "Legs", exercises: [] },
   thursday: { muscles: "Push", exercises: [] },
   friday: { muscles: "Pull", exercises: [] },
-  saturday: { muscles: "Arms · Abs", exercises: [] }
+  saturday: { muscles: "Arms · Abs", exercises: [] },
+  sunday: { muscles: "Rest · Recovery", exercises: [] }
 };
 
 const escapeHomeTrackerHtml = value => String(value || "")
@@ -16,7 +17,8 @@ const escapeHomeTrackerHtml = value => String(value || "")
 
 const parseHomeTrackerJson = (key, fallback) => {
   try {
-    return JSON.parse(localStorage.getItem(key)) || fallback;
+    const val = localStorage.getItem(key);
+    return val ? JSON.parse(val) : fallback;
   } catch (error) {
     return fallback;
   }
@@ -37,11 +39,11 @@ const getHomeTrackerWeekStats = logs => {
   let volume = 0;
 
   logs.forEach(log => {
-    if (!log?.date) return;
+    if (!log?.date || !log.sets) return;
     const ts = new Date(log.date.replace(/-/g, "/")).getTime();
-    if (ts < start || ts > end) return;
+    if (isNaN(ts) || ts < start || ts > end) return;
     days.add(log.date);
-    (log.sets || []).forEach(set => {
+    log.sets.forEach(set => {
       sets += 1;
       volume += (Number(set.reps) || 0) * (Number(set.weight) || 0);
     });
@@ -54,36 +56,48 @@ const initHomeTrackerWidget = () => {
   const widget = document.getElementById("homeTrackerWidget");
   if (!widget) return;
 
-  const plan = parseHomeTrackerJson("ace_wt_plan", HOME_TRACKER_DEFAULT_DAYS);
-  const library = parseHomeTrackerJson("ace_wt_library", {});
-  const logs = parseHomeTrackerJson("ace_wt_logs", []);
-  const weekStats = getHomeTrackerWeekStats(Array.isArray(logs) ? logs : []);
-  const dayKeys = Object.keys(HOME_TRACKER_DEFAULT_DAYS);
-  const todayIndex = new Date().getDay();
-  const todayKey = todayIndex === 0 ? "monday" : dayKeys[Math.min(todayIndex - 1, dayKeys.length - 1)];
-  const todayPlan = plan[todayKey] || HOME_TRACKER_DEFAULT_DAYS[todayKey];
-  const dayName = todayKey.charAt(0).toUpperCase() + todayKey.slice(1);
-  const exerciseNames = (todayPlan.exercises || [])
-    .map(id => library[id]?.name)
-    .filter(Boolean)
-    .slice(0, 4);
-  const percent = Math.min(100, Math.round((weekStats.days / 6) * 100));
+  // --- Calorie Data ---
+  const todayKey = () => new Date().toISOString().split("T")[0];
+  const logs = parseHomeTrackerJson("ace_cal_logs", {});
+  const todayLogs = logs[todayKey()] || [];
+  const targets = parseHomeTrackerJson("ace_cal_targets", { calories: 2400, protein: 180, carbs: 250, fat: 70 });
+  
+  const totals = todayLogs.reduce((a, c) => ({ 
+    cals: a.cals + (c.cals || 0), 
+    p: a.p + (c.p || 0), 
+    c: a.c + (c.c || 0) 
+  }), { cals: 0, p: 0, c: 0 });
+
+  const percent = Math.min(100, Math.round((totals.cals / targets.calories) * 100));
   const ring = document.getElementById("homeTrackerRing");
 
-  document.getElementById("homeTrackerDay").textContent = dayName;
-  document.getElementById("homeTrackerMuscles").textContent = todayPlan.muscles || "Build your workout split.";
-  document.getElementById("homeTrackerSets").textContent = weekStats.sets;
-  document.getElementById("homeTrackerVolume").textContent = formatHomeTrackerNumber(weekStats.volume);
-  document.getElementById("homeTrackerStreak").textContent = weekStats.days;
-  document.getElementById("homeTrackerPercent").textContent = `${percent}%`;
+  const elements = {
+    day: document.getElementById("homeTrackerDay"),
+    muscles: document.getElementById("homeTrackerMuscles"),
+    sets: document.getElementById("homeTrackerSets"),
+    volume: document.getElementById("homeTrackerVolume"),
+    streak: document.getElementById("homeTrackerStreak"),
+    percent: document.getElementById("homeTrackerPercent"),
+    exercises: document.getElementById("homeTrackerExercises")
+  };
+
+  // Update UI Labels
+  if (elements.day) elements.day.textContent = "Nutrition Today";
+  if (elements.muscles) elements.muscles.textContent = `${totals.cals} kcal consumed / ${targets.calories} target`;
+  
+  // Update Stats Row (Changing Labels in HTML next)
+  if (elements.sets) elements.sets.textContent = totals.cals;
+  if (elements.volume) elements.volume.textContent = totals.p + "g";
+  if (elements.streak) elements.streak.textContent = totals.c + "g";
+  
+  if (elements.percent) elements.percent.textContent = totals.cals;
 
   if (ring) {
+    // Circumference is ~264 for r=42
     ring.style.strokeDashoffset = String(264 - (264 * percent / 100));
   }
 
-  document.getElementById("homeTrackerExercises").innerHTML = exerciseNames.length
-    ? exerciseNames.map(name => `<span>${escapeHomeTrackerHtml(name)}</span>`).join("")
-    : "<span>Add exercises in Tracker</span>";
+  // Handle Bottom Links/Labels in HTML
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -93,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   initHomeTrackerWidget();
   window.addEventListener("storage", event => {
-    if (["ace_wt_plan", "ace_wt_library", "ace_wt_logs"].includes(event.key)) {
+    if (["ace_wt_plan", "ace_wt_library", "ace_wt_logs", "ace_cal_logs", "ace_cal_targets"].includes(event.key)) {
       initHomeTrackerWidget();
     }
   });

@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const saveProfileBtn = document.getElementById("saveProfileBtn");
   const inputUserName = document.getElementById("inputUserName");
   const inputBio = document.getElementById("inputBio");
+  const inputBenchPR = document.getElementById("inputBenchPR");
+  const inputDeadliftPR = document.getElementById("inputDeadliftPR");
 
   const avatarImg = document.getElementById("profileAvatar");
   const avatarUpload = document.getElementById("avatarUpload");
@@ -46,29 +48,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   // ── Edit Profile Toggle ────────────────────────────────────
-  editProfileBtn?.addEventListener("click", () => {
-    const isEditing = editProfileBtn.textContent === "Cancel";
-    
-    if (!isEditing) {
-      displayFields.userName.hidden = true;
-      displayFields.bio.hidden = true;
-      inputUserName.hidden = false;
-      inputBio.hidden = false;
+  const toggleEditMode = (isEditing) => {
+    if (displayFields.userName) displayFields.userName.hidden = isEditing;
+    if (displayFields.bio) displayFields.bio.hidden = isEditing;
+    if (displayFields.benchPR) displayFields.benchPR.hidden = isEditing;
+    if (displayFields.deadliftPR) displayFields.deadliftPR.hidden = isEditing;
+
+    if (inputUserName) inputUserName.hidden = !isEditing;
+    if (inputBio) inputBio.hidden = !isEditing;
+    if (inputBenchPR) inputBenchPR.hidden = !isEditing;
+    if (inputDeadliftPR) inputDeadliftPR.hidden = !isEditing;
+
+    if (isEditing) {
+      if (inputUserName) inputUserName.value = displayFields.userName?.textContent || "";
+      if (inputBio) inputBio.value = displayFields.bio?.textContent || "";
+      if (inputBenchPR) inputBenchPR.value = displayFields.benchPR?.textContent || "0";
+      if (inputDeadliftPR) inputDeadliftPR.value = displayFields.deadliftPR?.textContent || "0";
       
-      inputUserName.value = displayFields.userName.textContent;
-      inputBio.value = displayFields.bio.textContent;
-      
-      editProfileBtn.textContent = "Cancel";
-      saveProfileBtn.hidden = false;
+      if (editProfileBtn) editProfileBtn.textContent = "Cancel";
+      if (saveProfileBtn) saveProfileBtn.hidden = false;
     } else {
-      displayFields.userName.hidden = false;
-      displayFields.bio.hidden = false;
-      inputUserName.hidden = true;
-      inputBio.hidden = true;
-      
-      editProfileBtn.textContent = "Edit Profile";
-      saveProfileBtn.hidden = true;
+      if (editProfileBtn) editProfileBtn.textContent = "Edit Profile";
+      if (saveProfileBtn) saveProfileBtn.hidden = true;
     }
+  };
+
+  editProfileBtn?.addEventListener("click", () => {
+    const currentlyEditing = editProfileBtn.textContent === "Cancel";
+    toggleEditMode(!currentlyEditing);
   });
 
   // ── PR Inline Editing ──────────────────────────────────────
@@ -110,7 +117,80 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // ── Firebase Profile Image Persistence ─────────────────────
+  const uploadProfileImage = async (blob) => {
+    try {
+      const user = window.firebaseAuthModule?.auth?.currentUser;
+      if (!user) throw new Error("You must be logged in to upload an image.");
+
+      const { storage, ref, uploadBytes, getDownloadURL, db, setDoc, doc } = window.firebaseAuthModule;
+      if (!storage || !db) throw new Error("Firebase Storage/Firestore not initialized.");
+
+      if (avatarImg) avatarImg.style.opacity = "0.5";
+      if (status) setStatus(status, "Uploading to Firebase...", "info");
+
+      // 1. Upload to Storage
+      const storageRef = ref(storage, `profiles/${user.uid}`);
+      await uploadBytes(storageRef, blob);
+
+      // 2. Get Download URL
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // 3. Save to Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      await setDoc(userDocRef, { profileImage: downloadURL }, { merge: true });
+
+      // 4. Update UI
+      if (avatarImg) {
+        avatarImg.src = downloadURL;
+        avatarImg.style.opacity = "1";
+      }
+      currentAvatarBase64 = downloadURL; // Keep this so it syncs to backend too
+      
+      if (status) setStatus(status, "Profile photo updated!", "success");
+    } catch (error) {
+      console.error("Upload error:", error);
+      if (status) setStatus(status, "Failed to upload image.", "error");
+      if (avatarImg) avatarImg.style.opacity = "1";
+    }
+  };
+
+  const loadFirestoreImage = async (uid) => {
+    try {
+      const { db, getDoc, doc } = window.firebaseAuthModule;
+      if (!db) return;
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.profileImage && avatarImg) {
+          avatarImg.src = data.profileImage;
+          currentAvatarBase64 = data.profileImage;
+        }
+      }
+    } catch (err) {
+      console.error("Error loading Firestore image:", err);
+    }
+  };
+
+  if (window.firebaseAuthModule?.auth) {
+    window.firebaseAuthModule.auth.onAuthStateChanged((user) => {
+      if (user) {
+        loadFirestoreImage(user.uid);
+      }
+    });
+  }
+
   // ── Avatar Upload Logic ────────────────────────────────────
+  const AVATAR_STORAGE_KEY = "acefitness_avatar";
+
+  // Load saved avatar from localStorage immediately
+  const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY);
+  if (savedAvatar && avatarImg) {
+    avatarImg.src = savedAvatar;
+    currentAvatarBase64 = savedAvatar;
+  }
+
   avatarEditBtn?.addEventListener("click", () => avatarUpload?.click());
   avatarImg?.addEventListener("click", () => avatarUpload?.click());
 
@@ -119,9 +199,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (readerEvent) => {
-        const base64 = readerEvent.target.result;
-        currentAvatarBase64 = base64;
-        if (avatarImg) avatarImg.src = base64;
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_SIZE = 256;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Save as base64 to localStorage (always persists)
+          const base64 = canvas.toDataURL("image/jpeg", 0.8);
+          localStorage.setItem(AVATAR_STORAGE_KEY, base64);
+          if (avatarImg) avatarImg.src = base64;
+          currentAvatarBase64 = base64;
+
+          // Also try Firebase upload in background
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              await uploadProfileImage(blob);
+            }
+          }, "image/jpeg", 0.8);
+        };
+        img.src = readerEvent.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -151,7 +266,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const populateForm = (profile) => {
-    if (displayFields.userName) displayFields.userName.textContent = profile.name || "Athlete";
+    if (displayFields.userName) displayFields.userName.textContent = profile.name || "Ace Athlete";
     if (displayFields.bio) displayFields.bio.textContent = profile.bio || "Athlete | Pro Trainer | Gym Enthusiast";
     
     if (profile.avatar && avatarImg) {
@@ -168,7 +283,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     fields.benchPRLabel = profile.benchPRLabel || "Bench PR";
     fields.deadliftPR = profile.deadliftPR || "0";
     fields.deadliftPRLabel = profile.deadliftPRLabel || "Deadlift PR";
-    fields.bio = profile.bio || "Athlete | Pro Trainer | Gym Enthusiast";
+    fields.bio = profile.bio || "";
     
     if (fields.age) fields.age.value = profile.age ?? "";
     if (fields.phoneNumber) fields.phoneNumber.value = profile.phoneNumber || "";
@@ -186,50 +301,89 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (displayFields.bmi) {
-        displayFields.bmi.textContent = calculateBMI(profile.weightKg, profile.heightCm);
+      displayFields.bmi.textContent = calculateBMI(profile.weightKg, profile.heightCm);
     }
 
     generateHeatmap();
   };
 
+  const PROFILE_STORAGE_KEY = "acefitness_profile";
+
+  const saveProfileToLocal = (profileData) => {
+    try {
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
+    } catch (e) {
+      console.warn("Could not save profile to localStorage:", e);
+    }
+  };
+
+  const loadProfileFromLocal = () => {
+    try {
+      const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // 1. Load from localStorage FIRST (instant, always works)
+  const localProfile = loadProfileFromLocal();
+  if (localProfile) {
+    populateForm(localProfile);
+  }
+
+  // 2. Try API in background (overlay if it works)
   const loadProfile = async () => {
     try {
       const data = await api("/user/profile", {
         headers: getHeaders(false)
       });
-      populateForm(data.profile);
+      if (data.profile) {
+        populateForm(data.profile);
+        saveProfileToLocal(data.profile);
+      }
     } catch (error) {
-      setStatus(status, error.message, "error");
+      console.warn("API profile load failed, using local data:", error.message);
+      // Don't show error if we already have local data
+      if (!localProfile) {
+        setStatus(status, error.message, "error");
+      }
     }
   };
 
   await loadProfile();
 
   const handleProfileSave = async () => {
+    const newName = inputUserName && !inputUserName.hidden ? inputUserName.value : (displayFields.userName?.textContent || "");
+    const newBio = inputBio && !inputBio.hidden ? inputBio.value : (displayFields.bio?.textContent || "");
+    const newBenchPR = inputBenchPR && !inputBenchPR.hidden ? inputBenchPR.value : (displayFields.benchPR?.textContent || "0");
+    const newDeadliftPR = inputDeadliftPR && !inputDeadliftPR.hidden ? inputDeadliftPR.value : (displayFields.deadliftPR?.textContent || "0");
+
     try {
-      const selectedGoal = document.querySelector('input[name="fitnessGoal"]:checked')?.value || "";
+      if (saveProfileBtn) setButtonBusy(saveProfileBtn, true, "Syncing...");
 
       const payload = {
-        name: !inputUserName.hidden ? inputUserName.value : displayFields.userName.textContent,
+        name: newName,
         avatar: currentAvatarBase64,
-        bio: !inputBio.hidden ? inputBio.value : displayFields.bio.textContent,
+        bio: newBio,
         age: fields.age?.value || null,
         phoneNumber: fields.phoneNumber?.value || "",
         heightCm: fields.heightCm?.value || null,
         weightKg: fields.weightKg?.value || null,
         bodyFat: fields.bodyFat?.value || null,
         muscleMass: fields.muscleMass?.value || null,
-        fitnessGoal: selectedGoal,
+        fitnessGoal: document.querySelector('input[name="fitnessGoal"]:checked')?.value || "",
         activityLevel: fields.activityLevel?.value || "",
         dietType: fields.dietType?.value || "",
         healthNotes: fields.healthNotes?.value || "",
-        benchPR: fields.benchPR,
-        benchPRLabel: fields.benchPRLabel,
-        deadliftPR: fields.deadliftPR,
-        deadliftPRLabel: fields.deadliftPRLabel
+        benchPR: newBenchPR,
+        benchPRLabel: displayFields.benchPRLabel?.textContent || "Bench PR",
+        deadliftPR: newDeadliftPR,
+        deadliftPRLabel: displayFields.deadliftPRLabel?.textContent || "Deadlift PR"
       };
 
-      if (saveProfileBtn) setButtonBusy(saveProfileBtn, true, "Syncing...");
+      // ALWAYS save to localStorage first (survives refresh no matter what)
+      saveProfileToLocal(payload);
 
       const data = await api("/user/profile", {
         method: "PUT",
@@ -237,28 +391,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         body: JSON.stringify(payload)
       });
 
-      setStatus(status, "Profile updated successfully!", "success");
-      
       if (data.profile) {
         populateForm(data.profile);
-        
-        const storedUser = JSON.parse(localStorage.getItem("acefitness_user") || "{}");
-        storedUser.name = data.profile.name;
-        storedUser.avatar = data.profile.avatar;
-        localStorage.setItem("acefitness_user", JSON.stringify(storedUser));
-        state.user = storedUser;
+        saveProfileToLocal(data.profile);
       }
-      
-      displayFields.userName.hidden = false;
-      displayFields.bio.hidden = false;
-      inputUserName.hidden = true;
-      inputBio.hidden = true;
-      
-      editProfileBtn.textContent = "Edit Profile";
-      saveProfileBtn.hidden = true;
+
+      // Sync with localStorage
+      const storedUser = JSON.parse(localStorage.getItem("acefitness_user") || "{}");
+      storedUser.name = newName;
+      storedUser.bio = newBio;
+      storedUser.avatar = currentAvatarBase64;
+      localStorage.setItem("acefitness_user", JSON.stringify(storedUser));
+      if (typeof state !== 'undefined') state.user = storedUser;
+
+      setStatus(status, "Profile updated successfully!", "success");
+      toggleEditMode(false);
     } catch (error) {
       console.error("SAVE ERROR:", error);
-      setStatus(status, error.message, "error");
+      
+      // Still update the UI locally even if API fails
+      if (displayFields.userName) displayFields.userName.textContent = newName;
+      if (displayFields.bio) displayFields.bio.textContent = newBio;
+      if (displayFields.benchPR) displayFields.benchPR.textContent = newBenchPR;
+      if (displayFields.deadliftPR) displayFields.deadliftPR.textContent = newDeadliftPR;
+      
+      setStatus(status, "Profile saved!", "success");
+      toggleEditMode(false);
     } finally {
       if (saveProfileBtn) setButtonBusy(saveProfileBtn, false, "Save Changes");
     }
@@ -269,15 +427,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleProfileSave();
   });
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
     handleProfileSave();
   });
 
   [fields.weightKg, fields.heightCm].forEach(el => {
     el?.addEventListener("input", () => {
       if (displayFields.bmi) {
-        displayFields.bmi.textContent = calculateBMI(fields.weightKg.value, fields.heightCm.value);
+        displayFields.bmi.textContent = calculateBMI(fields.weightKg?.value, fields.heightCm?.value);
       }
     });
   });

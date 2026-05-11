@@ -325,6 +325,21 @@ select {
   color: var(--text);
 }
 
+.btn-glass-blue {
+  background: rgba(0, 122, 255, 0.22);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(0, 122, 255, 0.45);
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.btn-glass-blue:hover {
+  background: rgba(0, 122, 255, 0.35);
+  border-color: rgba(0, 122, 255, 0.7);
+  box-shadow: 0 0 25px rgba(0, 122, 255, 0.4);
+}
+
 .btn-subtle {
   padding: 0.85rem 1.15rem;
   color: var(--text);
@@ -379,18 +394,27 @@ select {
   display: flex;
   align-items: center;
   background-color: #000;
-  background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
+  background-image: url('../images/hero-portrait.png');
   background-size: cover;
-  background-position: center;
+  /* Top center keeps the face visible, especially crucial for portrait aspect ratio images on wide screens */
+  background-position: top center; 
   margin-top: -72px;
   padding-top: 72px;
+}
+
+/* Adjust background sizing on mobile to ensure the portrait image isn't too zoomed in */
+@media (max-width: 768px) {
+  .hero-banner {
+    background-position: center 20%; /* Nudge slightly down on mobile if needed, or keep top */
+  }
 }
 
 .hero-banner::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.9) 100%);
+  /* Darken slightly to make sure the white text remains legible against the image */
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);
   z-index: 1;
 }
 
@@ -423,47 +447,8 @@ select {
   font-size: 1.1rem;
   color: var(--muted);
   line-height: 1.6;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1.5rem; /* Reduced bottom margin to pull the widget up */
   max-width: 500px;
-}
-
-.hero-features {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 3rem;
-}
-
-.hero-feature-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.75rem;
-}
-
-.hero-feature-icon {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  color: var(--accent);
-  background: rgba(10, 132, 255, 0.1);
-  border-radius: 12px;
-  transition: transform 0.3s ease, background 0.3s ease;
-}
-.hero-feature-icon svg { width: 24px; height: 24px; }
-
-.hero-feature-item:hover .hero-feature-icon {
-  transform: scale(1.1);
-  background: rgba(10, 132, 255, 0.2);
-}
-
-.hero-feature-text {
-  font-size: 0.8rem;
-  color: var(--muted);
-  font-weight: 500;
-  line-height: 1.3;
 }
 
 
@@ -477,17 +462,24 @@ select {
 }
 
 .hero-tracker-module {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
-  gap: 2rem;
+  display: flex;
+  justify-content: center;
   width: min(100%, 1120px);
   margin: 1.5rem auto 0;
-  align-items: stretch;
 }
 
-.hero-tracker-widget,
-.hero-tracker-copy-card {
-  background: rgba(18, 18, 20, 0.82);
+.hero-tracker-widget {
+  width: 100%;
+  max-width: 580px;
+}
+
+.hero-tracker-widget.glass-card,
+.hero-tracker-copy-card.glass-card {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important; /* Made completely clear with no borders */
+  box-shadow: none !important;
 }
 
 .hero-tracker-widget {
@@ -564,10 +556,30 @@ select {
   transition: stroke-dashoffset 0.45s ease;
 }
 
-.home-widget-ring span {
+.home-widget-ring-label {
   position: relative;
-  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.home-widget-ring-label strong {
+  display: block;
+  font-size: 1.15rem;
   font-weight: 800;
+  color: #fff;
+}
+
+.home-widget-ring-label small {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
 }
 
 .home-widget-stats {
@@ -4033,6 +4045,18 @@ body.player-page {
   padding: 4px 8px;
   width: 100%;
   margin-bottom: 0.25rem;
+}
+
+.pr-value-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  width: 80px;
+  text-align: center;
+  padding: 2px;
 }
 
 .bio-inline-textarea {

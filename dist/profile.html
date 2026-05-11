@@ -43,14 +43,20 @@
                 <span class="label">Streak</span>
               </div>
               <div class="metric-item">
-                <span class="value" id="displayBenchPR">100</span>
+                <div class="pr-value-edit-wrapper">
+                  <span class="value" id="displayBenchPR">100</span>
+                  <input type="number" id="inputBenchPR" class="pr-value-input" hidden>
+                </div>
                 <div class="label-wrapper pr-editable" data-pr="bench">
                   <span class="label" id="displayBenchPRLabel">Bench PR</span>
                   <input type="text" id="inputBenchPRLabel" class="pr-inline-input" hidden>
                 </div>
               </div>
               <div class="metric-item">
-                <span class="value" id="displayDeadliftPR">180</span>
+                <div class="pr-value-edit-wrapper">
+                  <span class="value" id="displayDeadliftPR">180</span>
+                  <input type="number" id="inputDeadliftPR" class="pr-value-input" hidden>
+                </div>
                 <div class="label-wrapper pr-editable" data-pr="deadlift">
                   <span class="label" id="displayDeadliftPRLabel">Deadlift PR</span>
                   <input type="text" id="inputDeadliftPRLabel" class="pr-inline-input" hidden>

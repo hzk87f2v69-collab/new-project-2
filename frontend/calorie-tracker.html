@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Fitness | Calorie Tracker</title>
+    <link rel="stylesheet" href="../public/assets/css/styles.css" />
+    <link rel="icon" type="image/jpeg" href="../public/assets/images/favicon.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#20c7ff">
+    <style>
+      :root {
+        --cal-orange: #ff9f0a;
+        --cal-red: #ff453a;
+        --cal-green: #32d74b;
+        --cal-blue: #0a84ff;
+      }
+      .cal-shell {
+        padding: 1.5rem 1rem 6rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .cal-hero {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .cal-main-ring {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        margin: 0 auto 1.5rem;
+        display: grid;
+        place-items: center;
+      }
+      .cal-main-ring svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      .cal-ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 12; }
+      .cal-ring-fill {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 12;
+        stroke-linecap: round;
+        stroke-dasharray: 628;
+        stroke-dashoffset: 628;
+        transition: stroke-dashoffset 0.8s ease-out, stroke 0.4s ease;
+        filter: drop-shadow(0 0 12px rgba(10, 132, 255, 0.4));
+      }
+      .cal-ring-data {
+        text-align: center;
+        z-index: 1;
+      }
+      .cal-rem-val { font-size: 2.8rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; transition: color 0.3s; }
+      .cal-rem-lbl { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+      .cal-eaten-row { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-top: 0.3rem; }
+
+      /* Macro Cards */
+      .macro-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .macro-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 1rem;
+        text-align: center;
+        transition: border-color 0.4s, box-shadow 0.4s;
+      }
+      .macro-card.glow-p { border-color: rgba(255,159,10,0.4); box-shadow: 0 0 20px rgba(255,159,10,0.1); }
+      .macro-card.glow-c { border-color: rgba(10,132,255,0.4); box-shadow: 0 0 20px rgba(10,132,255,0.1); }
+      .macro-card.glow-f { border-color: rgba(255,69,58,0.4); box-shadow: 0 0 20px rgba(255,69,58,0.1); }
+      .macro-val { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.2rem; }
+      .macro-target { font-size: 0.65rem; color: rgba(255,255,255,0.3); }
+      .macro-lbl { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+      .macro-progress {
+        height: 4px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 2px;
+        margin-top: 0.75rem;
+        overflow: hidden;
+      }
+      .macro-bar { height: 100%; transition: width 0.5s ease; border-radius: 2px; }
+      .p-bar { background: var(--cal-orange); }
+      .c-bar { background: var(--cal-blue); }
+      .f-bar { background: var(--cal-red); }
+
+      /* Input Section */
+      .cal-input-section {
+        background: rgba(255,255,255,0.03);
+        border-radius: 24px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.05);
+      }
+      .cal-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        background: rgba(255,255,255,0.05);
+        padding: 0.3rem;
+        border-radius: 14px;
+      }
+      .cal-tab {
+        flex: 1;
+        padding: 0.6rem;
+        border: none;
+        background: none;
+        color: rgba(255,255,255,0.5);
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.2s;
+      }
+      .cal-tab.active {
+        background: rgba(255,255,255,0.1);
+        color: white;
+      }
+
+      /* Search */
+      .cal-search-wrap { position: relative; margin-bottom: 1rem; }
+      .cal-search-input {
+        width: 100%;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 0.85rem 1rem 0.85rem 2.6rem;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .cal-search-input:focus { border-color: var(--accent); }
+      .cal-search-icon {
+        position: absolute;
+        left: 0.9rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255,255,255,0.3);
+        pointer-events: none;
+        font-size: 1rem;
+      }
+      .cal-dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0; right: 0;
+        background: #1c1c1e;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        max-height: 280px;
+        overflow-y: auto;
+        z-index: 50;
+        display: none;
+      }
+      .cal-dropdown.show { display: block; }
+      .cal-dd-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: background 0.15s;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .cal-dd-item:last-child { border-bottom: none; }
+      .cal-dd-item:hover, .cal-dd-item:active { background: rgba(255,255,255,0.06); }
+      .cal-dd-name { font-size: 0.9rem; font-weight: 600; }
+      .cal-dd-meta { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
+      .cal-dd-cal { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+      .cal-dd-custom {
+        padding: 0.75rem 1rem;
+        text-align: center;
+        color: var(--accent);
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.85rem;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+      .cal-dd-custom:hover { background: rgba(10,132,255,0.08); }
+
+      /* Selected Food & Quantity */
+      .cal-selected { display: none; margin-bottom: 1rem; }
+      .cal-selected.show { display: block; }
+      .cal-sel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+      .cal-sel-name { font-weight: 700; font-size: 1rem; }
+      .cal-sel-clear { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 0.8rem; padding: 0.3rem 0.6rem; }
+      .cal-qty-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      .cal-qty-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: rgba(255,255,255,0.7);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .cal-qty-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+        box-shadow: 0 0 16px rgba(10,132,255,0.3);
+      }
+      .cal-preview {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: rgba(255,255,255,0.03);
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+      .cal-prev-item { text-align: center; }
+      .cal-prev-val { font-size: 1.1rem; font-weight: 700; }
+      .cal-prev-val.pv-cal { color: var(--accent); }
+      .cal-prev-val.pv-p { color: var(--cal-orange); }
+      .cal-prev-val.pv-c { color: var(--cal-blue); }
+      .cal-prev-val.pv-f { color: var(--cal-red); }
+      .cal-prev-lbl { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+      .cal-add-btn {
+        width: 100%;
+        padding: 0.85rem;
+        border: none;
+        border-radius: 14px;
+        background: var(--accent);
+        color: white;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.2s;
+      }
+      .cal-add-btn:active { transform: scale(0.97); }
+      .cal-add-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+      /* Quick Add Chips */
+      .cal-quick-section { margin-top: 1.25rem; }
+      .cal-quick-label { font-size: 0.75rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; font-weight: 600; }
+      .cal-chips {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .cal-chip {
+        padding: 0.45rem 0.85rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.04);
+        color: rgba(255,255,255,0.7);
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .cal-chip:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+      .cal-chip:active { transform: scale(0.95); }
+
+      /* Custom Food Form */
+      .cal-custom-form { display: none; margin-top: 1rem; }
+      .cal-custom-form.show { display: block; }
+      .cal-field { display: flex; flex-direction: column; gap: 0.4rem; }
+      .cal-field label { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.6); }
+      .cal-field input, .cal-field select {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        padding: 0.7rem 0.85rem;
+        color: white;
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .cal-field input:focus, .cal-field select:focus { border-color: var(--accent); }
+
+      /* Log List */
+      .cal-log-list { margin-top: 2rem; }
+      .cal-log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+      .cal-log-title { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; }
+      .cal-log-count { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+      .cal-log-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.85rem 1rem;
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        margin-bottom: 0.35rem;
+        transition: background 0.2s;
+      }
+      .cal-log-info h4 { margin: 0; font-size: 0.9rem; font-weight: 600; }
+      .cal-log-info p { margin: 0.15rem 0 0; font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+      .cal-log-right { display: flex; align-items: center; gap: 0.6rem; }
+      .cal-log-val { font-weight: 700; color: var(--accent); font-size: 0.9rem; }
+      .cal-log-actions { display: flex; gap: 0.25rem; }
+      .cal-log-btn { background: none; border: none; color: rgba(255,255,255,0.2); cursor: pointer; padding: 0.35rem; font-size: 0.85rem; transition: color 0.2s; }
+      .cal-log-btn:hover { color: rgba(255,255,255,0.6); }
+
+      /* Goal Selector */
+      .cal-goal-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+      }
+      .cal-goal-btn {
+        padding: 0.65rem 0.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.03);
+        color: rgba(255,255,255,0.5);
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .cal-goal-btn.active {
+        background: rgba(10,132,255,0.15);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      /* Pulse animation */
+      @keyframes calPulse {
+        0% { filter: drop-shadow(0 0 12px rgba(10,132,255,0.4)); }
+        50% { filter: drop-shadow(0 0 24px rgba(10,132,255,0.7)); }
+        100% { filter: drop-shadow(0 0 12px rgba(10,132,255,0.4)); }
+      }
+      .cal-ring-fill.pulse { animation: calPulse 0.6s ease; }
+
+      /* ── NUTRITION HISTORY ────────────────────────── */
+      .nh-section { margin-top: 2.5rem; padding-bottom: 2rem; }
+      .nh-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0 0.85rem;
+        position: sticky;
+        top: 60px;
+        z-index: 5;
+        background: var(--bg);
+      }
+      .nh-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: rgba(255,255,255,0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .nh-count {
+        font-size: 0.72rem;
+        color: rgba(255,255,255,0.3);
+      }
+      .nh-list { display: grid; gap: 0.5rem; }
+
+      /* Day Card (mirrors wt-day-card) */
+      .nh-card {
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: border-color 0.25s, box-shadow 0.25s;
+        cursor: pointer;
+      }
+      .nh-card:hover {
+        border-color: rgba(255,255,255,0.14);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      }
+      .nh-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.1rem;
+        gap: 1rem;
+      }
+      .nh-card-left { flex: 1; min-width: 0; }
+      .nh-card-cals {
+        font-size: 1.15rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 0.35rem;
+      }
+      .nh-card-cals span { font-size: 0.7rem; font-weight: 500; color: rgba(255,255,255,0.4); margin-left: 2px; }
+      .nh-card-macros {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.5);
+      }
+      .nh-macro-dot {
+        display: inline-block;
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        margin-right: 3px;
+        vertical-align: middle;
+      }
+      .nh-dot-p { background: var(--cal-orange); }
+      .nh-dot-c { background: var(--cal-blue); }
+      .nh-dot-f { background: var(--cal-red); }
+
+      /* Date Pill */
+      .nh-date-pill {
+        flex-shrink: 0;
+        padding: 0.3rem 0.65rem;
+        border-radius: 8px;
+        background: rgba(10,132,255,0.15);
+        border: 1px solid rgba(10,132,255,0.3);
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 700;
+        white-space: nowrap;
+        pointer-events: none;
+      }
+
+      /* Chevron */
+      .nh-chevron {
+        flex-shrink: 0;
+        color: rgba(255,255,255,0.2);
+        font-size: 0.8rem;
+        transition: transform 0.3s ease;
+      }
+      .nh-card.open .nh-chevron { transform: rotate(90deg); }
+
+      /* Expanded Detail */
+      .nh-card-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .nh-card.open .nh-card-body {
+        max-height: 600px;
+      }
+      .nh-detail {
+        padding: 0 1.1rem 1rem;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+
+      /* Mini macro bars in detail */
+      .nh-detail-macros {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        margin: 1rem 0;
+      }
+      .nh-detail-macro { text-align: center; }
+      .nh-detail-macro-val { font-size: 1rem; font-weight: 700; }
+      .nh-detail-macro-val.pv-p { color: var(--cal-orange); }
+      .nh-detail-macro-val.pv-c { color: var(--cal-blue); }
+      .nh-detail-macro-val.pv-f { color: var(--cal-red); }
+      .nh-detail-macro-lbl { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+      .nh-mini-bar {
+        height: 3px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 2px;
+        margin-top: 0.4rem;
+        overflow: hidden;
+      }
+      .nh-mini-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+
+      /* Food items in detail */
+      .nh-food-list { margin-top: 0.75rem; }
+      .nh-food-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-size: 0.82rem;
+      }
+      .nh-food-row:last-child { border-bottom: none; }
+      .nh-food-name { font-weight: 600; color: rgba(255,255,255,0.8); }
+      .nh-food-portion { font-size: 0.7rem; color: rgba(255,255,255,0.35); }
+      .nh-food-kcal { font-weight: 600; color: var(--cal-blue); font-size: 0.8rem; }
+      .nh-food-time { font-size: 0.65rem; color: rgba(255,255,255,0.25); margin-left: 0.5rem; }
+
+      /* Summary row */
+      .nh-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.65rem 0.6rem;
+        margin-top: 0.5rem;
+        background: rgba(255,255,255,0.03);
+        border-radius: 10px;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.5);
+      }
+      .nh-summary-stat { font-weight: 600; }
+
+      /* Empty state */
+      .nh-empty {
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        color: rgba(255,255,255,0.3);
+        font-size: 0.9rem;
+      }
+      .nh-empty-icon { font-size: 2rem; margin-bottom: 0.75rem; opacity: 0.4; }
+    </style>
+  </head>
+  <body class="dark-mode">
+    <header class="site-header">
+      <div class="nav">
+        <a class="brand" href="index.html">
+          <img src="../public/assets/images/logo.png" alt="AF" class="brand-mark">
+        </a>
+        <div class="nav-desktop-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="dashboard.html" class="nav-link">Progress</a>
+          <a href="workout-tracker.html" class="nav-link">Tracker</a>
+          <a href="profile.html" class="nav-link">Profile</a>
+        </div>
+        <div class="header-toggle">
+          <a href="workout-tracker.html" class="toggle-btn">WORKOUT</a>
+          <a href="#" class="toggle-btn active">CALORIE</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="cal-shell">
+      <!-- Hero + Ring (PRESERVED) -->
+      <div class="cal-hero">
+        <span class="eyebrow">Nutrition Tracker</span>
+        <h1 style="margin-top:0.5rem">Daily Fuel</h1>
+      </div>
+
+      <div class="cal-main-ring">
+        <svg viewBox="0 0 220 220">
+          <circle class="cal-ring-bg" cx="110" cy="110" r="100" />
+          <circle class="cal-ring-fill" id="calRing" cx="110" cy="110" r="100" />
+        </svg>
+        <div class="cal-ring-data">
+          <div class="cal-rem-val" id="remCals">2,400</div>
+          <div class="cal-rem-lbl">Calories Left</div>
+          <div class="cal-eaten-row" id="eatenRow"></div>
+        </div>
+      </div>
+
+      <!-- Macro Cards (PRESERVED) -->
+      <div class="macro-grid">
+        <div class="macro-card" id="cardP">
+          <div class="macro-val" id="valP">0g</div>
+          <div class="macro-target" id="tgtP"></div>
+          <div class="macro-lbl">Protein</div>
+          <div class="macro-progress"><div class="macro-bar p-bar" id="barP" style="width:0%"></div></div>
+        </div>
+        <div class="macro-card" id="cardC">
+          <div class="macro-val" id="valC">0g</div>
+          <div class="macro-target" id="tgtC"></div>
+          <div class="macro-lbl">Carbs</div>
+          <div class="macro-progress"><div class="macro-bar c-bar" id="barC" style="width:0%"></div></div>
+        </div>
+        <div class="macro-card" id="cardF">
+          <div class="macro-val" id="valF">0g</div>
+          <div class="macro-target" id="tgtF"></div>
+          <div class="macro-lbl">Fats</div>
+          <div class="macro-progress"><div class="macro-bar f-bar" id="barF" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Input Section (UPGRADED) -->
+      <div class="cal-input-section">
+        <div class="cal-tabs">
+          <button class="cal-tab active" id="tabQuick">Log Food</button>
+          <button class="cal-tab" id="tabSettings">Targets</button>
+        </div>
+
+        <!-- ── LOG FOOD TAB ── -->
+        <div id="viewQuick">
+          <!-- Smart Search -->
+          <div class="cal-search-wrap">
+            <span class="cal-search-icon">🔍</span>
+            <input type="text" class="cal-search-input" id="foodSearch" placeholder="Search Indian food... roti, dal, chicken" autocomplete="off" />
+            <div class="cal-dropdown" id="searchDropdown"></div>
+          </div>
+
+          <!-- Selected Food + Quantity -->
+          <div class="cal-selected" id="selectedArea">
+            <div class="cal-sel-header">
+              <span class="cal-sel-name" id="selName"></span>
+              <button class="cal-sel-clear" id="clearSel">✕ Clear</button>
+            </div>
+            <div class="cal-qty-row" id="qtyRow"></div>
+            <div class="cal-preview" id="previewRow">
+              <div class="cal-prev-item"><div class="cal-prev-val pv-cal" id="pvCal">0</div><div class="cal-prev-lbl">kcal</div></div>
+              <div class="cal-prev-item"><div class="cal-prev-val pv-p" id="pvP">0</div><div class="cal-prev-lbl">protein</div></div>
+              <div class="cal-prev-item"><div class="cal-prev-val pv-c" id="pvC">0</div><div class="cal-prev-lbl">carbs</div></div>
+              <div class="cal-prev-item"><div class="cal-prev-val pv-f" id="pvF">0</div><div class="cal-prev-lbl">fats</div></div>
+            </div>
+            <button class="cal-add-btn" id="addFoodBtn" disabled>+ Add to Log</button>
+          </div>
+
+          <!-- Custom Food Form (hidden by default) -->
+          <div class="cal-custom-form" id="customForm">
+            <div style="font-weight:700;margin-bottom:0.75rem;">Create Custom Food</div>
+            <div class="cal-field" style="margin-bottom:0.5rem"><label>Food Name</label><input type="text" id="cfName" placeholder="Mom's Paneer Curry" /></div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;margin-bottom:0.5rem;">
+              <div class="cal-field"><label>Calories (per serving)</label><input type="number" id="cfCal" placeholder="300" /></div>
+              <div class="cal-field"><label>Protein (g)</label><input type="number" id="cfP" placeholder="15" /></div>
+              <div class="cal-field"><label>Carbs (g)</label><input type="number" id="cfC" placeholder="20" /></div>
+              <div class="cal-field"><label>Fat (g)</label><input type="number" id="cfF" placeholder="12" /></div>
+            </div>
+            <div style="display:flex;gap:0.5rem;">
+              <button class="cal-add-btn" id="saveCustomBtn" style="flex:1">Save Custom Food</button>
+              <button class="cal-sel-clear" id="cancelCustomBtn" style="border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:0.7rem 1rem;">Cancel</button>
+            </div>
+          </div>
+
+          <!-- Quick Add Chips -->
+          <div class="cal-quick-section" id="quickSection">
+            <div class="cal-quick-label" id="quickLabel">Quick Add</div>
+            <div class="cal-chips" id="quickChips"></div>
+          </div>
+        </div>
+
+        <!-- ── TARGETS TAB ── -->
+        <div id="viewSettings" class="hide">
+          <div class="cal-field" style="margin-bottom:1rem">
+            <label>Goal Type</label>
+            <div class="cal-goal-row" id="goalRow">
+              <button class="cal-goal-btn" data-goal="fatloss">🔥 Fat Loss</button>
+              <button class="cal-goal-btn active" data-goal="maintain">⚖️ Maintain</button>
+              <button class="cal-goal-btn" data-goal="gain">💪 Muscle Gain</button>
+            </div>
+          </div>
+          <div class="cal-field" style="margin-bottom: 1rem">
+            <label>Daily Calorie Target</label>
+            <input type="number" id="targetCals" value="2400" />
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+            <div class="cal-field">
+              <label>Protein (g)</label>
+              <input type="number" id="targetP" value="180" />
+            </div>
+            <div class="cal-field">
+              <label>Carbs (g)</label>
+              <input type="number" id="targetC" value="250" />
+            </div>
+            <div class="cal-field">
+              <label>Fat (g)</label>
+              <input type="number" id="targetF" value="70" />
+            </div>
+          </div>
+          <button class="btn-outline" id="saveTargetsBtn" style="width: 100%; margin-top: 1.5rem;">Save Targets</button>
+        </div>
+      </div>
+
+      <!-- Daily Feed (UPGRADED) -->
+      <div class="cal-log-list" id="logList"></div>
+
+      <!-- Nutrition History -->
+      <div class="nh-section" id="nhSection"></div>
+    </main>
+
+    <!-- Bottom Nav (PRESERVED) -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="dashboard.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+        <span>Progress</span>
+      </a>
+      <a href="workout-tracker.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15h12"></path><path d="M6 9h12"></path><path d="M3 12h18"></path><path d="M12 3v18"></path></svg>
+        <span>Tracker</span>
+      </a>
+      <a href="map.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+        <span>Find Gyms</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+    <script src="../public/assets/js/app.js"></script>
+    <script src="../public/assets/js/indian-food-db.js"></script>
+    <script src="../public/assets/js/calorie-tracker.js"></script>
+  </body>
+</html>

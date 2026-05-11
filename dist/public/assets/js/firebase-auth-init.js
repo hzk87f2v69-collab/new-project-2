@@ -6,6 +6,18 @@ import {
   onAuthStateChanged,
   getIdToken
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
 // TODO: Replace this with your actual Firebase configuration
 // from the Firebase Console -> Project Settings -> General -> Web Apps
@@ -20,11 +32,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only if the user has provided a config
-let app, auth;
+let app, auth, db, storage;
 
 if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
   console.log("Firebase initialized successfully.");
 } else {
   console.warn("Firebase config is missing. Please update firebase-auth-init.js with your project details.");
@@ -33,6 +47,14 @@ if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
 // Expose to the global scope so legacy scripts can use it
 window.firebaseAuthModule = {
   auth,
+  db,
+  storage,
+  doc,
+  setDoc,
+  getDoc,
+  ref,
+  uploadBytes,
+  getDownloadURL,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,

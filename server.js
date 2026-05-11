@@ -159,7 +159,7 @@ app.post("/api/ai/diet", express.json(), async (req, res) => {
   }
 });
 // ────────────────────────────────────────────────────────
-app.get(["/", "/programs", "/auth", "/dashboard", "/profile", "/my-courses", "/player", "/contact", "/payment-success", "/workout-tracker", "/ai", "/find-gyms"], (req, res) => {
+app.get(["/", "/programs", "/auth", "/dashboard", "/profile", "/my-courses", "/player", "/contact", "/payment-success", "/workout-tracker", "/calorie-tracker", "/ai", "/find-gyms"], (req, res) => {
   // Normalize path: remove trailing slash except for root
   const cleanPath = req.path.length > 1 && req.path.endsWith("/") 
     ? req.path.slice(0, -1) 
